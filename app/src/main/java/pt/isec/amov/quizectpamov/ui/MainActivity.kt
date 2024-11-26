@@ -1,4 +1,4 @@
-package pt.isec.amov.quizectpamov
+package pt.isec.amov.quizectpamov.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -11,37 +11,20 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import pt.isec.amov.quizectpamov.Quizec
+import pt.isec.amov.quizectpamov.ui.screens.MainScreen
 import pt.isec.amov.quizectpamov.ui.theme.QuizecTPTheme
 
 class MainActivity : ComponentActivity() {
+    private val app by lazy { application as Quizec }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             QuizecTPTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+                MainScreen()
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    QuizecTPTheme {
-        Greeting("Android")
     }
 }
