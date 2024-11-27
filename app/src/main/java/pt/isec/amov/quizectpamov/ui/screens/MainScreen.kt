@@ -1,6 +1,5 @@
 package pt.isec.amov.quizectpamov.ui.screens
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -11,7 +10,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -23,15 +21,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import pt.isec.amov.quizectpamov.ui.theme.WelcomeTitleStyle
+import pt.isec.amov.quizectpamov.utils.Language.getCurrentStrings
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen() {
+    val strings = getCurrentStrings()
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -43,15 +41,14 @@ fun MainScreen() {
         var email by remember { mutableStateOf("") }
 
         Text(
-            text = "Welcome to Quizec!",
+            text = strings["welcome"] ?: "Welcome!",
             style = WelcomeTitleStyle,
-            modifier = Modifier
-                .padding(vertical = 64.dp)
+            modifier = Modifier.padding(vertical = 64.dp)
         )
         TextField(
             value = name,
             onValueChange = { newName -> name = newName },
-            label = { Text("Enter your name") },
+            label = { Text(strings["enter_name"] ?: "Enter your name") },
             modifier = Modifier
                 .padding(vertical = 16.dp)
                 .clip(RoundedCornerShape(8.dp)),
@@ -64,7 +61,7 @@ fun MainScreen() {
         TextField(
             value = email,
             onValueChange = { newEmail -> email = newEmail },
-            label = { Text("Enter your email") },
+            label = { Text(strings["enter_email"] ?: "Enter your email") },
             modifier = Modifier
                 .padding(vertical = 16.dp)
                 .clip(RoundedCornerShape(8.dp)),
@@ -86,7 +83,7 @@ fun MainScreen() {
                 containerColor = MaterialTheme.colorScheme.primary,
             )
         ) {
-            Text("Login", style = MaterialTheme.typography.bodyLarge)
+            Text(strings["login"] ?: "Login", style = MaterialTheme.typography.bodyLarge)
         }
     }
 }
