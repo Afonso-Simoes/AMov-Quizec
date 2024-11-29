@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "674795455855",
+    "project_id": "quizec-a065f",
+    "storage_bucket": "quizec-a065f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:674795455855:android:2b5ef4cb0957c1b28bd49a",
+        "android_client_info": {
+          "package_name": "pt.isec.amov.quizectpamov"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAkalExAIMdjaI6saoUZHwBjkXcKhZQDpE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,5 +1,6 @@
 package pt.isec.amov.quizectpamov.ui.screens
 
+import UserViewModel
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -28,7 +29,8 @@ import pt.isec.amov.quizectpamov.ui.theme.WelcomeTitleStyle
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignUpScreen(
-    navController: NavHostController
+    navController: NavHostController,
+    userViewModel: UserViewModel
 ) {
     Column(
         modifier = Modifier
@@ -76,7 +78,7 @@ fun SignUpScreen(
         TextField(
             value = password,
             onValueChange = { newPassword -> password = newPassword },
-            label = { Text("Enter your email") },
+            label = { Text("Enter your password") },
             modifier = Modifier
                 .padding(vertical = 16.dp)
                 .clip(RoundedCornerShape(8.dp)),
@@ -89,7 +91,7 @@ fun SignUpScreen(
 
         Button(
             onClick = {
-                /* Handle button click */
+                userViewModel.signIn(name, email, password)
             },
             modifier = Modifier
                 .padding(vertical = 16.dp)

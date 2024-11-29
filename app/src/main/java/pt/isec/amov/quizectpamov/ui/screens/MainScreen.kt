@@ -1,5 +1,6 @@
 package pt.isec.amov.quizectpamov.ui.screens
 
+import UserViewModel
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -11,10 +12,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.Composable
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,26 +25,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
 import pt.isec.amov.quizectpamov.ui.theme.WelcomeTitleStyle
-import kotlin.text.append
-import kotlin.text.firstOrNull
-import androidx.navigation.compose.rememberNavController
 import pt.isec.amov.quizectpamov.utils.Language.getCurrentStrings
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
-    navController: NavHostController
+    navController: NavHostController,
+    userViewModel: UserViewModel
 ) {
     val strings = getCurrentStrings()
     Column(
@@ -71,19 +65,6 @@ fun MainScreen(
                 .padding(vertical = 64.dp)
         )
         TextField(
-            value = password,
-            onValueChange = { newPassword -> password = newPassword },
-            label = { Text(strings["enter_name"] ?: "Enter your name") },
-            modifier = Modifier
-                .padding(vertical = 16.dp)
-                .clip(RoundedCornerShape(8.dp)),
-            colors = TextFieldDefaults.textFieldColors(
-                containerColor = MaterialTheme.colorScheme.surface,
-                unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurface,
-                focusedIndicatorColor = MaterialTheme.colorScheme.primary
-            )
-        )
-        TextField(
             value = email,
             onValueChange = { newEmail -> email = newEmail },
             label = { Text(strings["enter_email"] ?: "Enter your email") },
@@ -96,9 +77,22 @@ fun MainScreen(
                 focusedIndicatorColor = MaterialTheme.colorScheme.primary
             )
         )
+        TextField(
+            value = password,
+            onValueChange = { newPassword -> password = newPassword },
+            label = { Text(strings["enter_password"] ?: "Enter your password") },
+            modifier = Modifier
+                .padding(vertical = 16.dp)
+                .clip(RoundedCornerShape(8.dp)),
+            colors = TextFieldDefaults.textFieldColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+                unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurface,
+                focusedIndicatorColor = MaterialTheme.colorScheme.primary
+            )
+        )
         Button(
             onClick = {
-                /* Handle button click */
+                userViewModel.signIn(email, password);
             },
             modifier = Modifier
                 .padding(vertical = 16.dp)
