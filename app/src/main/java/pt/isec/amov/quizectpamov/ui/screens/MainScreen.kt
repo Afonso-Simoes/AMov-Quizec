@@ -24,14 +24,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import pt.isec.amov.quizectpamov.R
 import pt.isec.amov.quizectpamov.ui.theme.WelcomeTitleStyle
-import pt.isec.amov.quizectpamov.utils.Language.getCurrentStrings
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -39,7 +40,6 @@ fun MainScreen(
     navController: NavHostController,
     userViewModel: UserViewModel
 ) {
-    val strings = getCurrentStrings()
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -49,17 +49,18 @@ fun MainScreen(
     ) {
         var password by remember { mutableStateOf("") }
         var email by remember { mutableStateOf("") }
+
         val annotatedString = buildAnnotatedString {
-            append("Don't have an account? ")
+            append(stringResource(id = R.string.signup_prompt) + " ")
             withStyle(style = SpanStyle(color = Color.Blue, fontWeight = FontWeight.Bold)) {
                 pushStringAnnotation(tag = "SignUp", annotation = "SignUp")
-                append("Sign up")
+                append(stringResource(id = R.string.signup_action))
                 pop()
             }
         }
 
         Text(
-            text = strings["welcome"] ?: "Welcome!",
+            text = stringResource(id = R.string.welcome_message),
             style = WelcomeTitleStyle,
             modifier = Modifier
                 .padding(vertical = 64.dp)
@@ -67,7 +68,7 @@ fun MainScreen(
         TextField(
             value = email,
             onValueChange = { newEmail -> email = newEmail },
-            label = { Text(strings["enter_email"] ?: "Enter your email") },
+            label = { Text(stringResource(id = R.string.email_label)) },
             modifier = Modifier
                 .padding(vertical = 16.dp)
                 .clip(RoundedCornerShape(8.dp)),
@@ -80,7 +81,7 @@ fun MainScreen(
         TextField(
             value = password,
             onValueChange = { newPassword -> password = newPassword },
-            label = { Text(strings["enter_password"] ?: "Enter your password") },
+            label = { Text(stringResource(id = R.string.pass_label)) },
             modifier = Modifier
                 .padding(vertical = 16.dp)
                 .clip(RoundedCornerShape(8.dp)),
@@ -102,7 +103,7 @@ fun MainScreen(
                 containerColor = MaterialTheme.colorScheme.primary,
             )
         ) {
-            Text(strings["login"] ?: "Login", style = MaterialTheme.typography.bodyLarge)
+            Text(stringResource(id = R.string.enter_button), style = MaterialTheme.typography.bodyLarge)
         }
         ClickableText(
             text = annotatedString,
@@ -115,5 +116,6 @@ fun MainScreen(
             modifier = Modifier
                 .padding(vertical = 64.dp)
         )
+        }
     }
-}
+

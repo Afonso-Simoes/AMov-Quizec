@@ -22,8 +22,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import pt.isec.amov.quizectpamov.R
 import pt.isec.amov.quizectpamov.ui.theme.WelcomeTitleStyle
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -52,7 +54,7 @@ fun SignUpScreen(
         TextField(
             value = name,
             onValueChange = { newName -> name = newName },
-            label = { Text("Enter your name") },
+            label = { Text(stringResource(id = R.string.name_label)) },
             modifier = Modifier
                 .padding(vertical = 16.dp)
                 .clip(RoundedCornerShape(8.dp)),
@@ -65,7 +67,7 @@ fun SignUpScreen(
         TextField(
             value = email,
             onValueChange = { newEmail -> email = newEmail },
-            label = { Text("Enter your email") },
+            label = { Text(stringResource(id = R.string.email_label)) },
             modifier = Modifier
                 .padding(vertical = 16.dp)
                 .clip(RoundedCornerShape(8.dp)),
@@ -78,7 +80,7 @@ fun SignUpScreen(
         TextField(
             value = password,
             onValueChange = { newPassword -> password = newPassword },
-            label = { Text("Enter your password") },
+            label = { Text(stringResource(id = R.string.pass_label)) },
             modifier = Modifier
                 .padding(vertical = 16.dp)
                 .clip(RoundedCornerShape(8.dp)),
@@ -101,7 +103,7 @@ fun SignUpScreen(
                 containerColor = MaterialTheme.colorScheme.primary,
             )
         ) {
-            Text("Create Account", style = MaterialTheme.typography.bodyLarge)
+            Text(stringResource(id = R.string.create_button), style = MaterialTheme.typography.bodyLarge)
         }
     }
 }
