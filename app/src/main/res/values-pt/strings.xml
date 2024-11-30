@@ -2,7 +2,11 @@
 <resources>
     <string name="app_name">Quizec</string>
     <string name="welcome_message">Bem-vindo ao Quizec!</string>
+    <string name="email_label">Digite o seu email</string>
+    <string name="pass_label">Digite a sua password</string>
     <string name="name_label">Digite o seu nome</string>
-    <string name="email_label">Digite o seu e-mail</string>
     <string name="enter_button">Entrar</string>
+    <string name="create_button">Criar Conta</string>
+    <string name="signup_prompt">Não tens uma conta?</string>
+    <string name="signup_action">Criar conta</string>
 </resources>
