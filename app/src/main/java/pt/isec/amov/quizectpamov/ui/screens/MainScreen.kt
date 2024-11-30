@@ -21,14 +21,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import pt.isec.amov.quizectpamov.R
 import pt.isec.amov.quizectpamov.ui.theme.WelcomeTitleStyle
-import pt.isec.amov.quizectpamov.utils.Language.getCurrentStrings
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen() {
-    val strings = getCurrentStrings()
 
     Column(
         modifier = Modifier
@@ -41,14 +41,14 @@ fun MainScreen() {
         var email by remember { mutableStateOf("") }
 
         Text(
-            text = strings["welcome"] ?: "Welcome!",
+            text = stringResource(id = R.string.welcome_message),
             style = WelcomeTitleStyle,
             modifier = Modifier.padding(vertical = 64.dp)
         )
         TextField(
             value = name,
             onValueChange = { newName -> name = newName },
-            label = { Text(strings["enter_name"] ?: "Enter your name") },
+            label = { Text(stringResource(id = R.string.name_label)) },
             modifier = Modifier
                 .padding(vertical = 16.dp)
                 .clip(RoundedCornerShape(8.dp)),
@@ -61,7 +61,7 @@ fun MainScreen() {
         TextField(
             value = email,
             onValueChange = { newEmail -> email = newEmail },
-            label = { Text(strings["enter_email"] ?: "Enter your email") },
+            label = { Text(stringResource(id = R.string.name_label)) },
             modifier = Modifier
                 .padding(vertical = 16.dp)
                 .clip(RoundedCornerShape(8.dp)),
@@ -83,7 +83,6 @@ fun MainScreen() {
                 containerColor = MaterialTheme.colorScheme.primary,
             )
         ) {
-            Text(strings["login"] ?: "Login", style = MaterialTheme.typography.bodyLarge)
-        }
+            Text(stringResource(id = R.string.enter_button), style = MaterialTheme.typography.bodyLarge)        }
     }
 }

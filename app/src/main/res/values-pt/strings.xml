@@ -1,0 +1,8 @@
+
+<resources>
+    <string name="app_name">Quizec</string>
+    <string name="welcome_message">Bem-vindo ao Quizec!</string>
+    <string name="name_label">Digite o seu nome</string>
+    <string name="email_label">Digite o seu e-mail</string>
+    <string name="enter_button">Entrar</string>
+</resources>
