@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import pt.isec.amov.quizectpamov.Quizec
+import pt.isec.amov.quizectpamov.ui.screens.AppNavigation
 import pt.isec.amov.quizectpamov.ui.screens.MainScreen
 import pt.isec.amov.quizectpamov.ui.theme.QuizecTPTheme
 
@@ -23,7 +24,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             QuizecTPTheme {
-                MainScreen()
+                AppNavigation()
             }
         }
     }

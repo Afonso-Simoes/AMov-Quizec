@@ -1,5 +1,6 @@
 package pt.isec.amov.quizectpamov.ui.screens
 
+import UserViewModel
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,6 +14,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -20,14 +22,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import pt.isec.amov.quizectpamov.R
+import androidx.navigation.NavHostController
 import pt.isec.amov.quizectpamov.ui.theme.WelcomeTitleStyle
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(
+fun SignUpScreen(
     navController: NavHostController,
     userViewModel: UserViewModel
 ) {
@@ -38,19 +39,12 @@ fun MainScreen(
             .wrapContentSize(Alignment.Center),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        var password by remember { mutableStateOf("") }
+        var name by remember { mutableStateOf("") }
         var email by remember { mutableStateOf("") }
-        val annotatedString = buildAnnotatedString {
-            append("Don't have an account? ")
-            withStyle(style = SpanStyle(color = Color.Blue, fontWeight = FontWeight.Bold)) {
-                pushStringAnnotation(tag = "SignUp", annotation = "SignUp")
-                append("Sign up")
-                pop()
-            }
-        }
+        var password by remember { mutableStateOf("") }
 
         Text(
-            text = stringResource(id = R.string.welcome_message),
+            text = "Create an account",
             style = WelcomeTitleStyle,
             modifier = Modifier
                 .padding(vertical = 64.dp)
@@ -58,7 +52,7 @@ fun MainScreen(
         TextField(
             value = name,
             onValueChange = { newName -> name = newName },
-            label = { Text(stringResource(id = R.string.name_label)) },
+            label = { Text("Enter your name") },
             modifier = Modifier
                 .padding(vertical = 16.dp)
                 .clip(RoundedCornerShape(8.dp)),
@@ -71,7 +65,7 @@ fun MainScreen(
         TextField(
             value = email,
             onValueChange = { newEmail -> email = newEmail },
-            label = { Text(stringResource(id = R.string.name_label)) },
+            label = { Text("Enter your email") },
             modifier = Modifier
                 .padding(vertical = 16.dp)
                 .clip(RoundedCornerShape(8.dp)),
@@ -81,9 +75,23 @@ fun MainScreen(
                 focusedIndicatorColor = MaterialTheme.colorScheme.primary
             )
         )
+        TextField(
+            value = password,
+            onValueChange = { newPassword -> password = newPassword },
+            label = { Text("Enter your password") },
+            modifier = Modifier
+                .padding(vertical = 16.dp)
+                .clip(RoundedCornerShape(8.dp)),
+            colors = TextFieldDefaults.textFieldColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+                unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurface,
+                focusedIndicatorColor = MaterialTheme.colorScheme.primary
+            )
+        )
+
         Button(
             onClick = {
-                userViewModel.signIn(email, password);
+                userViewModel.signIn(name, email, password)
             },
             modifier = Modifier
                 .padding(vertical = 16.dp)
@@ -93,18 +101,7 @@ fun MainScreen(
                 containerColor = MaterialTheme.colorScheme.primary,
             )
         ) {
-            Text(stringResource(id = R.string.enter_button), style = MaterialTheme.typography.bodyLarge)        }
+            Text("Create Account", style = MaterialTheme.typography.bodyLarge)
         }
-        ClickableText(
-            text = annotatedString,
-            onClick = { offset ->
-                annotatedString.getStringAnnotations(tag = "SignUp", start = offset, end = offset)
-                    .firstOrNull()?.let { annotation ->
-                        navController.navigate("signup")
-                    }
-            },
-            modifier = Modifier
-                .padding(vertical = 64.dp)
-        )
     }
 }
