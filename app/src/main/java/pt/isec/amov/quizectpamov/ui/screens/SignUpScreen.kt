@@ -91,7 +91,12 @@ fun SignUpScreen(
 
         Button(
             onClick = {
-                userViewModel.signIn(name, email, password)
+                if(userViewModel.signIn(name, email, password)){
+                    navController.navigate("mainMenu")
+                } else {
+                    navController.navigate("mainMenu")
+                    //TODO: Show error message
+                }
             },
             modifier = Modifier
                 .padding(vertical = 16.dp)
