@@ -17,18 +17,20 @@ class UserViewModel : ViewModel() {
     val errorMessage: StateFlow<String?> get() = _errorMessage
 
     ///VERIFICAR SE PRECISO RETUNAR PARA REDIRECIONAR VISTA OU REDIRECIONAR AQUI NAO SEI
-    fun signIn(email: String, password: String) {
+    fun signIn(email: String, password: String) : Boolean {
         viewModelScope.launch {
             try {
                 _isLoggedIn.value = userRepository.logIn(email, password)
             } catch (e: Exception) {
                 _errorMessage.value = "Erro: ${e.message}"
+                _isLoggedIn.value = false
             }
         }
+        return _isLoggedIn.value
     }
 
     ///VERIFICAR SE PRECISO RETUNAR PARA REDIRECIONAR VISTA OU REDIRECIONAR AQUI NAO SEI
-    fun signIn(name: String, email: String, password: String) {
+    fun signIn(name: String, email: String, password: String) : Boolean {
         viewModelScope.launch {
             try {
                 _isLoggedIn.value = userRepository.signUp(
@@ -47,7 +49,9 @@ class UserViewModel : ViewModel() {
                 }
             } catch (e: Exception) {
                 _errorMessage.value = "Erro: ${e.message}"
+                _isLoggedIn.value = false
             }
         }
+        return _isLoggedIn.value
     }
 }

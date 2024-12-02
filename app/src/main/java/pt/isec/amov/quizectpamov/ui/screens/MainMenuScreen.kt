@@ -2,6 +2,7 @@ package pt.isec.amov.quizectpamov.ui.screens
 
 import UserViewModel
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -24,22 +25,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import pt.isec.amov.quizectpamov.R
 import pt.isec.amov.quizectpamov.ui.theme.WelcomeTitleStyle
+import pt.isec.amov.quizectpamov.utils.Language.getCurrentStrings
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(
+fun MainMenuScreen(
     navController: NavHostController,
     userViewModel: UserViewModel
 ) {
+    val strings = getCurrentStrings()
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -49,56 +50,25 @@ fun MainScreen(
     ) {
         var password by remember { mutableStateOf("") }
         var email by remember { mutableStateOf("") }
-
         val annotatedString = buildAnnotatedString {
-            append(stringResource(id = R.string.signup_prompt) + " ")
+            append("Don't have an account? ")
             withStyle(style = SpanStyle(color = Color.Blue, fontWeight = FontWeight.Bold)) {
                 pushStringAnnotation(tag = "SignUp", annotation = "SignUp")
-                append(stringResource(id = R.string.signup_action))
+                append("Sign up")
                 pop()
             }
         }
 
+        Spacer(modifier = Modifier.padding(16.dp))
+        Spacer(modifier = Modifier.padding(16.dp))
         Text(
-            text = stringResource(id = R.string.welcome_message),
-            style = WelcomeTitleStyle,
-            modifier = Modifier
-                .padding(vertical = 64.dp)
+            text = strings["MENU INICAL"] ?: "MENU INICAL",
+            style = WelcomeTitleStyle
         )
-        TextField(
-            value = email,
-            onValueChange = { newEmail -> email = newEmail },
-            label = { Text(stringResource(id = R.string.email_label)) },
-            modifier = Modifier
-                .padding(vertical = 16.dp)
-                .clip(RoundedCornerShape(8.dp)),
-            colors = TextFieldDefaults.textFieldColors(
-                containerColor = MaterialTheme.colorScheme.surface,
-                unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurface,
-                focusedIndicatorColor = MaterialTheme.colorScheme.primary
-            )
-        )
-        TextField(
-            value = password,
-            onValueChange = { newPassword -> password = newPassword },
-            label = { Text(stringResource(id = R.string.pass_label)) },
-            modifier = Modifier
-                .padding(vertical = 16.dp)
-                .clip(RoundedCornerShape(8.dp)),
-            colors = TextFieldDefaults.textFieldColors(
-                containerColor = MaterialTheme.colorScheme.surface,
-                unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurface,
-                focusedIndicatorColor = MaterialTheme.colorScheme.primary
-            )
-        )
+        Spacer(modifier = Modifier.padding(16.dp))
         Button(
             onClick = {
-//                if(userViewModel.signIn(email, password)){
-//                    navController.navigate("mainMenu")
-//                } else {
-//                    //TODO: Show error message
-//                }
-                navController.navigate("mainMenu")
+                navController.navigate("quizzesMenu")
             },
             modifier = Modifier
                 .padding(vertical = 16.dp)
@@ -106,21 +76,58 @@ fun MainScreen(
                 .clip(RoundedCornerShape(8.dp)),
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.primary,
-            )
+            ),
+            shape = RoundedCornerShape(8.dp)
         ) {
-            Text(stringResource(id = R.string.enter_button), style = MaterialTheme.typography.bodyLarge)
+            Text(strings["manage quizzes"] ?: "Manage Quizzes", style = MaterialTheme.typography.bodyLarge)
         }
-        ClickableText(
-            text = annotatedString,
-            onClick = { offset ->
-                annotatedString.getStringAnnotations(tag = "SignUp", start = offset, end = offset)
-                    .firstOrNull()?.let { annotation ->
-                        navController.navigate("signup")
-                    }
+        Spacer(modifier = Modifier.padding(16.dp))
+        Button(
+            onClick = {
+                navController.navigate("questionsMenu")
             },
             modifier = Modifier
-                .padding(vertical = 64.dp)
-        )
+                .padding(vertical = 16.dp)
+                .width(290.dp)
+                .clip(RoundedCornerShape(8.dp)),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+            ),
+            shape = RoundedCornerShape(8.dp)
+        ) {
+            Text(strings["manage questions"] ?: "Manage Questions", style = MaterialTheme.typography.bodyLarge)
+        }
+        Spacer(modifier = Modifier.padding(16.dp))
+        Button(
+            onClick = {
+                navController.navigate("startQuiz")
+            },
+            modifier = Modifier
+                .padding(vertical = 16.dp)
+                .width(290.dp)
+                .clip(RoundedCornerShape(8.dp)),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+            ),
+            shape = RoundedCornerShape(8.dp)
+        ) {
+            Text(strings["start quiz"] ?: "Start Quiz", style = MaterialTheme.typography.bodyLarge)
+        }
+        Spacer(modifier = Modifier.padding(16.dp))
+        Button(
+            onClick = {
+                navController.navigate("settings")
+            },
+            modifier = Modifier
+                .padding(vertical = 16.dp)
+                .width(290.dp)
+                .clip(RoundedCornerShape(8.dp)),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+            ),
+            shape = RoundedCornerShape(8.dp)
+        ) {
+            Text(strings["settings"] ?: "Settings", style = MaterialTheme.typography.bodyLarge)
         }
     }
-
+}

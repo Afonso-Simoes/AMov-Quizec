@@ -23,8 +23,8 @@ fun AppNavigation() {
         composable("signup") {
             SignUpScreen(navController, userViewModel)
         }
-//        composable("dashboard") {
-//            DashboardScreen()
-//        }
+        composable("mainMenu") {
+            MainMenuScreen(navController, userViewModel)
+        }
     }
 }
