@@ -9,4 +9,9 @@
     <string name="create_button">Criar Conta</string>
     <string name="signup_prompt">Não tens uma conta?</string>
     <string name="signup_action">Criar conta</string>
+    <string name="main_menu_title">Menu Principal</string>
+    <string name="manage_quizzes">Gerir Questionários</string>
+    <string name="manage_questions">Gerir Questões</string>
+    <string name="start_quizz">Começar Questionário</string>
+    <string name="settings">Definições</string>
 </resources>
