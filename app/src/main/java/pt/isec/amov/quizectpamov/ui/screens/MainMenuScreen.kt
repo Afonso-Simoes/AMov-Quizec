@@ -25,14 +25,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import pt.isec.amov.quizectpamov.R
 import pt.isec.amov.quizectpamov.ui.theme.WelcomeTitleStyle
-import pt.isec.amov.quizectpamov.utils.Language.getCurrentStrings
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,7 +41,6 @@ fun MainMenuScreen(
     navController: NavHostController,
     userViewModel: UserViewModel
 ) {
-    val strings = getCurrentStrings()
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -62,7 +62,7 @@ fun MainMenuScreen(
         Spacer(modifier = Modifier.padding(16.dp))
         Spacer(modifier = Modifier.padding(16.dp))
         Text(
-            text = strings["MENU INICAL"] ?: "MENU INICAL",
+            stringResource(id = R.string.main_menu_title),
             style = WelcomeTitleStyle
         )
         Spacer(modifier = Modifier.padding(16.dp))
@@ -79,7 +79,7 @@ fun MainMenuScreen(
             ),
             shape = RoundedCornerShape(8.dp)
         ) {
-            Text(strings["manage quizzes"] ?: "Manage Quizzes", style = MaterialTheme.typography.bodyLarge)
+            Text(stringResource(id = R.string.manage_quizzes), style = MaterialTheme.typography.bodyLarge)
         }
         Spacer(modifier = Modifier.padding(16.dp))
         Button(
@@ -95,7 +95,7 @@ fun MainMenuScreen(
             ),
             shape = RoundedCornerShape(8.dp)
         ) {
-            Text(strings["manage questions"] ?: "Manage Questions", style = MaterialTheme.typography.bodyLarge)
+            Text(stringResource(id = R.string.manage_questions), style = MaterialTheme.typography.bodyLarge)
         }
         Spacer(modifier = Modifier.padding(16.dp))
         Button(
@@ -111,7 +111,7 @@ fun MainMenuScreen(
             ),
             shape = RoundedCornerShape(8.dp)
         ) {
-            Text(strings["start quiz"] ?: "Start Quiz", style = MaterialTheme.typography.bodyLarge)
+            Text(stringResource(id = R.string.start_quizz), style = MaterialTheme.typography.bodyLarge)
         }
         Spacer(modifier = Modifier.padding(16.dp))
         Button(
@@ -127,7 +127,7 @@ fun MainMenuScreen(
             ),
             shape = RoundedCornerShape(8.dp)
         ) {
-            Text(strings["settings"] ?: "Settings", style = MaterialTheme.typography.bodyLarge)
+            Text(stringResource(id = R.string.settings), style = MaterialTheme.typography.bodyLarge)
         }
     }
 }
