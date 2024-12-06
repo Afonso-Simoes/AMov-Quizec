@@ -1,13 +1,16 @@
 package pt.isec.amov.quizectpamov.ui.screens
 
 import UserViewModel
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -24,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -34,43 +38,50 @@ import androidx.navigation.NavHostController
 import pt.isec.amov.quizectpamov.R
 import pt.isec.amov.quizectpamov.ui.theme.WelcomeTitleStyle
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 fun MainScreen(
     navController: NavHostController,
     userViewModel: UserViewModel
 ) {
+    val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
+    ShowMainScreen(navController, isLandscape = isLandscape)
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ShowMainScreen(navController: NavHostController, isLandscape: Boolean) {
+    var password by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+
+    val annotatedString = buildAnnotatedString {
+        append(stringResource(id = R.string.signup_prompt) + " ")
+        withStyle(style = SpanStyle(color = Color.Blue, fontWeight = FontWeight.Bold)) {
+            pushStringAnnotation(tag = "SignUp", annotation = "SignUp")
+            append(stringResource(id = R.string.signup_action))
+            pop()
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
-            .wrapContentSize(Alignment.Center),
+            .wrapContentSize(Alignment.Center)
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        var password by remember { mutableStateOf("") }
-        var email by remember { mutableStateOf("") }
-
-        val annotatedString = buildAnnotatedString {
-            append(stringResource(id = R.string.signup_prompt) + " ")
-            withStyle(style = SpanStyle(color = Color.Blue, fontWeight = FontWeight.Bold)) {
-                pushStringAnnotation(tag = "SignUp", annotation = "SignUp")
-                append(stringResource(id = R.string.signup_action))
-                pop()
-            }
-        }
-
         Text(
             text = stringResource(id = R.string.welcome_message),
             style = WelcomeTitleStyle,
-            modifier = Modifier
-                .padding(vertical = 64.dp)
+            modifier = Modifier.padding(vertical = if (isLandscape) 32.dp else 64.dp)
         )
         TextField(
             value = email,
             onValueChange = { newEmail -> email = newEmail },
             label = { Text(stringResource(id = R.string.email_label)) },
             modifier = Modifier
-                .padding(vertical = 16.dp)
+                .padding(vertical = if (isLandscape) 8.dp else 16.dp)
                 .clip(RoundedCornerShape(8.dp)),
             colors = TextFieldDefaults.textFieldColors(
                 containerColor = MaterialTheme.colorScheme.surface,
@@ -83,7 +94,7 @@ fun MainScreen(
             onValueChange = { newPassword -> password = newPassword },
             label = { Text(stringResource(id = R.string.pass_label)) },
             modifier = Modifier
-                .padding(vertical = 16.dp)
+                .padding(vertical = if (isLandscape) 8.dp else 16.dp)
                 .clip(RoundedCornerShape(8.dp)),
             colors = TextFieldDefaults.textFieldColors(
                 containerColor = MaterialTheme.colorScheme.surface,
@@ -93,15 +104,10 @@ fun MainScreen(
         )
         Button(
             onClick = {
-//                if(userViewModel.signIn(email, password)){
-//                    navController.navigate("mainMenu")
-//                } else {
-//                    //TODO: Show error message
-//                }
                 navController.navigate("mainMenu")
             },
             modifier = Modifier
-                .padding(vertical = 16.dp)
+                .padding(vertical = if (isLandscape) 8.dp else 16.dp)
                 .width(290.dp)
                 .clip(RoundedCornerShape(8.dp)),
             colors = ButtonDefaults.buttonColors(
@@ -118,9 +124,7 @@ fun MainScreen(
                         navController.navigate("signup")
                     }
             },
-            modifier = Modifier
-                .padding(vertical = 64.dp)
+            modifier = Modifier.padding(vertical = if (isLandscape) 32.dp else 64.dp)
         )
-        }
     }
-
+}
