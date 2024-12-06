@@ -1,6 +1,7 @@
 package pt.isec.amov.quizectpamov.ui.screens
 
 import UserViewModel
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -24,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -34,7 +36,7 @@ import androidx.navigation.NavHostController
 import pt.isec.amov.quizectpamov.R
 import pt.isec.amov.quizectpamov.ui.theme.WelcomeTitleStyle
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 fun MainScreen(
     navController: NavHostController,
@@ -47,30 +49,128 @@ fun MainScreen(
             .wrapContentSize(Alignment.Center),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        var password by remember { mutableStateOf("") }
-        var email by remember { mutableStateOf("") }
-
-        val annotatedString = buildAnnotatedString {
-            append(stringResource(id = R.string.signup_prompt) + " ")
-            withStyle(style = SpanStyle(color = Color.Blue, fontWeight = FontWeight.Bold)) {
-                pushStringAnnotation(tag = "SignUp", annotation = "SignUp")
-                append(stringResource(id = R.string.signup_action))
-                pop()
-            }
+        if(LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            ShowScreenLandscape(navController)
+        } else {
+            ShowScreenPortrait(navController)
         }
 
+        }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ShowScreenPortrait(navController: NavHostController) {
+    var password by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+
+    val annotatedString = buildAnnotatedString {
+        append(stringResource(id = R.string.signup_prompt) + " ")
+        withStyle(style = SpanStyle(color = Color.Blue, fontWeight = FontWeight.Bold)) {
+            pushStringAnnotation(tag = "SignUp", annotation = "SignUp")
+            append(stringResource(id = R.string.signup_action))
+            pop()
+        }
+    }
+
+    Text(
+        text = stringResource(id = R.string.welcome_message),
+        style = WelcomeTitleStyle,
+        modifier = Modifier
+            .padding(vertical = 64.dp)
+    )
+    TextField(
+        value = email,
+        onValueChange = { newEmail -> email = newEmail },
+        label = { Text(stringResource(id = R.string.email_label)) },
+        modifier = Modifier
+            .padding(vertical = 16.dp)
+            .clip(RoundedCornerShape(8.dp)),
+        colors = TextFieldDefaults.textFieldColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+            unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurface,
+            focusedIndicatorColor = MaterialTheme.colorScheme.primary
+        )
+    )
+    TextField(
+        value = password,
+        onValueChange = { newPassword -> password = newPassword },
+        label = { Text(stringResource(id = R.string.pass_label)) },
+        modifier = Modifier
+            .padding(vertical = 16.dp)
+            .clip(RoundedCornerShape(8.dp)),
+        colors = TextFieldDefaults.textFieldColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+            unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurface,
+            focusedIndicatorColor = MaterialTheme.colorScheme.primary
+        )
+    )
+    Button(
+        onClick = {
+//                if(userViewModel.signIn(email, password)){
+//                    navController.navigate("mainMenu")
+//                } else {
+//                    //TODO: Show error message
+//                }
+            navController.navigate("mainMenu")
+        },
+        modifier = Modifier
+            .padding(vertical = 16.dp)
+            .width(290.dp)
+            .clip(RoundedCornerShape(8.dp)),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.primary,
+        )
+    ) {
+        Text(stringResource(id = R.string.enter_button), style = MaterialTheme.typography.bodyLarge)
+    }
+    ClickableText(
+        text = annotatedString,
+        onClick = { offset ->
+            annotatedString.getStringAnnotations(tag = "SignUp", start = offset, end = offset)
+                .firstOrNull()?.let { annotation ->
+                    navController.navigate("signup")
+                }
+        },
+        modifier = Modifier
+            .padding(vertical = 64.dp)
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ShowScreenLandscape(navController: NavHostController) {
+    var password by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+
+    val annotatedString = buildAnnotatedString {
+        append(stringResource(id = R.string.signup_prompt) + " ")
+        withStyle(style = SpanStyle(color = Color.Blue, fontWeight = FontWeight.Bold)) {
+            pushStringAnnotation(tag = "SignUp", annotation = "SignUp")
+            append(stringResource(id = R.string.signup_action))
+            pop()
+        }
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .wrapContentSize(Alignment.Center),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Text(
             text = stringResource(id = R.string.welcome_message),
             style = WelcomeTitleStyle,
             modifier = Modifier
-                .padding(vertical = 64.dp)
+                .padding(vertical = 32.dp)
         )
         TextField(
             value = email,
             onValueChange = { newEmail -> email = newEmail },
             label = { Text(stringResource(id = R.string.email_label)) },
             modifier = Modifier
-                .padding(vertical = 16.dp)
+                .padding(vertical = 8.dp)
                 .clip(RoundedCornerShape(8.dp)),
             colors = TextFieldDefaults.textFieldColors(
                 containerColor = MaterialTheme.colorScheme.surface,
@@ -83,7 +183,7 @@ fun MainScreen(
             onValueChange = { newPassword -> password = newPassword },
             label = { Text(stringResource(id = R.string.pass_label)) },
             modifier = Modifier
-                .padding(vertical = 16.dp)
+                .padding(vertical = 8.dp)
                 .clip(RoundedCornerShape(8.dp)),
             colors = TextFieldDefaults.textFieldColors(
                 containerColor = MaterialTheme.colorScheme.surface,
@@ -93,15 +193,10 @@ fun MainScreen(
         )
         Button(
             onClick = {
-//                if(userViewModel.signIn(email, password)){
-//                    navController.navigate("mainMenu")
-//                } else {
-//                    //TODO: Show error message
-//                }
                 navController.navigate("mainMenu")
             },
             modifier = Modifier
-                .padding(vertical = 16.dp)
+                .padding(vertical = 8.dp)
                 .width(290.dp)
                 .clip(RoundedCornerShape(8.dp)),
             colors = ButtonDefaults.buttonColors(
@@ -119,8 +214,7 @@ fun MainScreen(
                     }
             },
             modifier = Modifier
-                .padding(vertical = 64.dp)
+                .padding(vertical = 32.dp)
         )
-        }
     }
-
+}
