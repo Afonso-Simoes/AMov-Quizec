@@ -44,12 +44,8 @@ fun MainScreen(
     navController: NavHostController,
     userViewModel: UserViewModel
 ) {
-    val orientation = LocalConfiguration.current.orientation
-    if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-        ShowMainScreen(navController, isLandscape = true)
-    } else {
-        ShowMainScreen(navController, isLandscape = false)
-    }
+    val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
+    ShowMainScreen(navController, isLandscape = isLandscape)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

@@ -38,12 +38,8 @@ fun SignUpScreen(
     navController: NavHostController,
     userViewModel: UserViewModel
 ) {
-    val orientation = LocalConfiguration.current.orientation
-    if(orientation == Configuration.ORIENTATION_LANDSCAPE){
-        ShowSingUpScreen(navController, userViewModel, isLandscape = true)
-    } else {
-        ShowSingUpScreen(navController, userViewModel, isLandscape = false)
-    }
+    val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
+    ShowSingUpScreen(navController, userViewModel, isLandscape = isLandscape)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

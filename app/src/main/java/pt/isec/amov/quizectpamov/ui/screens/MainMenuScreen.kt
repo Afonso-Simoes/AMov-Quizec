@@ -32,12 +32,8 @@ fun MainMenuScreen(
     navController: NavHostController,
     userViewModel: UserViewModel
 ) {
-    val orientation = LocalConfiguration.current.orientation
-    if(orientation == Configuration.ORIENTATION_LANDSCAPE){
-        ShowMainMenuScreen(navController, isLandscape = true)
-    } else {
-        ShowMainMenuScreen(navController, isLandscape = false)
-    }
+    val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
+    ShowMainMenuScreen(navController, isLandscape = isLandscape)
 }
 
 @Composable
