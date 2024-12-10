@@ -1,6 +1,6 @@
 package pt.isec.amov.quizectpamov.ui.screens
 
-import UserViewModel
+import pt.isec.amov.quizectpamov.viewmodel.UserViewModel
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer

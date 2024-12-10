@@ -1,6 +1,6 @@
 package pt.isec.amov.quizectpamov.ui.screens
 
-import UserViewModel
+import pt.isec.amov.quizectpamov.viewmodel.UserViewModel
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
