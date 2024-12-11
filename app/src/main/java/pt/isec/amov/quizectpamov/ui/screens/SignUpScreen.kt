@@ -1,7 +1,7 @@
 package pt.isec.amov.quizectpamov.ui.screens
 
-import UserViewModel
 import android.content.res.Configuration
+import pt.isec.amov.quizectpamov.viewmodel.UserViewModel
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -105,11 +105,13 @@ fun ShowSingUpScreen(navController: NavHostController, userViewModel: UserViewMo
 
         Button(
             onClick = {
-                if (userViewModel.signIn(name, email, password)) {
-                    navController.navigate("mainMenu")
-                } else {
-                    navController.navigate("mainMenu")
-                    //TODO: Show error message
+                userViewModel.createUserWithEmail(email, password){
+                        isUserLogged ->
+                    if(isUserLogged){
+                        navController.navigate("login")
+                    } else {
+                        //TODO: Show error message
+                    }
                 }
             },
             modifier = Modifier

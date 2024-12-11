@@ -1,7 +1,7 @@
 package pt.isec.amov.quizectpamov.ui.screens
 
-import UserViewModel
 import android.content.res.Configuration
+import pt.isec.amov.quizectpamov.viewmodel.UserViewModel
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -38,19 +38,18 @@ import androidx.navigation.NavHostController
 import pt.isec.amov.quizectpamov.R
 import pt.isec.amov.quizectpamov.ui.theme.WelcomeTitleStyle
 
-
 @Composable
 fun MainScreen(
     navController: NavHostController,
     userViewModel: UserViewModel
 ) {
     val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
-    ShowMainScreen(navController, isLandscape = isLandscape)
+    ShowMainScreen(navController, isLandscape = isLandscape, userViewModel)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ShowMainScreen(navController: NavHostController, isLandscape: Boolean) {
+fun ShowMainScreen(navController: NavHostController, isLandscape: Boolean, userViewModel: UserViewModel) {
     var password by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
 
@@ -104,7 +103,14 @@ fun ShowMainScreen(navController: NavHostController, isLandscape: Boolean) {
         )
         Button(
             onClick = {
-                navController.navigate("mainMenu")
+                userViewModel.signInWithEmail(email, password){
+                    isUserCreated ->
+                    if(isUserCreated){
+                        navController.navigate("mainMenu")
+                    } else {
+                        //TODO: Show error message
+                    }
+                }
             },
             modifier = Modifier
                 .padding(vertical = if (isLandscape) 8.dp else 16.dp)

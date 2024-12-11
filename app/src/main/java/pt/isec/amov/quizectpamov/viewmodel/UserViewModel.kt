@@ -1,57 +1,72 @@
+package pt.isec.amov.quizectpamov.viewmodel
+
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.launch
-import pt.isec.amov.quizectpamov.data.model.User
+import pt.isec.amov.quizectpamov.data.dtos.UserDTO
 import pt.isec.amov.quizectpamov.data.repository.UserRepository
+
+fun FirebaseUser.toUser() : UserDTO {
+    val displayName = this.displayName ?: ""
+    val strEmail = this.email ?: "n.d."
+    return UserDTO(displayName,strEmail)
+}
 
 class UserViewModel : ViewModel() {
 
     private val userRepository = UserRepository()
 
-    private val _isLoggedIn = MutableStateFlow(false)
-    val isLoggedIn: StateFlow<Boolean> get() = _isLoggedIn
+    private val _user = mutableStateOf(userRepository.currentUser?.toUser())
+    val user : MutableState<UserDTO?>
+        get() = _user
 
-    private val _errorMessage = MutableStateFlow<String?>(null)
-    val errorMessage: StateFlow<String?> get() = _errorMessage
+    private val _error = mutableStateOf<String?>(null)
+    val error : MutableState<String?>
+        get() = _error
 
-    ///VERIFICAR SE PRECISO RETUNAR PARA REDIRECIONAR VISTA OU REDIRECIONAR AQUI NAO SEI
-    fun signIn(email: String, password: String) : Boolean {
+    fun createUserWithEmail(email: String, password: String, onResult: (Boolean) -> Unit) {
+        if (email.isBlank() || password.isBlank()) {
+            onResult(false) // Return false for invalid input
+            return
+        }
+
         viewModelScope.launch {
-            try {
-                _isLoggedIn.value = userRepository.logIn(email, password)
-            } catch (e: Exception) {
-                _errorMessage.value = "Erro: ${e.message}"
-                _isLoggedIn.value = false
+            userRepository.createUserWithEmail(email, password) { exception ->
+                if (exception == null) {
+                    _user.value = userRepository.currentUser?.toUser()
+                    onResult(true) // Return true if successful
+                } else {
+                    _error.value = exception.message
+                    onResult(false) // Return false in case of an error
+                }
             }
         }
-        return _isLoggedIn.value
     }
 
-    ///VERIFICAR SE PRECISO RETUNAR PARA REDIRECIONAR VISTA OU REDIRECIONAR AQUI NAO SEI
-    fun signIn(name: String, email: String, password: String) : Boolean {
+    fun signInWithEmail(email: String, password: String, onResult: (Boolean) -> Unit) {
+        if (email.isBlank() || password.isBlank()){
+            onResult(false) // Return false for invalid input
+            return
+        }
         viewModelScope.launch {
-            try {
-                _isLoggedIn.value = userRepository.signUp(
-                    User(
-                        id = "",
-                        name = name,
-                        email = email,
-                        password = password
-                    )
-                )
-
-                if (!_isLoggedIn.value) {
-                    _errorMessage.value = "Erro no registro"
+            userRepository.signInWithEmail(email, password) { exception ->
+                if (exception == null) {
+                    _user.value = userRepository.currentUser?.toUser()
+                    onResult(true)
                 } else {
-                    _errorMessage.value = null
+                    _error.value = exception.message
+                    onResult(false)
                 }
-            } catch (e: Exception) {
-                _errorMessage.value = "Erro: ${e.message}"
-                _isLoggedIn.value = false
             }
         }
-        return _isLoggedIn.value
+    }
+
+    fun signOut() {
+        userRepository.signOut()
+        _user.value = null
+        _error.value = null
     }
 }
