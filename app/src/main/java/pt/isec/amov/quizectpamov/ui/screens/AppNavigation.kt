@@ -18,13 +18,17 @@ fun AppNavigation() {
         startDestination = "login"
     ) {
         composable("login") {
-            MainScreen(navController, userViewModel)
+            //MainScreen(navController, userViewModel)
+            QuizzesMenuScreen(navController, userViewModel)
         }
         composable("signup") {
             SignUpScreen(navController, userViewModel)
         }
         composable("mainMenu") {
             MainMenuScreen(navController, userViewModel)
+        }
+        composable("quizzesMenu") {
+            QuizzesMenuScreen(navController, userViewModel)
         }
     }
 }

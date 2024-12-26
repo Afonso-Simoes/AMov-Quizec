@@ -13,4 +13,11 @@
     <string name="manage_questions">Gerir Questões</string>
     <string name="start_quizz">Começar Questionário</string>
     <string name="settings">Definições</string>
+    <string name="main_menu_quizzes_title">Menu Principal Questonários</string>
+    <string name="create_quiz">Criar Questonário</string>
+    <string name="edit_quiz">Editar Questonário</string>
+    <string name="duplicate_quiz">Duplicar Questonário</string>
+    <string name="delete_quiz">Eliminar Questonário</string>
+    <string name="logout">Sair da conta</string>
+    <string name="navigate_back">Voltar</string>
 </resources>
