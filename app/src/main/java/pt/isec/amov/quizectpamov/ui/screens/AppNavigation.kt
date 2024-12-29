@@ -26,5 +26,17 @@ fun AppNavigation() {
         composable("mainMenu") {
             MainMenuScreen(navController, userViewModel)
         }
+        composable("quizzesMenu") {
+            QuizzesMenuScreen(navController,userViewModel)
+        }
+        composable("questionsMenu") {
+            QuestionsMenuScreen(navController, userViewModel)
+        }
+        composable("startQuiz") {
+            StartQuizScreen(navController, userViewModel)
+        }
+        composable("settings") {
+            SettingsScreen(navController, userViewModel)
+        }
     }
 }

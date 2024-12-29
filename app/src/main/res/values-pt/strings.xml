@@ -6,11 +6,24 @@
     <string name="name_label">Digite o seu nome</string>
     <string name="enter_button">Entrar</string>
     <string name="create_button">Criar Conta</string>
-    <string name="signup_prompt">Não tens uma conta?</string>
+    <string name="signup_prompt">Não tem uma conta?</string>
     <string name="signup_action">Criar conta</string>
     <string name="main_menu_title">Menu Principal</string>
     <string name="manage_quizzes">Gerir Questionários</string>
     <string name="manage_questions">Gerir Questões</string>
     <string name="start_quizz">Começar Questionário</string>
     <string name="settings">Definições</string>
+    <string name="enter_game_code">Digite o código do jogo</string>
+    <string name="true_false">Verdadeiro/Falso</string>
+    <string name="multiple_choice_single_answer">Múltipla Escolha (Resposta Única)</string>
+    <string name="multiple_choice_multiple_answers">Múltipla Escolha (Respostas Múltiplas)</string>
+    <string name="add_edit_question">Adicionar/Editar Pergunta</string>
+    <string name="select_correct_answer">Selecione a resposta correta</string>
+    <string name="cancel">Cancelar</string>
+    <string name="save">Salvar</string>
+    <string name="true_text">Verdadeiro</string>
+    <string name="false_text">Falso</string>
+    <string name="add_question">Adicionar Pergunta</string>
+    <string name="questions_menu_title">Menu de Questões</string>
+    <string name="TrueFalse">Verdadeiro/Falso</string>
 </resources>
