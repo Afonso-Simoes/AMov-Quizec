@@ -32,6 +32,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -92,6 +93,7 @@ fun ShowMainScreen(navController: NavHostController, isLandscape: Boolean, userV
             value = password,
             onValueChange = { newPassword -> password = newPassword },
             label = { Text(stringResource(id = R.string.pass_label)) },
+            visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier
                 .padding(vertical = if (isLandscape) 8.dp else 16.dp)
                 .clip(RoundedCornerShape(8.dp)),
