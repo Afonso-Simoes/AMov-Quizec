@@ -26,6 +26,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import pt.isec.amov.quizectpamov.R
+import pt.isec.amov.quizectpamov.ui.components.MultipleChoiceMultipleAnswers
 import pt.isec.amov.quizectpamov.ui.components.MultipleChoiceSingleAnswer
 import pt.isec.amov.quizectpamov.ui.components.TrueFalse
 
@@ -86,6 +87,13 @@ fun AddQuestion(
                 onDismiss = onDismiss,
                 onSave = { questionText, answers, correctAnswerIndex -> }
             )
+        } else if (questionType == stringResource(id = R.string.multiple_choice_multiple_answers)) {
+            MultipleChoiceMultipleAnswers(
+                questionText = questionText,
+                onQuestionTextChange = { questionText = it },
+                onDismiss = onDismiss,
+                onSave = { questionText, answers, correctAnswerIndices -> }
+            )
         }
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -110,7 +118,7 @@ fun QuestionTypeDropdown(
             readOnly = true,
             value = selectedType,
             onValueChange = {},
-            label = { Text("Select Type") },
+            label = { Text(stringResource(id = R.string.select_type)) },
             trailingIcon = {
                 ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
             },
@@ -145,7 +153,7 @@ fun QuestionTextField(
     TextField(
         value = questionText,
         onValueChange = onQuestionTextChange,
-        label = { Text("Question Text") },
+        label = { Text(stringResource(id = R.string.question_text)) },
         modifier = Modifier.fillMaxWidth()
     )
 }

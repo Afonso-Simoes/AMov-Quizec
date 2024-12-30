@@ -5,6 +5,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.*
@@ -16,15 +17,15 @@ import pt.isec.amov.quizectpamov.R
 import pt.isec.amov.quizectpamov.ui.screens.QuestionTextField
 
 @Composable
-fun MultipleChoiceSingleAnswer(
+fun MultipleChoiceMultipleAnswers(
     questionText: String,
     onQuestionTextChange: (String) -> Unit,
     onDismiss: () -> Unit,
-    onSave: (String, List<String>, Int) -> Unit
+    onSave: (String, List<String>, List<Int>) -> Unit
 ) {
     var numberOfAnswers by remember { mutableStateOf(2) }
     var answers by remember { mutableStateOf(List(numberOfAnswers) { "" }) }
-    var correctAnswerIndex by remember { mutableStateOf(-1) }
+    var correctAnswerIndexes by remember { mutableStateOf(mutableSetOf<Int>()) }
     var expanded by remember { mutableStateOf(false) }
 
     QuestionTextField(
@@ -53,7 +54,7 @@ fun MultipleChoiceSingleAnswer(
                         onClick = {
                             numberOfAnswers = number
                             answers = List(number) { answers.getOrNull(it) ?: "" }
-                            correctAnswerIndex = -1
+                            correctAnswerIndexes.retainAll(0 until number) // Remove indices out of range
                             expanded = false
                         }
                     )
@@ -61,7 +62,6 @@ fun MultipleChoiceSingleAnswer(
             }
         }
     }
-
     Spacer(modifier = Modifier.height(16.dp))
 
     for (index in 0 until numberOfAnswers) {
@@ -79,9 +79,11 @@ fun MultipleChoiceSingleAnswer(
             Spacer(modifier = Modifier.width(8.dp))
 
             Checkbox(
-                checked = correctAnswerIndex == index,
+                checked = correctAnswerIndexes.contains(index),
                 onCheckedChange = { isChecked ->
-                    correctAnswerIndex = if (isChecked) index else -1
+                    correctAnswerIndexes = correctAnswerIndexes.toMutableSet().apply {
+                        if (isChecked) add(index) else remove(index)
+                    }
                 }
             )
         }
@@ -108,11 +110,11 @@ fun MultipleChoiceSingleAnswer(
                     answers.any { it.isBlank() } -> {
                         println("Preencha todas as respostas.")
                     }
-                    correctAnswerIndex == -1 -> {
-                        println("Selecione a resposta correta.")
+                    correctAnswerIndexes.isEmpty() -> {
+                        println("Selecione pelo menos uma resposta correta.")
                     }
                     else -> {
-                        onSave(questionText, answers, correctAnswerIndex)
+                        onSave(questionText, answers, correctAnswerIndexes.toList())
                         println("Questão salva com sucesso!")
                     }
                 }

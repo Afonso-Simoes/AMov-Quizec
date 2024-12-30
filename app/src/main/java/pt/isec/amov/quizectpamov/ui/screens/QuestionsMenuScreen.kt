@@ -19,7 +19,8 @@ import pt.isec.amov.quizectpamov.viewmodel.UserViewModel
 fun QuestionsMenuScreen(navController: NavHostController, userViewModel: UserViewModel) {
     var showDialog by remember { mutableStateOf(false) }
     var questionText by remember { mutableStateOf("") }
-    var selectedQuestionType by remember { mutableStateOf("True/False") }
+    val initialQuestionType = stringResource(id = R.string.true_false)
+    var selectedQuestionType by remember { mutableStateOf(initialQuestionType) }
     var questionsList by remember { mutableStateOf(listOf<String>()) }
 
     Column(
@@ -37,7 +38,7 @@ fun QuestionsMenuScreen(navController: NavHostController, userViewModel: UserVie
         Button(
             onClick = {
                 questionText = ""
-                selectedQuestionType = "True/False"
+                selectedQuestionType = initialQuestionType
                 showDialog = true
             },
             modifier = Modifier

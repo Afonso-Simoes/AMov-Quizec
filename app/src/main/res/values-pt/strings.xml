@@ -26,4 +26,8 @@
     <string name="add_question">Adicionar Pergunta</string>
     <string name="questions_menu_title">Menu de Questões</string>
     <string name="TrueFalse">Verdadeiro/Falso</string>
+    <string name="select_type">Selecione o tipo de pergunta</string>
+    <string name="question_text">Texto da Pergunta</string>
+    <string name="number_of_answers">Número de Respostas: %1$d</string>
+    <string name="answer_label">Resposta %1$d</string>
 </resources>
