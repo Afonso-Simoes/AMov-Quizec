@@ -97,7 +97,7 @@ fun MultipleChoiceSingleAnswer(
             onClick = onDismiss,
             modifier = Modifier.weight(1f)
         ) {
-            Text("Cancelar")
+            Text(stringResource(id = R.string.cancel))
         }
 
         Spacer(modifier = Modifier.width(16.dp))
@@ -105,21 +105,21 @@ fun MultipleChoiceSingleAnswer(
         Button(
             onClick = {
                 when {
-                    answers.any { it.isBlank() } -> {
-                        println("Preencha todas as respostas.")
-                    }
-                    correctAnswerIndex == -1 -> {
-                        println("Selecione a resposta correta.")
-                    }
-                    else -> {
-                        onSave(questionText, answers, correctAnswerIndex)
-                        println("Questão salva com sucesso!")
-                    }
+//                    answers.any { it.isBlank() } -> {
+//                        println("Preencha todas as respostas.")
+//                    }
+//                    correctAnswerIndex == -1 -> {
+//                        println("Selecione a resposta correta.")
+//                    }
+//                    else -> {
+//                        onSave(questionText, answers, correctAnswerIndex)
+//                        println("Questão salva com sucesso!")
+//                    }
                 }
             },
             modifier = Modifier.weight(1f)
         ) {
-            Text("Salvar")
+            Text(stringResource(id = R.string.save))
         }
     }
 }

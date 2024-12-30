@@ -29,9 +29,6 @@ fun TrueFalse(
     val selectCorrectAnswerText = stringResource(id = R.string.select_correct_answer)
     val trueText = stringResource(id = R.string.true_text)
     val falseText = stringResource(id = R.string.false_text)
-    val trueFalseText = stringResource(id = R.string.true_false)
-    val cancelText = stringResource(id = R.string.cancel)
-    val saveText = stringResource(id = R.string.save)
 
     QuestionTextField(
         questionText = questionText,
@@ -77,7 +74,7 @@ fun TrueFalse(
             onClick = onDismiss,
             modifier = Modifier.weight(1f)
         ) {
-            Text(cancelText)
+            Text(stringResource(id = R.string.cancel))
         }
 
         Spacer(modifier = Modifier.width(16.dp))
@@ -90,7 +87,7 @@ fun TrueFalse(
             },
             modifier = Modifier.weight(1f)
         ) {
-            Text(saveText)
+            Text(stringResource(id = R.string.save))
         }
     }
 }

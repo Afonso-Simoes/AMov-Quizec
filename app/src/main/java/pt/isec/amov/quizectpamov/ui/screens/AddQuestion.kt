@@ -26,9 +26,14 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import pt.isec.amov.quizectpamov.R
+import pt.isec.amov.quizectpamov.ui.components.Association
+import pt.isec.amov.quizectpamov.ui.components.FillInTheBlank
+import pt.isec.amov.quizectpamov.ui.components.Matching
 import pt.isec.amov.quizectpamov.ui.components.MultipleChoiceMultipleAnswers
 import pt.isec.amov.quizectpamov.ui.components.MultipleChoiceSingleAnswer
+import pt.isec.amov.quizectpamov.ui.components.Ordering
 import pt.isec.amov.quizectpamov.ui.components.TrueFalse
+import pt.isec.amov.quizectpamov.ui.components.WordBasedResponse
 
 @Composable
 fun AddQuestion(
@@ -46,7 +51,12 @@ fun AddQuestion(
     val types = listOf(
         stringResource(id = R.string.true_false),
         stringResource(id = R.string.multiple_choice_single_answer),
-        stringResource(id = R.string.multiple_choice_multiple_answers)
+        stringResource(id = R.string.multiple_choice_multiple_answers),
+        stringResource(id = R.string.matching),
+        stringResource(id = R.string.ordering),
+        stringResource(id = R.string.fill_in_the_blank),
+        stringResource(id = R.string.association),
+        stringResource(id = R.string.word_based_response)
     )
 
     Column(
@@ -63,42 +73,101 @@ fun AddQuestion(
             expanded = expanded,
             onExpandedChange = { expanded = !expanded },
             selectedType = questionType,
-            onTypeSelected = { type ->
-                questionType = type
-                trueFalseAnswer = null
-            }
+            onTypeSelected = { type -> questionType = type }
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        if (questionType == stringResource(id = R.string.true_false)) {
-            TrueFalse(
-                questionText = questionText,
-                onQuestionTextChange = { questionText = it },
-                selectedAnswer = trueFalseAnswer,
-                onAnswerSelected = { answer -> trueFalseAnswer = answer },
-                onDismiss = onDismiss,
-                onSave = onSave
-            )
-        } else if (questionType == stringResource(id = R.string.multiple_choice_single_answer)) {
-            MultipleChoiceSingleAnswer(
-                questionText = questionText,
-                onQuestionTextChange = { questionText = it },
-                onDismiss = onDismiss,
-                onSave = { questionText, answers, correctAnswerIndex -> }
-            )
-        } else if (questionType == stringResource(id = R.string.multiple_choice_multiple_answers)) {
-            MultipleChoiceMultipleAnswers(
-                questionText = questionText,
-                onQuestionTextChange = { questionText = it },
-                onDismiss = onDismiss,
-                onSave = { questionText, answers, correctAnswerIndices -> }
-            )
+        when (questionType) {
+            stringResource(id = R.string.true_false) -> {
+                TrueFalse(
+                    questionText = questionText,
+                    onQuestionTextChange = { questionText = it },
+                    selectedAnswer = trueFalseAnswer,
+                    onAnswerSelected = { answer -> trueFalseAnswer = answer },
+                    onDismiss = onDismiss,
+                    onSave = { questionText, answer -> onSave(questionText, answer) }
+                )
+            }
+            stringResource(id = R.string.multiple_choice_single_answer) -> {
+                MultipleChoiceSingleAnswer(
+                    questionText = questionText,
+                    onQuestionTextChange = { questionText = it },
+                    onDismiss = onDismiss,
+                    onSave = { questionText, answers, correctAnswerIndex ->
+                        onSave(questionText, answers[correctAnswerIndex])
+                    }
+                )
+            }
+            stringResource(id = R.string.multiple_choice_multiple_answers) -> {
+                MultipleChoiceMultipleAnswers(
+                    questionText = questionText,
+                    onQuestionTextChange = { questionText = it },
+                    onDismiss = onDismiss,
+                    onSave = { questionText, answers, correctAnswerIndices ->
+                        // Implementação para salvar múltiplas respostas
+                    }
+                )
+            }
+            stringResource(id = R.string.matching) -> {
+                Matching(
+                    questionText = questionText,
+                    onQuestionTextChange = { newText -> questionText = newText },
+                    onDismiss = onDismiss,
+                    onSave = { questionText, pairs ->
+                        // Implemente lógica para lidar com os pares de correspondência
+                    }
+                )
+            }
+            stringResource(id = R.string.ordering) -> {
+                Ordering(
+                    questionText = questionText,
+                    onQuestionTextChange = { questionText = it },
+                    onDismiss = onDismiss,
+                    onSave = { questionText, orderedList ->
+                        // Lógica para salvar a lista ordenada
+                        onSave(questionText, orderedList.joinToString(","))
+                    }
+                )
+            }
+            stringResource(id = R.string.fill_in_the_blank) -> {
+                FillInTheBlank(
+                    questionText = questionText,
+                    onQuestionTextChange = { questionText = it },
+                    onDismiss = onDismiss,
+                    onSave = { questionText, answers ->
+                        onSave(questionText, answers.joinToString(","))
+                    }
+                )
+            }
+            stringResource(id = R.string.association) -> {
+                Association(
+                    questionText = questionText,
+                    onQuestionTextChange = { newText -> questionText = newText },
+                    onDismiss = onDismiss,
+                    onSave = { questionText, pairs ->
+                        // Implemente lógica para lidar com os pares de correspondência
+                    }
+                )
+            }
+            stringResource(id = R.string.word_based_response) -> {
+                WordBasedResponse(
+                    questionText = questionText,
+                    answerText = "",
+                    onQuestionTextChange = { questionText = it },
+                    onAnswerTextChange = { /* Implement onAnswerTextChange */ },
+                    onDismiss = onDismiss,
+                    onSave = { questionText, answerText, answers ->
+                        onSave(questionText, answers.joinToString(","))
+                    }
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
     }
 }
+
 
 
 @OptIn(ExperimentalMaterial3Api::class)

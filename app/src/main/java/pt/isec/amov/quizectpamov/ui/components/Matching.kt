@@ -2,7 +2,6 @@ package pt.isec.amov.quizectpamov.ui.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Text
@@ -16,15 +15,14 @@ import pt.isec.amov.quizectpamov.R
 import pt.isec.amov.quizectpamov.ui.screens.QuestionTextField
 
 @Composable
-fun MultipleChoiceMultipleAnswers(
+fun Matching(
     questionText: String,
     onQuestionTextChange: (String) -> Unit,
     onDismiss: () -> Unit,
-    onSave: (String, List<String>, List<Int>) -> Unit
+    onSave: (String, List<Pair<String, String>>) -> Unit
 ) {
-    var numberOfAnswers by remember { mutableStateOf(2) }
-    var answers by remember { mutableStateOf(List(numberOfAnswers) { "" }) }
-    var correctAnswerIndexes by remember { mutableStateOf(mutableSetOf<Int>()) }
+    var numberOfPairs by remember { mutableStateOf(2) }
+    var pairs by remember { mutableStateOf(List(numberOfPairs) { "" to "" }) }
     var expanded by remember { mutableStateOf(false) }
 
     QuestionTextField(
@@ -40,7 +38,7 @@ fun MultipleChoiceMultipleAnswers(
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Button(onClick = { expanded = true }) {
-                Text(stringResource(id = R.string.number_of_answers, numberOfAnswers))
+                Text(stringResource(id = R.string.number_of_pairs, numberOfPairs))
             }
             DropdownMenu(
                 expanded = expanded,
@@ -51,9 +49,8 @@ fun MultipleChoiceMultipleAnswers(
                     DropdownMenuItem(
                         text = { Text(number.toString()) },
                         onClick = {
-                            numberOfAnswers = number
-                            answers = List(number) { answers.getOrNull(it) ?: "" }
-                            correctAnswerIndexes.retainAll(0 until number) // Remove indices out of range
+                            numberOfPairs = number
+                            pairs = List(number) { pairs.getOrNull(it) ?: "" to "" }
                             expanded = false
                         }
                     )
@@ -61,29 +58,32 @@ fun MultipleChoiceMultipleAnswers(
             }
         }
     }
+
     Spacer(modifier = Modifier.height(16.dp))
 
-    for (index in 0 until numberOfAnswers) {
+    for (index in 0 until numberOfPairs) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
         ) {
             TextField(
-                value = answers[index],
-                onValueChange = { text -> answers = answers.toMutableList().apply { this[index] = text } },
-                label = { Text(stringResource(id = R.string.answer_label, index + 1)) },
+                value = pairs[index].first,
+                onValueChange = { text ->
+                    pairs = pairs.toMutableList().apply { this[index] = text to pairs[index].second }
+                },
+                label = { Text(stringResource(id = R.string.left_column_label, index + 1)) },
                 modifier = Modifier.weight(1f)
             )
 
             Spacer(modifier = Modifier.width(8.dp))
 
-            Checkbox(
-                checked = correctAnswerIndexes.contains(index),
-                onCheckedChange = { isChecked ->
-                    correctAnswerIndexes = correctAnswerIndexes.toMutableSet().apply {
-                        if (isChecked) add(index) else remove(index)
-                    }
-                }
+            TextField(
+                value = pairs[index].second,
+                onValueChange = { text ->
+                    pairs = pairs.toMutableList().apply { this[index] = pairs[index].first to text }
+                },
+                label = { Text(stringResource(id = R.string.right_column_label, index + 1)) },
+                modifier = Modifier.weight(1f)
             )
         }
 
@@ -105,18 +105,12 @@ fun MultipleChoiceMultipleAnswers(
 
         Button(
             onClick = {
-                when {
-                    answers.any { it.isBlank() } -> {
-                        println("Preencha todas as respostas.")
-                    }
-                    correctAnswerIndexes.isEmpty() -> {
-                        println("Selecione pelo menos uma resposta correta.")
-                    }
-                    else -> {
-                        onSave(questionText, answers, correctAnswerIndexes.toList())
-                        println("Questão salva com sucesso!")
-                    }
-                }
+//                if (pairs.any { it.first.isBlank() || it.second.isBlank() }) {
+//                    println("Preencha todos os pares.")
+//                } else {
+//                    onSave(questionText, pairs)
+//                    println("Questão salva com sucesso!")
+//                }
             },
             modifier = Modifier.weight(1f)
         ) {

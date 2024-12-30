@@ -17,7 +17,7 @@
     <string name="true_false">True/False</string>
     <string name="multiple_choice_single_answer">Multiple Choice (Single Answer)</string>
     <string name="multiple_choice_multiple_answers">Multiple Choice (Multiple Answers)</string>
-    <string name="add_edit_question">Add/Edit Question</string>
+    <string name="add_edit_question">Add Question</string>
     <string name="select_correct_answer">Select the correct answer</string>
     <string name="cancel">Cancel</string>
     <string name="save">Save</string>
@@ -30,4 +30,20 @@
     <string name="question_text">Question Text</string>
     <string name="number_of_answers">Number of Answers: %1$d</string>
     <string name="answer_label">Answer %1$d</string>
+    <string name="matching">Matching</string>
+    <string name="number_of_pairs">Number of pairs: %d</string>
+    <string name="left_column_label">Left Column Item %d</string>
+    <string name="right_column_label">Right Column Item %d</string>
+    <string name="ordering">Ordering</string>
+    <string name="number_of_itens">Number of itens: %d</string>
+    <string name="option_label">Item %d</string>
+    <string name="fill_in_the_blank">Fill in the blank</string>
+    <string name="use_blanks_instruction">Use \'___\' to indicate the blank spaces.</string>
+    <string name="blank_space_label">[Blank space %1$d]</string>
+    <string name="association">Association</string>
+    <string name="concept_image_label">Image</string>
+    <string name="concept_concept_label">Concept</string>
+    <string name="add_label">Add</string>
+    <string name="word_based_response">Word-Based Response</string>
+    <string name="answer">Answer</string>
 </resources>

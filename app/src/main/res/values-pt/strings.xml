@@ -17,7 +17,7 @@
     <string name="true_false">Verdadeiro/Falso</string>
     <string name="multiple_choice_single_answer">Múltipla Escolha (Resposta Única)</string>
     <string name="multiple_choice_multiple_answers">Múltipla Escolha (Respostas Múltiplas)</string>
-    <string name="add_edit_question">Adicionar/Editar Pergunta</string>
+    <string name="add_edit_question">Adicionar Pergunta</string>
     <string name="select_correct_answer">Selecione a resposta correta</string>
     <string name="cancel">Cancelar</string>
     <string name="save">Salvar</string>
@@ -30,4 +30,20 @@
     <string name="question_text">Texto da Pergunta</string>
     <string name="number_of_answers">Número de Respostas: %1$d</string>
     <string name="answer_label">Resposta %1$d</string>
+    <string name="matching">Correspondência</string>
+    <string name="number_of_pairs">Número de pares: %d</string>
+    <string name="left_column_label">Item da Coluna Esquerda %d</string>
+    <string name="right_column_label">Item da Coluna Direita %d</string>
+    <string name="ordering">Ordenação</string>
+    <string name="number_of_itens">Número de itens: %d</string>
+    <string name="option_label">Item %d</string>
+    <string name="fill_in_the_blank">Preencher o Espaço em Branco</string>
+    <string name="use_blanks_instruction">Use \'___\' para indicar os espaços em branco.</string>
+    <string name="blank_space_label">[Espaço %1$d]</string>
+    <string name="association">Associação</string>
+    <string name="concept_image_label">Imagem</string>
+    <string name="concept_concept_label">Conceito</string>
+    <string name="add_label">Adicionar</string>
+    <string name="word_based_response">Resposta Baseada em Palavras</string>
+    <string name="answer">Resposta</string>
 </resources>
