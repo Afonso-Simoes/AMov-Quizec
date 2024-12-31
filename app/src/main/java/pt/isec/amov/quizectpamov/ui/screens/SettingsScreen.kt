@@ -11,6 +11,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import pt.isec.amov.quizectpamov.R
 import pt.isec.amov.quizectpamov.viewmodel.UserViewModel
 
 @Composable
@@ -23,7 +25,7 @@ fun SettingsScreen(navController: NavHostController, userViewModel: UserViewMode
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "Settings",
+            text = stringResource(id = R.string.settings_title),
             fontSize = 24.sp
         )
     }

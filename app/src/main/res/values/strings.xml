@@ -46,4 +46,7 @@
     <string name="add_label">Add</string>
     <string name="word_based_response">Word-Based Response</string>
     <string name="answer">Answer</string>
+    <string name="login_error">Login Error!</string>
+    <string name="register_error">Register Error!</string>
+    <string name="settings_title">Settings</string>
 </resources>
