@@ -11,6 +11,8 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -29,6 +31,20 @@ fun TrueFalse(
     val selectCorrectAnswerText = stringResource(id = R.string.select_correct_answer)
     val trueText = stringResource(id = R.string.true_text)
     val falseText = stringResource(id = R.string.false_text)
+    val errorNoAnswerSelected = stringResource(id = R.string.error_no_answer_selected)
+    val errorEmptyQuestion = stringResource(id = R.string.error_empty_question)
+
+    val hasError = remember { mutableStateOf(false) }
+    val errorMessage = remember { mutableStateOf("") }
+
+    if (hasError.value) {
+        Text(
+            text = errorMessage.value,
+            color = MaterialTheme.colorScheme.error,
+            style = MaterialTheme.typography.bodyMedium
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+    }
 
     QuestionTextField(
         questionText = questionText,
@@ -66,6 +82,8 @@ fun TrueFalse(
 
     Spacer(modifier = Modifier.height(16.dp))
 
+
+
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly
@@ -81,7 +99,15 @@ fun TrueFalse(
 
         Button(
             onClick = {
-                if (questionText.isNotEmpty() && selectedAnswer != null) {
+                if (questionText.isEmpty()) {
+                    hasError.value = true
+                    errorMessage.value = errorEmptyQuestion
+                } else if (selectedAnswer == null) {
+                    hasError.value = true
+                    errorMessage.value = errorNoAnswerSelected
+                } else {
+                    hasError.value = false
+                    errorMessage.value = ""
                     onSave(questionText, "True/False: $selectedAnswer")
                 }
             },

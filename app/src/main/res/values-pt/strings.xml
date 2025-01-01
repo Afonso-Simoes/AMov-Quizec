@@ -49,4 +49,6 @@
     <string name="login_error">Erro no Login!</string>
     <string name="register_error">Erro no Registo!</string>
     <string name="settings_title">Definições</string>
+    <string name="error_empty_question">A pergunta não pode estar vazia.</string>
+    <string name="error_no_answer_selected">Por favor, selecione uma resposta.</string>
 </resources>

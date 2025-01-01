@@ -49,4 +49,6 @@
     <string name="login_error">Login Error!</string>
     <string name="register_error">Register Error!</string>
     <string name="settings_title">Settings</string>
+    <string name="error_empty_question">The question cannot be empty.</string>
+    <string name="error_no_answer_selected">Please select an answer.</string>
 </resources>

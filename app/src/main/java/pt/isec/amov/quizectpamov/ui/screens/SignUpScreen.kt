@@ -32,7 +32,6 @@ import androidx.navigation.NavHostController
 import pt.isec.amov.quizectpamov.R
 import pt.isec.amov.quizectpamov.ui.theme.WelcomeTitleStyle
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignUpScreen(
     navController: NavHostController,
@@ -66,6 +65,16 @@ fun ShowSingUpScreen(navController: NavHostController, userViewModel: UserViewMo
             modifier = Modifier
                 .padding(vertical = if (isLandscape) 32.dp else 64.dp)
         )
+
+        if (isError) {
+            Text(
+                text = errorMessage,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
+        }
+
         TextField(
             value = name,
             onValueChange = { newName -> name = newName },
@@ -111,15 +120,6 @@ fun ShowSingUpScreen(navController: NavHostController, userViewModel: UserViewMo
                 unfocusedLabelColor = if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface,
             )
         )
-
-        if (isError) {
-            Text(
-                text = errorMessage,
-                color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(vertical = 8.dp)
-            )
-        }
 
         Button(
             onClick = {

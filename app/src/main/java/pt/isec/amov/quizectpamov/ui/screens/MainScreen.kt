@@ -79,6 +79,16 @@ fun ShowMainScreen(navController: NavHostController, isLandscape: Boolean, userV
             style = WelcomeTitleStyle,
             modifier = Modifier.padding(vertical = if (isLandscape) 32.dp else 64.dp)
         )
+
+        if (isError) {
+            Text(
+                text = errorMessage,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
+        }
+
         TextField(
             value = email,
             onValueChange = { newEmail -> email = newEmail },
@@ -111,14 +121,6 @@ fun ShowMainScreen(navController: NavHostController, isLandscape: Boolean, userV
             )
         )
 
-        if (isError) {
-            Text(
-                text = errorMessage,
-                color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(vertical = 8.dp)
-            )
-        }
 
         Button(
             onClick = {
