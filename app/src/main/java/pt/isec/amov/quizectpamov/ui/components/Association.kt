@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.*
@@ -32,7 +33,22 @@ fun Association(
     ) }
     var expanded by remember { mutableStateOf(false) }
 
+    val errorEmptyQuestion = stringResource(id = R.string.error_empty_question)
+    val errorEmptyAnswer = stringResource(id = R.string.error_empty_answer)
+
+    val hasError = remember { mutableStateOf(false) }
+    val errorMessage = remember { mutableStateOf("") }
+
     Column(modifier = Modifier.fillMaxWidth()) {
+        if (hasError.value) {
+            Text(
+                text = errorMessage.value,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+
         QuestionTextField(
             questionText = questionText,
             onQuestionTextChange = onQuestionTextChange
@@ -163,8 +179,20 @@ fun Association(
             Button(onClick = onDismiss, modifier = Modifier.size(120.dp, 40.dp)) {
                 Text(stringResource(id = R.string.cancel))
             }
+
             Button(
-                onClick = { /* Implement save functionality */ },
+                onClick = {
+                    if (questionText.isBlank()) {
+                        hasError.value = true
+                        errorMessage.value = errorEmptyQuestion
+                    } else if (pairs.any { it.second.isNullOrBlank() || it.third.isBlank() }) {
+                        hasError.value = true
+                        errorMessage.value = errorEmptyAnswer
+                    } else {
+                        onSave(questionText, pairs.map { it.second to it.third })
+                        onDismiss()
+                    }
+                },
                 modifier = Modifier.size(120.dp, 40.dp)
             ) {
                 Text(stringResource(id = R.string.save))

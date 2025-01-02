@@ -38,7 +38,6 @@ import pt.isec.amov.quizectpamov.ui.components.WordBasedResponse
 @Composable
 fun AddQuestion(
     onDismiss: () -> Unit,
-    onSave: (String, String) -> Unit,
     currentQuestion: String,
     currentType: String
 ) {
@@ -63,8 +62,7 @@ fun AddQuestion(
         modifier = Modifier
             .fillMaxWidth()
             .verticalScroll(rememberScrollState())
-            .padding(if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE) 100.dp else 16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .padding(horizontal = if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE) 100.dp else 16.dp, vertical = 16.dp),        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(stringResource(id = R.string.add_edit_question), style = MaterialTheme.typography.titleLarge)
 
@@ -86,7 +84,9 @@ fun AddQuestion(
                     selectedAnswer = trueFalseAnswer,
                     onAnswerSelected = { answer -> trueFalseAnswer = answer },
                     onDismiss = onDismiss,
-                    onSave = { questionText, answer -> onSave(questionText, answer) }
+                    onSave = { questionText, answer ->
+
+                    }
                 )
             }
             stringResource(id = R.string.multiple_choice_single_answer) -> {
@@ -95,7 +95,7 @@ fun AddQuestion(
                     onQuestionTextChange = { questionText = it },
                     onDismiss = onDismiss,
                     onSave = { questionText, answers, correctAnswerIndex ->
-                        onSave(questionText, answers[correctAnswerIndex])
+
                     }
                 )
             }
@@ -105,7 +105,7 @@ fun AddQuestion(
                     onQuestionTextChange = { questionText = it },
                     onDismiss = onDismiss,
                     onSave = { questionText, answers, correctAnswerIndices ->
-                        // Implementação para salvar múltiplas respostas
+
                     }
                 )
             }
@@ -115,7 +115,7 @@ fun AddQuestion(
                     onQuestionTextChange = { newText -> questionText = newText },
                     onDismiss = onDismiss,
                     onSave = { questionText, pairs ->
-                        // Implemente lógica para lidar com os pares de correspondência
+
                     }
                 )
             }
@@ -125,8 +125,7 @@ fun AddQuestion(
                     onQuestionTextChange = { questionText = it },
                     onDismiss = onDismiss,
                     onSave = { questionText, orderedList ->
-                        // Lógica para salvar a lista ordenada
-                        onSave(questionText, orderedList.joinToString(","))
+
                     }
                 )
             }
@@ -136,7 +135,6 @@ fun AddQuestion(
                     onQuestionTextChange = { questionText = it },
                     onDismiss = onDismiss,
                     onSave = { questionText, answers ->
-                        onSave(questionText, answers.joinToString(","))
                     }
                 )
             }
@@ -153,12 +151,11 @@ fun AddQuestion(
             stringResource(id = R.string.word_based_response) -> {
                 WordBasedResponse(
                     questionText = questionText,
-                    answerText = "",
+                    initialAnswerText = "",
                     onQuestionTextChange = { questionText = it },
-                    onAnswerTextChange = { /* Implement onAnswerTextChange */ },
+                    onAnswerTextChange = {  },
                     onDismiss = onDismiss,
-                    onSave = { questionText, answerText, answers ->
-                        onSave(questionText, answers.joinToString(","))
+                    onSave = { questionText, initialAnswerText, answers ->
                     }
                 )
             }

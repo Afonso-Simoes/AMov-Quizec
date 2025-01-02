@@ -1,10 +1,12 @@
 package pt.isec.amov.quizectpamov.ui.components
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.*
@@ -15,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import pt.isec.amov.quizectpamov.R
 import pt.isec.amov.quizectpamov.ui.screens.QuestionTextField
 
+@SuppressLint("MutableCollectionMutableState")
 @Composable
 fun MultipleChoiceMultipleAnswers(
     questionText: String,
@@ -22,10 +25,25 @@ fun MultipleChoiceMultipleAnswers(
     onDismiss: () -> Unit,
     onSave: (String, List<String>, List<Int>) -> Unit
 ) {
-    var numberOfAnswers by remember { mutableStateOf(2) }
+    var numberOfAnswers by remember { mutableIntStateOf(2) }
     var answers by remember { mutableStateOf(List(numberOfAnswers) { "" }) }
     var correctAnswerIndexes by remember { mutableStateOf(mutableSetOf<Int>()) }
     var expanded by remember { mutableStateOf(false) }
+    val errorEmptyAnswer = stringResource(id = R.string.error_empty_answer)
+    val errorNoAnswerSelected = stringResource(id = R.string.error_no_answer_selected)
+    val errorEmptyQuestion = stringResource(id = R.string.error_empty_question)
+
+    val hasError = remember { mutableStateOf(false) }
+    val errorMessage = remember { mutableStateOf("") }
+
+    if (hasError.value) {
+        Text(
+            text = errorMessage.value,
+            color = MaterialTheme.colorScheme.error,
+            style = MaterialTheme.typography.bodyMedium
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+    }
 
     QuestionTextField(
         questionText = questionText,
@@ -106,15 +124,21 @@ fun MultipleChoiceMultipleAnswers(
         Button(
             onClick = {
                 when {
+                    questionText.isBlank() -> {
+                        hasError.value = true
+                        errorMessage.value = errorEmptyQuestion
+                    }
                     answers.any { it.isBlank() } -> {
-                        println("Preencha todas as respostas.")
+                        hasError.value = true
+                        errorMessage.value = errorEmptyAnswer
                     }
                     correctAnswerIndexes.isEmpty() -> {
-                        println("Selecione pelo menos uma resposta correta.")
+                        hasError.value = true
+                        errorMessage.value = errorNoAnswerSelected
                     }
                     else -> {
                         onSave(questionText, answers, correctAnswerIndexes.toList())
-                        println("Questão salva com sucesso!")
+                        onDismiss()
                     }
                 }
             },

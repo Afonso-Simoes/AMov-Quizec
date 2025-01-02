@@ -109,7 +109,9 @@ fun TrueFalse(
                     hasError.value = false
                     errorMessage.value = ""
                     onSave(questionText, "True/False: $selectedAnswer")
+                    onDismiss()
                 }
+
             },
             modifier = Modifier.weight(1f)
         ) {

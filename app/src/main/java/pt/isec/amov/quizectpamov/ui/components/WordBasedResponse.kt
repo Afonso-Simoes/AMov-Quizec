@@ -15,14 +15,21 @@ import pt.isec.amov.quizectpamov.R
 @Composable
 fun WordBasedResponse(
     questionText: String,
-    answerText: String,
+    initialAnswerText: String,
     onQuestionTextChange: (String) -> Unit,
     onAnswerTextChange: (String) -> Unit,
     onDismiss: () -> Unit,
     onSave: (String, String, List<String>) -> Unit
 ) {
+    var answerText by remember { mutableStateOf(initialAnswerText) }
     val numberOfBlanks = remember(answerText) { answerText.split("___").size - 1 }
     var answers by remember(numberOfBlanks) { mutableStateOf(List(numberOfBlanks) { "" }) }
+    val errorEmptyQuestion = stringResource(id = R.string.error_empty_question)
+    val errorEmptyAnswer = stringResource(id = R.string.error_empty_answer)
+    val noBlanksError = stringResource(id = R.string.no_blanks_error)
+
+    val hasError = remember { mutableStateOf(false) }
+    val errorMessage = remember { mutableStateOf("") }
 
     @Composable
     fun formatResponseWithBlanks(text: String): String {
@@ -35,6 +42,15 @@ fun WordBasedResponse(
     }
 
     Column(modifier = Modifier.fillMaxWidth()) {
+        if (hasError.value) {
+            Text(
+                text = errorMessage.value,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+
         TextField(
             value = questionText,
             onValueChange = onQuestionTextChange,
@@ -53,8 +69,11 @@ fun WordBasedResponse(
 
         TextField(
             value = answerText,
-            onValueChange = onAnswerTextChange,
-            label = { Text(stringResource(id = R.string.answer))},
+            onValueChange = {
+                answerText = it
+                onAnswerTextChange(it) // Propague a mudança para o estado externo
+            },
+            label = { Text(stringResource(id = R.string.answer)) },
             modifier = Modifier.fillMaxWidth(),
             maxLines = 2
         )
@@ -102,11 +121,21 @@ fun WordBasedResponse(
 
             Button(
                 onClick = {
-                    if (answers.any { it.isBlank() }) {
-                        println("Preencha todos os espaços.")
+                    if (questionText.isBlank()) {
+                        hasError.value = true
+                        errorMessage.value = errorEmptyQuestion
+                    } else if (answerText.isBlank()) {
+                        hasError.value = true
+                        errorMessage.value = errorEmptyAnswer
+                    } else if (numberOfBlanks == 0) {
+                        hasError.value = true
+                        errorMessage.value = noBlanksError
+                    } else if (answers.any { it.isBlank() }) {
+                        hasError.value = true
+                        errorMessage.value = errorEmptyAnswer
                     } else {
                         onSave(questionText, answerText, answers)
-                        println("Questão salva com sucesso!")
+                        onDismiss()
                     }
                 },
                 modifier = Modifier.weight(1f)

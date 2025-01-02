@@ -5,6 +5,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.*
@@ -22,10 +23,26 @@ fun MultipleChoiceSingleAnswer(
     onDismiss: () -> Unit,
     onSave: (String, List<String>, Int) -> Unit
 ) {
-    var numberOfAnswers by remember { mutableStateOf(2) }
+    var numberOfAnswers by remember { mutableIntStateOf(2) }
     var answers by remember { mutableStateOf(List(numberOfAnswers) { "" }) }
-    var correctAnswerIndex by remember { mutableStateOf(-1) }
+    var correctAnswerIndex by remember { mutableIntStateOf(-1) }
     var expanded by remember { mutableStateOf(false) }
+
+    val errorEmptyAnswer = stringResource(id = R.string.error_empty_answer)
+    val errorNoAnswerSelected = stringResource(id = R.string.error_no_answer_selected)
+    val errorEmptyQuestion = stringResource(id = R.string.error_empty_question)
+
+    val hasError = remember { mutableStateOf(false) }
+    val errorMessage = remember { mutableStateOf("") }
+
+    if (hasError.value) {
+        Text(
+            text = errorMessage.value,
+            color = MaterialTheme.colorScheme.error,
+            style = MaterialTheme.typography.bodyMedium
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+    }
 
     QuestionTextField(
         questionText = questionText,
@@ -105,16 +122,23 @@ fun MultipleChoiceSingleAnswer(
         Button(
             onClick = {
                 when {
-//                    answers.any { it.isBlank() } -> {
-//                        println("Preencha todas as respostas.")
-//                    }
-//                    correctAnswerIndex == -1 -> {
-//                        println("Selecione a resposta correta.")
-//                    }
-//                    else -> {
-//                        onSave(questionText, answers, correctAnswerIndex)
-//                        println("Questão salva com sucesso!")
-//                    }
+                    questionText.isBlank() -> {
+                        hasError.value = true
+                        errorMessage.value = errorEmptyQuestion
+                    }
+                    answers.any { it.isBlank() } -> {
+                        hasError.value = true
+                        errorMessage.value = errorEmptyAnswer
+                    }
+                    correctAnswerIndex == -1 -> {
+                        hasError.value = true
+                        errorMessage.value = errorNoAnswerSelected
+                    }
+                    else -> {
+                        onSave(questionText, answers, correctAnswerIndex)
+                        onDismiss()
+
+                    }
                 }
             },
             modifier = Modifier.weight(1f)

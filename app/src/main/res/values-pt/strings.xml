@@ -51,4 +51,19 @@
     <string name="settings_title">Definições</string>
     <string name="error_empty_question">A pergunta não pode estar vazia.</string>
     <string name="error_no_answer_selected">Por favor, selecione uma resposta.</string>
+    <string name="question_type">Tipo: %1$s</string>
+    <string name="correct_answer">Resposta Correta: %1$s</string>
+    <string name="answers">Respostas: %1$s</string>
+    <string name="credits_button">Ver Créditos</string>
+    <string name="credits_title">Créditos</string>
+    <string name="academic_year">Ano letivo:</string>
+    <string name="course">Curso:</string>
+    <string name="subject">Disciplina:</string>
+    <string name="authors">Desenvolvido por:</string>
+    <string name="delete_account_button">Apagar Conta</string>
+    <string name="quizzes_menu_title">Menu de Questionários</string>
+    <string name="add_quiz">Adicionar Questionário</string>
+    <string name="error_empty_answer">As respostas não podem estar vazias.</string>
+    <string name="no_blanks_error">Não há espaços em branco no texto.</string>
+    <string name="error_empty_pair">Os pares não podem estar vazios.</string>
 </resources>

@@ -54,6 +54,7 @@ fun ShowMainScreen(navController: NavHostController, isLandscape: Boolean, userV
     var password by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var isError by remember { mutableStateOf(false) }
+    var showDialog by remember { mutableStateOf(false) } // Controla o estado do dialog
 
     val errorMessage = stringResource(id = R.string.login_error)
 
@@ -121,7 +122,6 @@ fun ShowMainScreen(navController: NavHostController, isLandscape: Boolean, userV
             )
         )
 
-
         Button(
             onClick = {
                 userViewModel.signInWithEmail(email, password) { isUserCreated ->
@@ -142,6 +142,7 @@ fun ShowMainScreen(navController: NavHostController, isLandscape: Boolean, userV
         ) {
             Text(stringResource(id = R.string.enter_button), style = MaterialTheme.typography.bodyLarge)
         }
+
         ClickableText(
             text = annotatedString,
             onClick = { offset ->
@@ -152,5 +153,21 @@ fun ShowMainScreen(navController: NavHostController, isLandscape: Boolean, userV
             },
             modifier = Modifier.padding(vertical = if (isLandscape) 32.dp else 64.dp)
         )
+
+        Button(
+            onClick = { navController.navigate("credits") },
+            modifier = Modifier
+                .padding(top = 100.dp)
+                .width(290.dp)
+                .clip(RoundedCornerShape(8.dp)),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.secondary,
+            ),
+            shape = RoundedCornerShape(8.dp)
+        ) {
+            Text(stringResource(id = R.string.credits_button), style = MaterialTheme.typography.bodyLarge)
+        }
+
     }
+
 }
