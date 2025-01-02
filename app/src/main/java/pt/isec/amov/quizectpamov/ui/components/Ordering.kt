@@ -9,6 +9,7 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.*
@@ -25,11 +26,25 @@ fun Ordering(
     onDismiss: () -> Unit,
     onSave: (String, List<String>) -> Unit
 ) {
-    var numberOfOptions by remember { mutableStateOf(2) }
+    var numberOfOptions by remember { mutableIntStateOf(2) }
     var options by remember { mutableStateOf(List(numberOfOptions) { "" }) }
     var expanded by remember { mutableStateOf(false) }
+    val errorEmptyQuestion = stringResource(id = R.string.error_empty_question)
+    val errorEmptyAnswer = stringResource(id = R.string.error_empty_answer)
+
+    val hasError = remember { mutableStateOf(false) }
+    val errorMessage = remember { mutableStateOf("") }
 
     Column(modifier = Modifier.fillMaxWidth()) {
+        if (hasError.value) {
+            Text(
+                text = errorMessage.value,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+
         QuestionTextField(
             questionText = questionText,
             onQuestionTextChange = onQuestionTextChange
@@ -68,7 +83,6 @@ fun Ordering(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
             ) {
-                // Botão de mover para cima
                 IconButton(
                     onClick = {
                         if (index > 0) {
@@ -125,12 +139,16 @@ fun Ordering(
 
             Button(
                 onClick = {
-//                    if (options.any { it.isBlank() }) {
-//                        println("Preencha todas as opções.")
-//                    } else {
-//                        onSave(questionText, options.filter { it.isNotBlank() })
-//                        println("Questão salva com sucesso!")
-//                    }
+                    if (questionText.isBlank()) {
+                        hasError.value = true
+                        errorMessage.value = errorEmptyQuestion
+                    } else if (options.any { it.isBlank() }) {
+                        hasError.value = true
+                        errorMessage.value = errorEmptyAnswer
+                    } else {
+                        onSave(questionText, options.filter { it.isNotBlank() })
+                        onDismiss()
+                    }
                 },
                 modifier = Modifier.weight(1f)
             ) {

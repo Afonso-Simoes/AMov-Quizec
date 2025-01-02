@@ -64,9 +64,11 @@ class UserViewModel : ViewModel() {
         }
     }
 
+
     fun signOut() {
         userRepository.signOut()
         _user.value = null
         _error.value = null
     }
+
 }

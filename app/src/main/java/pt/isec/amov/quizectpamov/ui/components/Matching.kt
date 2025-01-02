@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.*
@@ -21,9 +22,23 @@ fun Matching(
     onDismiss: () -> Unit,
     onSave: (String, List<Pair<String, String>>) -> Unit
 ) {
-    var numberOfPairs by remember { mutableStateOf(2) }
+    var numberOfPairs by remember { mutableIntStateOf(2) }
     var pairs by remember { mutableStateOf(List(numberOfPairs) { "" to "" }) }
     var expanded by remember { mutableStateOf(false) }
+    val errorEmptyQuestion = stringResource(id = R.string.error_empty_question)
+    val errorEmptyPair = stringResource(id = R.string.error_empty_pair)
+
+    val hasError = remember { mutableStateOf(false) }
+    val errorMessage = remember { mutableStateOf("") }
+
+    if (hasError.value) {
+        Text(
+            text = errorMessage.value,
+            color = MaterialTheme.colorScheme.error,
+            style = MaterialTheme.typography.bodyMedium
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+    }
 
     QuestionTextField(
         questionText = questionText,
@@ -50,7 +65,7 @@ fun Matching(
                         text = { Text(number.toString()) },
                         onClick = {
                             numberOfPairs = number
-                            pairs = List(number) { pairs.getOrNull(it) ?: "" to "" }
+                            pairs = List(number) { pairs.getOrNull(it) ?: ("" to "") }
                             expanded = false
                         }
                     )
@@ -105,12 +120,16 @@ fun Matching(
 
         Button(
             onClick = {
-//                if (pairs.any { it.first.isBlank() || it.second.isBlank() }) {
-//                    println("Preencha todos os pares.")
-//                } else {
-//                    onSave(questionText, pairs)
-//                    println("Questão salva com sucesso!")
-//                }
+                if (questionText.isBlank()) {
+                    hasError.value = true
+                    errorMessage.value = errorEmptyQuestion
+                } else if (pairs.any { it.first.isBlank() || it.second.isBlank() }) {
+                    hasError.value = true
+                    errorMessage.value = errorEmptyPair
+                } else {
+                    onSave(questionText, pairs)
+                    onDismiss()
+                }
             },
             modifier = Modifier.weight(1f)
         ) {

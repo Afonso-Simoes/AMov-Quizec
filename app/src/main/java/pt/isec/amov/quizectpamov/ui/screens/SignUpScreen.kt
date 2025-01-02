@@ -32,7 +32,6 @@ import androidx.navigation.NavHostController
 import pt.isec.amov.quizectpamov.R
 import pt.isec.amov.quizectpamov.ui.theme.WelcomeTitleStyle
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignUpScreen(
     navController: NavHostController,
@@ -56,6 +55,9 @@ fun ShowSingUpScreen(navController: NavHostController, userViewModel: UserViewMo
         var name by remember { mutableStateOf("") }
         var email by remember { mutableStateOf("") }
         var password by remember { mutableStateOf("") }
+        var isError by remember { mutableStateOf(false) }
+
+        val errorMessage = stringResource(id = R.string.register_error)
 
         Text(
             text = "Create an account",
@@ -63,6 +65,16 @@ fun ShowSingUpScreen(navController: NavHostController, userViewModel: UserViewMo
             modifier = Modifier
                 .padding(vertical = if (isLandscape) 32.dp else 64.dp)
         )
+
+        if (isError) {
+            Text(
+                text = errorMessage,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
+        }
+
         TextField(
             value = name,
             onValueChange = { newName -> name = newName },
@@ -72,8 +84,10 @@ fun ShowSingUpScreen(navController: NavHostController, userViewModel: UserViewMo
                 .clip(RoundedCornerShape(8.dp)),
             colors = TextFieldDefaults.textFieldColors(
                 containerColor = MaterialTheme.colorScheme.surface,
-                unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurface,
-                focusedIndicatorColor = MaterialTheme.colorScheme.primary
+                unfocusedIndicatorColor = if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface,
+                focusedIndicatorColor = if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary,
+                focusedLabelColor = if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary,
+                unfocusedLabelColor = if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface,
             )
         )
         TextField(
@@ -85,8 +99,10 @@ fun ShowSingUpScreen(navController: NavHostController, userViewModel: UserViewMo
                 .clip(RoundedCornerShape(8.dp)),
             colors = TextFieldDefaults.textFieldColors(
                 containerColor = MaterialTheme.colorScheme.surface,
-                unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurface,
-                focusedIndicatorColor = MaterialTheme.colorScheme.primary
+                unfocusedIndicatorColor = if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface,
+                focusedIndicatorColor = if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary,
+                focusedLabelColor = if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary,
+                unfocusedLabelColor = if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface,
             )
         )
         TextField(
@@ -98,8 +114,10 @@ fun ShowSingUpScreen(navController: NavHostController, userViewModel: UserViewMo
                 .clip(RoundedCornerShape(8.dp)),
             colors = TextFieldDefaults.textFieldColors(
                 containerColor = MaterialTheme.colorScheme.surface,
-                unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurface,
-                focusedIndicatorColor = MaterialTheme.colorScheme.primary
+                unfocusedIndicatorColor = if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface,
+                focusedIndicatorColor = if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary,
+                focusedLabelColor = if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary,
+                unfocusedLabelColor = if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface,
             )
         )
 
@@ -110,7 +128,7 @@ fun ShowSingUpScreen(navController: NavHostController, userViewModel: UserViewMo
                     if(isUserLogged){
                         navController.navigate("login")
                     } else {
-                        //TODO: Show error message
+                        isError = true
                     }
                 }
             },

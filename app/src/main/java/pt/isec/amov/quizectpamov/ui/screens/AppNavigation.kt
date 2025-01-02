@@ -2,7 +2,6 @@ package pt.isec.amov.quizectpamov.ui.screens
 
 import pt.isec.amov.quizectpamov.viewmodel.UserViewModel
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -10,7 +9,7 @@ import androidx.navigation.compose.rememberNavController
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
-    var userViewModel = UserViewModel(); //VERIFICAR SE PRECISO INSTANCIA PARA OUTRAS SE NAO FOR CIRAR UMA UNICA
+    val userViewModel = UserViewModel(); //VERIFICAR SE PRECISO INSTANCIA PARA OUTRAS SE NAO FOR CIRAR UMA UNICA
         //ON DEMAND
 
     NavHost(
@@ -36,7 +35,10 @@ fun AppNavigation() {
             StartQuizScreen(navController, userViewModel)
         }
         composable("settings") {
-            SettingsScreen(navController, userViewModel)
+            SettingsScreen(navController)
+        }
+        composable("credits") {
+            CreditsScreen()
         }
     }
 }

@@ -1,18 +1,29 @@
 package pt.isec.amov.quizectpamov.ui.screens
 
-import android.widget.Toast
+import android.content.res.Configuration
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import pt.isec.amov.quizectpamov.R
+import pt.isec.amov.quizectpamov.ui.theme.WelcomeTitleStyle
+import pt.isec.amov.quizectpamov.viewmodel.QuestionViewModel
 import pt.isec.amov.quizectpamov.viewmodel.UserViewModel
 
 @Composable
@@ -21,17 +32,21 @@ fun QuestionsMenuScreen(navController: NavHostController, userViewModel: UserVie
     var questionText by remember { mutableStateOf("") }
     val initialQuestionType = stringResource(id = R.string.true_false)
     var selectedQuestionType by remember { mutableStateOf(initialQuestionType) }
-    var questionsList by remember { mutableStateOf(listOf<String>()) }
+    val questionsList by remember { mutableStateOf(listOf<String>()) }
+    val questionViewModel: QuestionViewModel = viewModel()
+    val context = LocalContext.current
+
+    val trueFalseQuestions = questionViewModel.getTrueFalseQuestions()
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(horizontal = if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE) 100.dp else 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             text = stringResource(id = R.string.questions_menu_title),
-            fontSize = 28.sp,
+            style = WelcomeTitleStyle,
             modifier = Modifier.padding(bottom = 32.dp, top = 40.dp)
         )
 
@@ -42,7 +57,7 @@ fun QuestionsMenuScreen(navController: NavHostController, userViewModel: UserVie
                 showDialog = true
             },
             modifier = Modifier
-                .padding(bottom = 16.dp)
+                .padding(bottom = 8.dp)
                 .fillMaxWidth(0.7f)
         ) {
             Text(text = stringResource(id = R.string.add_question))
@@ -51,40 +66,99 @@ fun QuestionsMenuScreen(navController: NavHostController, userViewModel: UserVie
         if (showDialog) {
             AddQuestion(
                 onDismiss = { showDialog = false },
-                onSave = { question, type ->
-                    if (questionText.isNotEmpty()) {
-                        questionsList = questionsList + "$question ($type)"
-                        Toast.makeText(navController.context, "Question Added: $question", Toast.LENGTH_SHORT).show()
-                    }
-                    showDialog = false
-                },
                 currentQuestion = questionText,
-                currentType = selectedQuestionType
+                currentType = selectedQuestionType,
             )
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
         LazyColumn(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(questionsList.size) { index ->
-                Text(
-                    text = questionsList[index],
+            items(trueFalseQuestions) { question ->
+                Card(
                     modifier = Modifier
                         .padding(8.dp)
+                        .fillMaxWidth()
                         .clickable {
-                            questionText = questionsList[index].split(" (")[0]
-                            selectedQuestionType = questionsList[index].split(" (")[1].removeSuffix(")")
+                            questionText = question.questionText
+                            selectedQuestionType = question.questionType.getLocalizedName(context = context)
                             showDialog = true
                         },
-                    style = MaterialTheme.typography.bodyLarge
-                )
+                ) {
+                    Row(modifier = Modifier.padding(16.dp)) {
+                        Column(
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(end = 8.dp)
+                        ) {
+                            Text(
+                                text = question.questionText,
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = stringResource(id = R.string.question_type, question.questionType.getLocalizedName(context)),
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = stringResource(id = R.string.correct_answer, question.correctAnswer?.joinToString(", ") ?: ""),
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = stringResource(id = R.string.answers, question.options?.joinToString(", ") ?: ""),
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
+
+                        Column(
+                            modifier = Modifier
+                                .align(Alignment.Top)
+                                .padding(4.dp)
+                        ) {
+                            IconButton(
+                                onClick = {
+                                    // TODO: Implement delete question
+                                },
+                                modifier = Modifier
+                                    .background(Color.Gray, shape = CircleShape)
+                                    .size(24.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Close,
+                                    contentDescription = "Delete",
+                                    tint = Color.White
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(8.dp))
+                            IconButton(
+                                onClick = {
+                                    // TODO: Implement duplicate question
+                                },
+                                modifier = Modifier
+                                    .background(Color.Gray, shape = CircleShape)
+                                    .size(24.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.ContentCopy,
+                                    contentDescription = "Duplicate",
+                                    tint = Color.White
+                                )
+                            }
+                        }
+                    }
+                }
             }
         }
+
     }
 }
+
 
 
 

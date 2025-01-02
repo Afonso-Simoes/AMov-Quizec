@@ -22,6 +22,12 @@ fun FillInTheBlank(
 ) {
     val numberOfBlanks = remember(questionText) { questionText.split("___").size - 1 }
     var answers by remember(numberOfBlanks) { mutableStateOf(List(numberOfBlanks) { "" }) }
+    val errorEmptyQuestion = stringResource(id = R.string.error_empty_question)
+    val errorEmptyAnswer = stringResource(id = R.string.error_empty_answer)
+    val noBlanksError = stringResource(id = R.string.no_blanks_error)
+
+    val hasError = remember { mutableStateOf(false) }
+    val errorMessage = remember { mutableStateOf("") }
 
     @Composable
     fun formatQuestionWithBlanks(text: String): String {
@@ -34,6 +40,15 @@ fun FillInTheBlank(
     }
 
     Column(modifier = Modifier.fillMaxWidth()) {
+        if (hasError.value) {
+            Text(
+                text = errorMessage.value,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+
         Text(
             text = stringResource(id = R.string.use_blanks_instruction),
             modifier = Modifier.padding(bottom = 8.dp),
@@ -89,12 +104,19 @@ fun FillInTheBlank(
 
             Button(
                 onClick = {
-//                    if (answers.any { it.isBlank() }) {
-//                        println("Preencha todos os espaços.")
-//                    } else {
-//                        onSave(questionText, answers)
-//                        println("Questão salva com sucesso!")
-//                    }
+                    if (questionText.isBlank()) {
+                        hasError.value = true
+                        errorMessage.value = errorEmptyQuestion
+                    }else if (numberOfBlanks == 0) {
+                        hasError.value = true
+                        errorMessage.value = noBlanksError
+                    }else if (answers.any { it.isBlank() }) {
+                        hasError.value = true
+                        errorMessage.value = errorEmptyAnswer
+                    } else {
+                        onSave(questionText, answers)
+                        onDismiss()
+                    }
                 },
                 modifier = Modifier.weight(1f)
             ) {

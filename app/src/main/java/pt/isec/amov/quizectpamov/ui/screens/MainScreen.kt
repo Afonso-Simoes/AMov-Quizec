@@ -53,6 +53,10 @@ fun MainScreen(
 fun ShowMainScreen(navController: NavHostController, isLandscape: Boolean, userViewModel: UserViewModel) {
     var password by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
+    var isError by remember { mutableStateOf(false) }
+    var showDialog by remember { mutableStateOf(false) } // Controla o estado do dialog
+
+    val errorMessage = stringResource(id = R.string.login_error)
 
     val annotatedString = buildAnnotatedString {
         append(stringResource(id = R.string.signup_prompt) + " ")
@@ -76,6 +80,16 @@ fun ShowMainScreen(navController: NavHostController, isLandscape: Boolean, userV
             style = WelcomeTitleStyle,
             modifier = Modifier.padding(vertical = if (isLandscape) 32.dp else 64.dp)
         )
+
+        if (isError) {
+            Text(
+                text = errorMessage,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
+        }
+
         TextField(
             value = email,
             onValueChange = { newEmail -> email = newEmail },
@@ -85,8 +99,10 @@ fun ShowMainScreen(navController: NavHostController, isLandscape: Boolean, userV
                 .clip(RoundedCornerShape(8.dp)),
             colors = TextFieldDefaults.textFieldColors(
                 containerColor = MaterialTheme.colorScheme.surface,
-                unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurface,
-                focusedIndicatorColor = MaterialTheme.colorScheme.primary
+                unfocusedIndicatorColor = if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface,
+                focusedIndicatorColor = if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary,
+                focusedLabelColor = if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary,
+                unfocusedLabelColor = if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface,
             )
         )
         TextField(
@@ -99,18 +115,20 @@ fun ShowMainScreen(navController: NavHostController, isLandscape: Boolean, userV
                 .clip(RoundedCornerShape(8.dp)),
             colors = TextFieldDefaults.textFieldColors(
                 containerColor = MaterialTheme.colorScheme.surface,
-                unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurface,
-                focusedIndicatorColor = MaterialTheme.colorScheme.primary
+                unfocusedIndicatorColor = if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface,
+                focusedIndicatorColor = if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary,
+                focusedLabelColor = if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary,
+                unfocusedLabelColor = if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface,
             )
         )
+
         Button(
             onClick = {
-                userViewModel.signInWithEmail(email, password){
-                    isUserCreated ->
-                    if(isUserCreated){
+                userViewModel.signInWithEmail(email, password) { isUserCreated ->
+                    if (isUserCreated) {
                         navController.navigate("mainMenu")
                     } else {
-                        //TODO: Show error message
+                        isError = true
                     }
                 }
             },
@@ -124,6 +142,7 @@ fun ShowMainScreen(navController: NavHostController, isLandscape: Boolean, userV
         ) {
             Text(stringResource(id = R.string.enter_button), style = MaterialTheme.typography.bodyLarge)
         }
+
         ClickableText(
             text = annotatedString,
             onClick = { offset ->
@@ -134,5 +153,21 @@ fun ShowMainScreen(navController: NavHostController, isLandscape: Boolean, userV
             },
             modifier = Modifier.padding(vertical = if (isLandscape) 32.dp else 64.dp)
         )
+
+        Button(
+            onClick = { navController.navigate("credits") },
+            modifier = Modifier
+                .padding(top = 100.dp)
+                .width(290.dp)
+                .clip(RoundedCornerShape(8.dp)),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.secondary,
+            ),
+            shape = RoundedCornerShape(8.dp)
+        ) {
+            Text(stringResource(id = R.string.credits_button), style = MaterialTheme.typography.bodyLarge)
+        }
+
     }
+
 }
