@@ -9,7 +9,7 @@ import androidx.navigation.compose.rememberNavController
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
-    val userViewModel = UserViewModel(); //VERIFICAR SE PRECISO INSTANCIA PARA OUTRAS SE NAO FOR CIRAR UMA UNICA
+    val userViewModel = UserViewModel() //VERIFICAR SE PRECISO INSTANCIA PARA OUTRAS SE NAO FOR CIRAR UMA UNICA
         //ON DEMAND
 
     NavHost(
@@ -40,5 +40,38 @@ fun AppNavigation() {
         composable("credits") {
             CreditsScreen()
         }
+        composable("truefalse/{questionId}/{timePerQuestion}") { backStackEntry ->
+            val questionId = backStackEntry.arguments?.getString("questionId")?.toIntOrNull()
+            val timePerQuestion = backStackEntry.arguments?.getString("timePerQuestion")?.toIntOrNull()
+
+            if (questionId != null && timePerQuestion != null) {
+                TrueFalseScreen(questionId, timePerQuestion)
+            } else {
+                // TODO: Adicionar lógica de fallback ou erro
+            }
+        }
+
+        composable("singlechoice/{questionId}/{timePerQuestion}") { backStackEntry ->
+            val questionId = backStackEntry.arguments?.getString("questionId")?.toIntOrNull()
+            val timePerQuestion = backStackEntry.arguments?.getString("timePerQuestion")?.toIntOrNull()
+
+            if (questionId != null && timePerQuestion != null) {
+                SingleChoiceScreen(questionId, timePerQuestion)
+            } else {
+                // TODO: Lidar com erro
+            }
+        }
+
+//        composable("multiplechoice/{questionId}/{timePerQuestion}") { backStackEntry ->
+//            val questionId = backStackEntry.arguments?.getString("questionId")?.toIntOrNull()
+//            val timePerQuestion = backStackEntry.arguments?.getString("timePerQuestion")?.toIntOrNull()
+//
+//            if (questionId != null && timePerQuestion != null) {
+//                MultipleChoiceScreen(questionId, timePerQuestion)
+//            } else {
+//                // TODO: Lidar com erro
+//            }
+//        }
+
     }
 }

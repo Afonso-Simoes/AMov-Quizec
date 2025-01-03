@@ -59,7 +59,7 @@ fun QuizzesMenuScreen(navController: NavHostController, userViewModel: UserViewM
     var isClicked by remember { mutableStateOf(false) }
 
     val questionViewModel: QuestionViewModel = viewModel()
-    val trueFalseQuestions = questionViewModel.getTrueFalseQuestions()
+    val trueFalseQuestions = questionViewModel.getExampleQuestions()
 
     Column(
         modifier = Modifier
