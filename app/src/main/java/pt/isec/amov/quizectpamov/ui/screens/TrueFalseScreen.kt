@@ -15,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -33,17 +34,26 @@ import pt.isec.amov.quizectpamov.viewmodel.QuestionViewModel
 fun TrueFalseScreen(
     questionId: Int,
     timePerQuestion: Int,
+    onNext: @Composable () -> Unit,
+    indexQuestion: Int
 ) {
     val questionViewModel: QuestionViewModel = viewModel()
     val question = getQuestionById(questionViewModel, questionId)
-    var remainingTime by remember { mutableStateOf(timePerQuestion) }
+    var remainingTime by remember { mutableIntStateOf(timePerQuestion) }
+    var isTimeUp by remember { mutableStateOf(false) }
+    var next by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         while (remainingTime > 0) {
             delay(1000L)
             remainingTime--
         }
-        //TODO: Adicionar lógica de ir para a proxima pergunta
+        isTimeUp = true
+    }
+
+    if (isTimeUp && !next) {
+        next = true
+        onNext()
     }
 
     if (question != null) {

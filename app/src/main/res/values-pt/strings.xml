@@ -11,7 +11,8 @@
     <string name="main_menu_title">Menu Principal</string>
     <string name="manage_quizzes">Gerir Questionários</string>
     <string name="manage_questions">Gerir Questões</string>
-    <string name="start_quizz">Começar Questionário</string>
+    <string name="start_quizz">Começar</string>
+    <string name="start_quizz_title">Começar Questionario</string>
     <string name="settings">Definições</string>
     <string name="enter_game_code">Digite o código do jogo</string>
     <string name="true_false">Verdadeiro/Falso</string>
@@ -66,4 +67,6 @@
     <string name="error_empty_answer">As respostas não podem estar vazias.</string>
     <string name="no_blanks_error">Não há espaços em branco no texto.</string>
     <string name="error_empty_pair">Os pares não podem estar vazios.</string>
+    <string name="history_button">Ver Histórico</string>
+    <string name="history_screen_title">Histórico</string>
 </resources>

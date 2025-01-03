@@ -11,9 +11,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -25,17 +23,14 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import kotlinx.coroutines.delay
 import pt.isec.amov.quizectpamov.R
 import pt.isec.amov.quizectpamov.data.model.Question
 import pt.isec.amov.quizectpamov.utils.enums.QuestionType
 import pt.isec.amov.quizectpamov.viewmodel.QuestionViewModel
-import pt.isec.amov.quizectpamov.viewmodel.UserViewModel
 
 @Composable
 fun StartQuizScreen(
     navController: NavHostController,
-    userViewModel: UserViewModel
 ) {
     val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
     ShowStartQuizScreen(navController, isLandscape = isLandscape)
@@ -44,15 +39,13 @@ fun StartQuizScreen(
 @Composable
 fun ShowStartQuizScreen(navController: NavHostController, isLandscape: Boolean) {
     val gameCode = remember { mutableStateOf("") }
-    val questionViewModel: QuestionViewModel = viewModel()
-    val questions = questionViewModel.getExampleQuestions()
     var startQuizState by remember { mutableStateOf(false) }
 
     val titlePadding = if (isLandscape) 32.dp else 16.dp
     val inputPadding = if (isLandscape) 32.dp else 16.dp
 
     if (startQuizState) {
-        StartQuiz(navController, questions, 5)
+        StartQuiz(navController, 5)
     }else{
         Column(
             modifier = Modifier
@@ -62,7 +55,7 @@ fun ShowStartQuizScreen(navController: NavHostController, isLandscape: Boolean) 
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = stringResource(id = R.string.start_quizz),
+                text = stringResource(id = R.string.start_quizz_title),
                 fontSize = 24.sp,
                 modifier = Modifier.padding(bottom = titlePadding)
             )
@@ -98,6 +91,7 @@ fun ShowStartQuizScreen(navController: NavHostController, isLandscape: Boolean) 
                     }
                 },
                 modifier = buttonModifier
+                    .align(Alignment.CenterHorizontally)
             ) {
                 Text(text = stringResource(id = R.string.start_quizz), fontSize = 16.sp)
             }
@@ -107,41 +101,60 @@ fun ShowStartQuizScreen(navController: NavHostController, isLandscape: Boolean) 
 }
 
 @Composable
-fun StartQuiz(navController: NavHostController, questions: List<Question>, timePerQuestion: Int) {
-    var currentIndex by remember { mutableStateOf(0) }
+fun NavigateToQuestion(navController: NavHostController,timePerQuestion: Int, indexQuestion: Int) {
+    val questionViewModel: QuestionViewModel = viewModel()
+    val questions = questionViewModel.getExampleQuestions()
 
-    LaunchedEffect(currentIndex) {
-        if (currentIndex < questions.size) {
-            val currentQuestion = questions[currentIndex]
-            println("Navigating to question: ${currentQuestion.id} of type: ${currentQuestion.questionType}")
-            when (currentQuestion.questionType) {
-                QuestionType.TRUE_FALSE -> navController.navigate("truefalse/${currentQuestion.id}/$timePerQuestion")
-                QuestionType.SINGLE_CHOICE -> navController.navigate("singlechoice/${currentQuestion.id}/$timePerQuestion")
-                QuestionType.MULTIPLE_CHOICE -> navController.navigate("multiplechoice/${currentQuestion.id}/$timePerQuestion")
-                QuestionType.MATCHING -> navController.navigate("matching/${currentQuestion.id}/$timePerQuestion")
-                QuestionType.ORDERING -> navController.navigate("ordering/${currentQuestion.id}/$timePerQuestion")
-                QuestionType.FILL_IN_THE_BLANK -> navController.navigate("fillintheblank/${currentQuestion.id}/$timePerQuestion")
-                QuestionType.ASSOCIATION -> navController.navigate("association/${currentQuestion.id}/$timePerQuestion")
-                QuestionType.WORD_BASED -> navController.navigate("wordbased/${currentQuestion.id}/$timePerQuestion")
-            }
-            //TODO: Isto nao funciona idk why nao lhe aptece ir para a proxima pergunta
-            delay(1000L)
-            currentIndex++
-            println("Current index after increment: $currentIndex")
-        } else {
-            println("All questions navigated.")
-        }
+    if (indexQuestion >= questions.size) {
+        navController.navigate("startQuiz")
+        return
     }
 
-    if (currentIndex >= questions.size) {
+    val question = questions[indexQuestion]
+
+    if (question.questionType == QuestionType.TRUE_FALSE) {
+        navController.navigate("truefalse/${question.id}/$timePerQuestion/$indexQuestion")
+    } else if (question.questionType == QuestionType.SINGLE_CHOICE) {
+        navController.navigate("singlechoice/${question.id}/$timePerQuestion/$indexQuestion")
+    } else if (question.questionType == QuestionType.MULTIPLE_CHOICE) {
+        navController.navigate("multiplechoice/${question.id}/$timePerQuestion/$indexQuestion")
+    } else if (question.questionType == QuestionType.MATCHING) {
+        navController.navigate("matching/${question.id}/$timePerQuestion/$indexQuestion")
+    } else if (question.questionType == QuestionType.ORDERING) {
+        navController.navigate("ordering/${question.id}/$timePerQuestion/$indexQuestion")
+    } else if (question.questionType == QuestionType.FILL_IN_THE_BLANK) {
+        navController.navigate("fillintheblank/${question.id}/$timePerQuestion/$indexQuestion")
+    } else if (question.questionType == QuestionType.ASSOCIATION) {
+        navController.navigate("association/${question.id}/$timePerQuestion/$indexQuestion")
+    } else if (question.questionType == QuestionType.WORD_BASED) {
+        navController.navigate("wordbased/${question.id}/$timePerQuestion/$indexQuestion")
+    }
+}
+
+@Composable
+fun StartQuiz(navController: NavHostController, timePerQuestion: Int) {
+    val questionViewModel: QuestionViewModel = viewModel()
+    val questions = questionViewModel.getExampleQuestions()
+
+    var hasStarted by remember { mutableStateOf(false) }
+
+    if (questions.isNotEmpty()) {
+        if (!hasStarted) {
+            hasStarted = true
+            NavigateToQuestion(navController, timePerQuestion,0);
+        }
+    } else {
         Text(
-            text = "Quiz finished!",
+            text = "No questions available.",
             modifier = Modifier.fillMaxSize(),
             fontSize = 24.sp
         )
     }
 }
 
+@Composable
 fun getQuestionById(questionViewModel: QuestionViewModel, questionId: Int): Question? {
     return questionViewModel.getExampleQuestions().find { it.id == questionId.toString() }
 }
+
+

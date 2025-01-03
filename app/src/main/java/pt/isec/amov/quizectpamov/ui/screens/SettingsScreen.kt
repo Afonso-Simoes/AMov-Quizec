@@ -40,6 +40,19 @@ fun SettingsScreen(navController: NavHostController) {
             modifier = Modifier.padding(bottom = 32.dp, top = 40.dp)
         )
 
+        Button(
+            onClick = { navController.navigate("history") },
+            modifier = Modifier
+                .padding(vertical = if (isLandscape) 8.dp else 16.dp)
+                .width(290.dp)
+                .clip(RoundedCornerShape(8.dp)),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.secondary,
+            ),
+        ) {
+            Text(stringResource(id = R.string.history_button), style = MaterialTheme.typography.bodyLarge)
+        }
+
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
