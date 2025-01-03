@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import pt.isec.amov.quizectpamov.ui.components.Association
 
 @Composable
 fun AppNavigation() {
@@ -14,7 +15,7 @@ fun AppNavigation() {
 
     NavHost(
         navController = navController,
-        startDestination = "login"
+        startDestination = "mainMenu"
     ) {
         composable("login") {
             MainScreen(navController, userViewModel)
@@ -32,7 +33,7 @@ fun AppNavigation() {
             QuestionsMenuScreen(navController, userViewModel)
         }
         composable("startQuiz") {
-            StartQuizScreen(navController, userViewModel)
+            StartQuizScreen(navController)
         }
         composable("settings") {
             SettingsScreen(navController)
@@ -40,38 +41,168 @@ fun AppNavigation() {
         composable("credits") {
             CreditsScreen()
         }
-        composable("truefalse/{questionId}/{timePerQuestion}") { backStackEntry ->
+        composable("history") {
+            HistoryScreen(navController, userViewModel)
+        }
+        composable("truefalse/{questionId}/{timePerQuestion}/{indexQuestion}") { backStackEntry ->
             val questionId = backStackEntry.arguments?.getString("questionId")?.toIntOrNull()
             val timePerQuestion = backStackEntry.arguments?.getString("timePerQuestion")?.toIntOrNull()
+            val indexQuestion = backStackEntry.arguments?.getString("indexQuestion")?.toIntOrNull()
 
             if (questionId != null && timePerQuestion != null) {
-                TrueFalseScreen(questionId, timePerQuestion)
-            } else {
-                // TODO: Adicionar lógica de fallback ou erro
+                if (indexQuestion != null) {
+                    TrueFalseScreen(
+                        questionId = questionId,
+                        timePerQuestion = timePerQuestion,
+                        indexQuestion = indexQuestion,
+                        onNext = {
+                            NavigateToQuestion(navController,timePerQuestion, indexQuestion + 1)
+                        },
+                    )
+                }
             }
         }
 
-        composable("singlechoice/{questionId}/{timePerQuestion}") { backStackEntry ->
+
+        composable("singlechoice/{questionId}/{timePerQuestion}/{indexQuestion}") { backStackEntry ->
             val questionId = backStackEntry.arguments?.getString("questionId")?.toIntOrNull()
             val timePerQuestion = backStackEntry.arguments?.getString("timePerQuestion")?.toIntOrNull()
+            val indexQuestion = backStackEntry.arguments?.getString("indexQuestion")?.toIntOrNull()
 
             if (questionId != null && timePerQuestion != null) {
-                SingleChoiceScreen(questionId, timePerQuestion)
-            } else {
-                // TODO: Lidar com erro
+                if (indexQuestion != null) {
+                    SingleChoiceScreen(
+                        questionId = questionId,
+                        timePerQuestion = timePerQuestion,
+                        indexQuestion = indexQuestion,
+                        onNext = {
+                            NavigateToQuestion(navController,timePerQuestion, indexQuestion + 1)
+                        },
+                    )
+                }
             }
         }
 
-//        composable("multiplechoice/{questionId}/{timePerQuestion}") { backStackEntry ->
-//            val questionId = backStackEntry.arguments?.getString("questionId")?.toIntOrNull()
-//            val timePerQuestion = backStackEntry.arguments?.getString("timePerQuestion")?.toIntOrNull()
-//
-//            if (questionId != null && timePerQuestion != null) {
-//                MultipleChoiceScreen(questionId, timePerQuestion)
-//            } else {
-//                // TODO: Lidar com erro
-//            }
-//        }
+        composable("multiplechoice/{questionId}/{timePerQuestion}/{indexQuestion}") { backStackEntry ->
+            val questionId = backStackEntry.arguments?.getString("questionId")?.toIntOrNull()
+            val timePerQuestion = backStackEntry.arguments?.getString("timePerQuestion")?.toIntOrNull()
+            val indexQuestion = backStackEntry.arguments?.getString("indexQuestion")?.toIntOrNull()
+
+            if (questionId != null && timePerQuestion != null) {
+                if (indexQuestion != null) {
+                    MultipleChoiceScreen(
+                        questionId = questionId,
+                        timePerQuestion = timePerQuestion,
+                        indexQuestion = indexQuestion,
+                        onNext = {
+                            NavigateToQuestion(navController,timePerQuestion, indexQuestion + 1)
+                        },
+                    )
+                }
+            }
+        }
+
+        composable("matching/{questionId}/{timePerQuestion}/{indexQuestion}") { backStackEntry ->
+            val questionId = backStackEntry.arguments?.getString("questionId")?.toIntOrNull()
+            val timePerQuestion =
+                backStackEntry.arguments?.getString("timePerQuestion")?.toIntOrNull()
+            val indexQuestion = backStackEntry.arguments?.getString("indexQuestion")?.toIntOrNull()
+
+            if (questionId != null && timePerQuestion != null) {
+                if (indexQuestion != null) {
+                    MatchingScreen(
+                        questionId = questionId,
+                        timePerQuestion = timePerQuestion,
+                        indexQuestion = indexQuestion,
+                        onNext = {
+                            NavigateToQuestion(navController, timePerQuestion, indexQuestion + 1)
+                        },
+                    )
+                }
+            }
+        }
+
+        composable("ordering/{questionId}/{timePerQuestion}/{indexQuestion}") { backStackEntry ->
+            val questionId = backStackEntry.arguments?.getString("questionId")?.toIntOrNull()
+            val timePerQuestion =
+                backStackEntry.arguments?.getString("timePerQuestion")?.toIntOrNull()
+            val indexQuestion = backStackEntry.arguments?.getString("indexQuestion")?.toIntOrNull()
+
+            if (questionId != null && timePerQuestion != null) {
+                if (indexQuestion != null) {
+                    OrderingScreen(
+                        questionId = questionId,
+                        timePerQuestion = timePerQuestion,
+                        indexQuestion = indexQuestion,
+                        onNext = {
+                            NavigateToQuestion(navController, timePerQuestion, indexQuestion + 1)
+                        },
+                    )
+                }
+            }
+        }
+
+        composable("fillintheblank/{questionId}/{timePerQuestion}/{indexQuestion}") { backStackEntry ->
+            val questionId = backStackEntry.arguments?.getString("questionId")?.toIntOrNull()
+            val timePerQuestion =
+                backStackEntry.arguments?.getString("timePerQuestion")?.toIntOrNull()
+            val indexQuestion = backStackEntry.arguments?.getString("indexQuestion")?.toIntOrNull()
+
+            if (questionId != null && timePerQuestion != null) {
+                if (indexQuestion != null) {
+                    FillInTheBlankScreen(
+                        questionId = questionId,
+                        timePerQuestion = timePerQuestion,
+                        indexQuestion = indexQuestion,
+                        onNext = {
+                            NavigateToQuestion(navController, timePerQuestion, indexQuestion + 1)
+                        },
+                    )
+                }
+            }
+        }
+
+        composable("association/{questionId}/{timePerQuestion}/{indexQuestion}") { backStackEntry ->
+            val questionId = backStackEntry.arguments?.getString("questionId")?.toIntOrNull()
+            val timePerQuestion =
+                backStackEntry.arguments?.getString("timePerQuestion")?.toIntOrNull()
+            val indexQuestion = backStackEntry.arguments?.getString("indexQuestion")?.toIntOrNull()
+
+            if (questionId != null && timePerQuestion != null) {
+                if (indexQuestion != null) {
+                    AssociationScreen(
+                        questionId = questionId,
+                        timePerQuestion = timePerQuestion,
+                        indexQuestion = indexQuestion,
+                        onNext = {
+                            NavigateToQuestion(navController, timePerQuestion, indexQuestion + 1)
+                        },
+                    )
+                }
+            }
+        }
+
+        composable("wordbased/{questionId}/{timePerQuestion}/{indexQuestion}") { backStackEntry ->
+            val questionId = backStackEntry.arguments?.getString("questionId")?.toIntOrNull()
+            val timePerQuestion =
+                backStackEntry.arguments?.getString("timePerQuestion")?.toIntOrNull()
+            val indexQuestion = backStackEntry.arguments?.getString("indexQuestion")?.toIntOrNull()
+
+            if (questionId != null && timePerQuestion != null) {
+                if (indexQuestion != null) {
+                    WordBasedScreen(
+                        questionId = questionId,
+                        timePerQuestion = timePerQuestion,
+                        indexQuestion = indexQuestion,
+                        onNext = {
+                            NavigateToQuestion(navController, timePerQuestion, indexQuestion + 1)
+                        },
+                    )
+                }
+            }
+        }
 
     }
 }
+
+

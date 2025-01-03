@@ -1,36 +1,34 @@
 package pt.isec.amov.quizectpamov.ui.screens
 
 import android.content.res.Configuration
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.RadioButton
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.lifecycle.viewmodel.compose.viewModel
-import pt.isec.amov.quizectpamov.viewmodel.QuestionViewModel
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.delay
+import pt.isec.amov.quizectpamov.viewmodel.QuestionViewModel
 
 @Composable
-fun SingleChoiceScreen(
+fun FillInTheBlankScreen(
     questionId: Int,
     timePerQuestion: Int,
     onNext: @Composable () -> Unit,
@@ -42,6 +40,7 @@ fun SingleChoiceScreen(
     var remainingTime by remember { mutableStateOf(timePerQuestion) }
     var isTimeUp by remember { mutableStateOf(false) }
     var next by remember { mutableStateOf(false) }
+    var userAnswer by remember { mutableStateOf("") }
 
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
@@ -65,62 +64,49 @@ fun SingleChoiceScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(16.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly,
+                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(
                     modifier = Modifier
                         .weight(1f)
-                        .padding(start = 32.dp, end = 16.dp),
+                        .padding(end = 16.dp),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     CircularProgressIndicator(
                         progress = remainingTime / timePerQuestion.toFloat(),
-                        modifier = Modifier
-                            .padding(bottom = 16.dp)
-                            .size(50.dp)
+                        modifier = Modifier.size(80.dp)
                     )
                     Text(
                         text = "$remainingTime seconds",
-                        fontSize = 18.sp,
-                        modifier = Modifier.padding(bottom = 16.dp)
+                        fontSize = 20.sp,
+                        modifier = Modifier.padding(top = 16.dp)
                     )
+                }
+                Column(
+                    modifier = Modifier.weight(2f),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.Start
+                ) {
                     Text(
                         text = question.questionText,
                         fontSize = 24.sp,
                         modifier = Modifier.padding(bottom = 16.dp)
                     )
-                }
-
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .verticalScroll(rememberScrollState()),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    question.options?.forEach { option ->
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
+                    question.options?.forEachIndexed { index, option ->
+                        OutlinedTextField(
+                            value = userAnswer,
+                            onValueChange = { userAnswer = it },
+                            label = { Text("Your Answer") },
                             modifier = Modifier
-                                .padding(8.dp)
-                                .fillMaxWidth()
-                        ) {
-                            RadioButton(
-                                selected = false,
-                                onClick = { /* Handle option selection */ }
-                            )
-                            Text(
-                                text = option,
-                                fontSize = 18.sp,
-                                modifier = Modifier.padding(start = 8.dp)
-                            )
-                        }
+                                .fillMaxWidth(0.8f)
+                                .padding(bottom = 16.dp)
+                        )
                     }
                 }
             }
         } else {
-            // Portrait layout
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -144,36 +130,17 @@ fun SingleChoiceScreen(
                     fontSize = 24.sp,
                     modifier = Modifier.padding(bottom = 32.dp)
                 )
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    question.options?.forEach { option ->
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .padding(8.dp)
-                                .fillMaxWidth()
-                        ) {
-                            RadioButton(
-                                selected = false,
-                                onClick = { /* Handle option selection */ }
-                            )
-                            Text(
-                                text = option,
-                                fontSize = 18.sp,
-                                modifier = Modifier.padding(start = 8.dp)
-                            )
-                        }
-                    }
+                question.options?.forEachIndexed { index, option ->
+                    OutlinedTextField(
+                        value = userAnswer,
+                        onValueChange = { userAnswer = it },
+                        label = { Text("Your Answer") },
+                        modifier = Modifier
+                            .fillMaxWidth(0.8f)
+                            .padding(bottom = 16.dp)
+                    )
                 }
             }
         }
-    } else {
-        Text(
-            text = "Question not found!",
-            fontSize = 18.sp,
-            color = Color.Red,
-            modifier = Modifier.padding(16.dp)
-        )
     }
 }
