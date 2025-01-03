@@ -36,12 +36,15 @@ fun QuestionsMenuScreen(navController: NavHostController, userViewModel: UserVie
     val questionViewModel: QuestionViewModel = viewModel()
     val context = LocalContext.current
 
-    val trueFalseQuestions = questionViewModel.getTrueFalseQuestions()
+    val Questions = questionViewModel.getExampleQuestions()
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE) 100.dp else 16.dp),
+            .padding(
+                horizontal = if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE) 100.dp else 16.dp,
+                vertical = 35.dp
+            ),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
@@ -78,7 +81,7 @@ fun QuestionsMenuScreen(navController: NavHostController, userViewModel: UserVie
                 .fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(trueFalseQuestions) { question ->
+            items(Questions) { question ->
                 Card(
                     modifier = Modifier
                         .padding(8.dp)
