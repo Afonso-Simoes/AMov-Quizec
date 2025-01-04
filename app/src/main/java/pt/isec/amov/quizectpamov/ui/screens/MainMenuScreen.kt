@@ -28,8 +28,7 @@ import pt.isec.amov.quizectpamov.ui.theme.WelcomeTitleStyle
 
 @Composable
 fun MainMenuScreen(
-    navController: NavHostController,
-    userViewModel: UserViewModel
+    navController: NavHostController
 ) {
     val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
     ShowMainMenuScreen(navController, isLandscape = isLandscape)

@@ -1,5 +1,7 @@
 package pt.isec.amov.quizectpamov.ui.screens
 
+import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,10 +20,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -39,9 +43,14 @@ fun TrueFalseScreen(
 ) {
     val questionViewModel: QuestionViewModel = viewModel()
     val question = getQuestionById(questionViewModel, questionId)
-    var remainingTime by remember { mutableIntStateOf(timePerQuestion) }
+    var remainingTime by rememberSaveable { mutableIntStateOf(timePerQuestion) }
     var isTimeUp by remember { mutableStateOf(false) }
     var next by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+
+    BackHandler {
+        Toast.makeText(context, R.string.error_go_back, Toast.LENGTH_SHORT).show()
+    }
 
     LaunchedEffect(Unit) {
         while (remainingTime > 0) {
@@ -65,10 +74,10 @@ fun TrueFalseScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             CircularProgressIndicator(
-                progress = remainingTime / timePerQuestion.toFloat(),
+                progress = { remainingTime / timePerQuestion.toFloat() },
                 modifier = Modifier
                     .padding(bottom = 16.dp)
-                    .size(50.dp)
+                    .size(50.dp),
             )
             Text(
                 text = "$remainingTime seconds",

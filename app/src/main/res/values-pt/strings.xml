@@ -69,4 +69,10 @@
     <string name="error_empty_pair">Os pares não podem estar vazios.</string>
     <string name="history_button">Ver Histórico</string>
     <string name="history_screen_title">Histórico</string>
+    <string name="error_go_back">Não pode voltar atrás!</string>
+    <string name="question_details_title">Detalhes da Pergunta</string>
+    <string name="question_text_label">Texto da Pergunta: %1$s</string>
+    <string name="question_type_label">Tipo: %1$s</string>
+    <string name="correct_answer_label">Resposta Correta: %1$s</string>
+    <string name="options_label">Opções: %1$s</string>
 </resources>

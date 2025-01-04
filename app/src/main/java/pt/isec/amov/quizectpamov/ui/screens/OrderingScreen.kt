@@ -1,6 +1,8 @@
 package pt.isec.amov.quizectpamov.ui.screens
 
 import android.content.res.Configuration
+import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,14 +22,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.delay
+import pt.isec.amov.quizectpamov.R
 import pt.isec.amov.quizectpamov.viewmodel.QuestionViewModel
 
 @Composable
@@ -39,10 +44,16 @@ fun OrderingScreen(
 ) {
     val questionViewModel: QuestionViewModel = viewModel()
     val question = getQuestionById(questionViewModel, questionId)
-    var remainingTime by remember { mutableIntStateOf(timePerQuestion) }
+    var remainingTime by rememberSaveable { mutableIntStateOf(timePerQuestion) }
     var isTimeUp by remember { mutableStateOf(false) }
     var next by remember { mutableStateOf(false) }
-    var options by remember { mutableStateOf(question?.options?.shuffled()?.toMutableList() ?: mutableListOf()) }
+    val options by remember { mutableStateOf(question?.options?.shuffled()?.toMutableList() ?: mutableListOf()) }
+
+    val context = LocalContext.current
+
+    BackHandler {
+        Toast.makeText(context, R.string.error_go_back, Toast.LENGTH_SHORT).show()
+    }
 
     LaunchedEffect(Unit) {
         while (remainingTime > 0) {
@@ -76,10 +87,10 @@ fun OrderingScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     CircularProgressIndicator(
-                        progress = remainingTime / timePerQuestion.toFloat(),
+                        progress = { remainingTime / timePerQuestion.toFloat() },
                         modifier = Modifier
                             .padding(bottom = 16.dp)
-                            .size(50.dp)
+                            .size(50.dp),
                     )
                     Text(
                         text = "$remainingTime seconds",
@@ -118,7 +129,7 @@ fun OrderingScreen(
                                 if (index > 0) {
                                     Text(
                                         text = "↑",
-                                        fontSize = 18.sp,
+                                        fontSize = 30.sp,
                                         modifier = Modifier
                                             .padding(start = 8.dp, end = 250.dp, top = 8.dp, bottom = 8.dp)
                                             .clickable {
@@ -129,7 +140,7 @@ fun OrderingScreen(
                                 if (index < options.size - 1) {
                                     Text(
                                         text = "↓",
-                                        fontSize = 18.sp,
+                                        fontSize = 30.sp,
                                         modifier = Modifier
                                             .padding(start = 4.dp, end = 250.dp, top = 4.dp, bottom = 4.dp)
                                             .clickable {
@@ -158,14 +169,19 @@ fun OrderingScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     CircularProgressIndicator(
-                        progress = remainingTime / timePerQuestion.toFloat(),
+                        progress = { remainingTime / timePerQuestion.toFloat() },
                         modifier = Modifier
                             .padding(bottom = 16.dp)
-                            .size(50.dp)
+                            .size(50.dp),
                     )
                     Text(
                         text = "$remainingTime seconds",
                         fontSize = 18.sp,
+                        modifier = Modifier.padding(bottom = 16.dp)
+                    )
+                    Text(
+                        text = question.questionText,
+                        fontSize = 24.sp,
                         modifier = Modifier.padding(bottom = 16.dp)
                     )
                     Column(
@@ -186,7 +202,7 @@ fun OrderingScreen(
                                     if (index > 0) {
                                         Text(
                                             text = "↑",
-                                            fontSize = 18.sp,
+                                            fontSize = 30.sp,
                                             modifier = Modifier
                                                 .padding(4.dp)
                                                 .clickable {
@@ -197,7 +213,7 @@ fun OrderingScreen(
                                     if (index < options.size - 1) {
                                         Text(
                                             text = "↓",
-                                            fontSize = 18.sp,
+                                            fontSize = 30.sp,
                                             modifier = Modifier
                                                 .padding(4.dp)
                                                 .clickable {

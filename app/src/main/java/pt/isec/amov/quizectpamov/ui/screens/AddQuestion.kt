@@ -85,7 +85,7 @@ fun AddQuestion(
                     onAnswerSelected = { answer -> trueFalseAnswer = answer },
                     onDismiss = onDismiss,
                     onSave = { questionText, answer ->
-
+                        //TODO: Implementar lógica para salvar a pergunta
                     }
                 )
             }
@@ -95,7 +95,7 @@ fun AddQuestion(
                     onQuestionTextChange = { questionText = it },
                     onDismiss = onDismiss,
                     onSave = { questionText, answers, correctAnswerIndex ->
-
+                        //TODO: Implementar lógica para salvar a pergunta
                     }
                 )
             }
@@ -105,7 +105,7 @@ fun AddQuestion(
                     onQuestionTextChange = { questionText = it },
                     onDismiss = onDismiss,
                     onSave = { questionText, answers, correctAnswerIndices ->
-
+                        //TODO: Implementar lógica para salvar a pergunta
                     }
                 )
             }
@@ -115,7 +115,7 @@ fun AddQuestion(
                     onQuestionTextChange = { newText -> questionText = newText },
                     onDismiss = onDismiss,
                     onSave = { questionText, pairs ->
-
+                        //TODO: Implementar lógica para salvar a pergunta
                     }
                 )
             }
@@ -125,7 +125,7 @@ fun AddQuestion(
                     onQuestionTextChange = { questionText = it },
                     onDismiss = onDismiss,
                     onSave = { questionText, orderedList ->
-
+                        //TODO: Implementar lógica para salvar a pergunta
                     }
                 )
             }
@@ -135,6 +135,7 @@ fun AddQuestion(
                     onQuestionTextChange = { questionText = it },
                     onDismiss = onDismiss,
                     onSave = { questionText, answers ->
+                        //TODO: Implementar lógica para salvar a pergunta
                     }
                 )
             }
@@ -144,7 +145,7 @@ fun AddQuestion(
                     onQuestionTextChange = { newText -> questionText = newText },
                     onDismiss = onDismiss,
                     onSave = { questionText, pairs ->
-                        // Implemente lógica para lidar com os pares de correspondência
+                        //TODO: Implementar lógica para salvar a pergunta
                     }
                 )
             }
@@ -156,6 +157,7 @@ fun AddQuestion(
                     onAnswerTextChange = {  },
                     onDismiss = onDismiss,
                     onSave = { questionText, initialAnswerText, answers ->
+                        //TODO: Implementar lógica para salvar a pergunta
                     }
                 )
             }

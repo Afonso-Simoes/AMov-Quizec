@@ -69,4 +69,10 @@
     <string name="error_empty_pair">The pairs cannot be empty.</string>
     <string name="history_button">View History</string>
     <string name="history_screen_title">History</string>
+    <string name="error_go_back">You cannot go back!</string>
+    <string name="question_details_title">Question Details</string>
+    <string name="question_text_label">Question Text: %1$s</string>
+    <string name="question_type_label">Type: %1$s</string>
+    <string name="correct_answer_label">Correct Answer: %1$s</string>
+    <string name="options_label">Options: %1$s</string>
 </resources>
