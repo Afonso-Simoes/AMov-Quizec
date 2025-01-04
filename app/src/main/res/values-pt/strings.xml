@@ -69,10 +69,20 @@
     <string name="error_empty_pair">Os pares não podem estar vazios.</string>
     <string name="history_button">Ver Histórico</string>
     <string name="history_screen_title">Histórico</string>
-    <string name="error_go_back">Não pode voltar atrás!</string>
+    <string name="error_go_back">Não podes voltar atrás!</string>
     <string name="question_details_title">Detalhes da Pergunta</string>
     <string name="question_text_label">Texto da Pergunta: %1$s</string>
     <string name="question_type_label">Tipo: %1$s</string>
     <string name="correct_answer_label">Resposta Correta: %1$s</string>
     <string name="options_label">Opções: %1$s</string>
+    <string name="quiz_name_label">Nome do Questionário</string>
+    <string name="quiz_description_label">Descrição do Questionário</string>
+    <string name="image_selected">Imagem Selecionada</string>
+    <string name="select_image">Selecionar Imagem</string>
+    <string name="correct">Correto</string>
+    <string name="wrong">Incorreto</string>
+    <string name="duplicate_question">Duplicar Pergunta</string>
+    <string name="placeholder_enter_number">Introduza um número</string>
+    <string name="question_results">Resultados da Questão %1$d</string>
+    <string name="total_answers">Total de Respostas: %1$d</string>
 </resources>

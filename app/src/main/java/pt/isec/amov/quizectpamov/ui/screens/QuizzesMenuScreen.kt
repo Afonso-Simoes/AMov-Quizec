@@ -1,6 +1,9 @@
 package pt.isec.amov.quizectpamov.ui.screens
 
 import android.content.res.Configuration
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -60,9 +63,13 @@ fun QuizzesMenuScreen() {
     var questionText by remember { mutableStateOf("") }
     val quizViewModel: QuizViewModel = viewModel()
     val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
+    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+    val hasError = remember { mutableStateOf(false) }
+    val errorMessage = remember { mutableStateOf("") }
 
+    //TODO: Remover o hardcoded
     val questionViewModel: QuestionViewModel = viewModel()
-    val trueFalseQuestions = questionViewModel.getExampleQuestions()
+    val questions = questionViewModel.getQuestions()
 
     Column(
         modifier = Modifier
@@ -79,10 +86,27 @@ fun QuizzesMenuScreen() {
         Button(
             onClick = { onDismiss = !onDismiss },
             modifier = Modifier
-                .padding(bottom = 16.dp)
                 .fillMaxWidth(0.7f)
         ) {
             Text(text = stringResource(id = R.string.add_quiz))
+        }
+
+        if (hasError.value) {
+            Text(
+                text = errorMessage.value,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+
+        if (hasError.value) {
+            Text(
+                text = errorMessage.value,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Spacer(modifier = Modifier.height(8.dp))
         }
 
         if (!isLandscape) Spacer(modifier = Modifier.height(16.dp))
@@ -92,8 +116,12 @@ fun QuizzesMenuScreen() {
             AddQuizForm(
                 quizName = quizName,
                 onQuizNameChange = { quizName = it },
+                quizDescription = "",
+                onQuizDescriptionChange = {},
+                selectedImageUri = selectedImageUri,
+                onImageSelect = { selectedImageUri = it },
                 isLandscape = isLandscape,
-                trueFalseQuestions = trueFalseQuestions,
+                trueFalseQuestions = questions,
                 selectedQuestions = selectedQuestions,
                 onQuestionClick = { newQuestionText, questionType ->
                     questionText = newQuestionText
@@ -115,6 +143,7 @@ fun QuizzesMenuScreen() {
                 onSaveClick = {
                     onDismiss = false
                     selectedQuestions = listOf()
+
                 }
             )
         }
@@ -128,6 +157,10 @@ fun QuizzesMenuScreen() {
 fun AddQuizForm(
     quizName: String,
     onQuizNameChange: (String) -> Unit,
+    quizDescription: String,
+    onQuizDescriptionChange: (String) -> Unit,
+    selectedImageUri: Uri?,
+    onImageSelect: (Uri?) -> Unit,
     isLandscape: Boolean,
     trueFalseQuestions: List<Question>,
     selectedQuestions: List<String>,
@@ -137,22 +170,78 @@ fun AddQuizForm(
     onSaveClick: () -> Unit
 ) {
     val context = LocalContext.current
+    val imageLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent(),
+        onResult = { uri -> onImageSelect(uri) }
+    )
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight()
     ) {
-        TextField(
-            value = quizName,
-            onValueChange = onQuizNameChange,
-            label = { Text("Quiz Name") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp, top = 16.dp, end = 16.dp)
-        )
+        if (isLandscape){
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                TextField(
+                    value = quizName,
+                    onValueChange = onQuizNameChange,
+                    label = { Text(stringResource(id = R.string.quiz_name_label)) },
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(end = 8.dp)
+                )
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                TextField(
+                    value = quizDescription,
+                    onValueChange = onQuizDescriptionChange,
+                    label = { Text(stringResource(id = R.string.quiz_description_label)) },
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(start = 8.dp)
+                )
+            }
+        }else{
+            TextField(
+                value = quizName,
+                onValueChange = onQuizNameChange,
+                label = { Text(stringResource(id = R.string.quiz_name_label)) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, top = 16.dp, end = 16.dp)
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            TextField(
+                value = quizDescription,
+                onValueChange = onQuizDescriptionChange,
+                label = { Text(stringResource(id = R.string.quiz_description_label)) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp)
+            )
+        }
+
 
         if (!isLandscape) Spacer(modifier = Modifier.height(8.dp))
+
+        Button(
+            onClick = { imageLauncher.launch("image/*") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+        ) {
+            Text(
+                text = if (selectedImageUri != null) stringResource(id = R.string.image_selected) else stringResource(id = R.string.select_image)            )
+        }
+
+        if (!isLandscape) Spacer(modifier = Modifier.height(16.dp))
 
         LazyColumn(
             modifier = Modifier
@@ -243,6 +332,7 @@ fun AddQuizForm(
 }
 
 
+
 @Composable
 fun QuizList(viewModel: QuizViewModel) {
     val quizzes = viewModel.getQuizzes()
@@ -272,7 +362,9 @@ fun QuizCard(quiz: Quiz, onQuizClick: QuizViewModel) {
     ) {
         Row(modifier = Modifier.padding(16.dp)) {
             Column(modifier = Modifier.weight(1f)) {
-                Text(text = quiz.name, style = MaterialTheme.typography.bodyLarge)
+                Text(text = quiz.name, style = MaterialTheme.typography.titleLarge)
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(text = quiz.description, style = MaterialTheme.typography.bodyLarge)
 
                 quiz.questions.forEach { question ->
                     Card(

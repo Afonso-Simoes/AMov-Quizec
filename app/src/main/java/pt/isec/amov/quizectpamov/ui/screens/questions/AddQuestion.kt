@@ -1,4 +1,4 @@
-package pt.isec.amov.quizectpamov.ui.screens
+package pt.isec.amov.quizectpamov.ui.screens.questions
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Column

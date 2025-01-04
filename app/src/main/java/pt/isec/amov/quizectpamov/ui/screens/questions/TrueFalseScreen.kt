@@ -1,4 +1,4 @@
-package pt.isec.amov.quizectpamov.ui.screens
+package pt.isec.amov.quizectpamov.ui.screens.questions
 
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
@@ -36,13 +36,13 @@ import pt.isec.amov.quizectpamov.viewmodel.QuestionViewModel
 
 @Composable
 fun TrueFalseScreen(
-    questionId: Int,
+    questionId: String,
     timePerQuestion: Int,
     onNext: @Composable () -> Unit,
     indexQuestion: Int
 ) {
     val questionViewModel: QuestionViewModel = viewModel()
-    val question = getQuestionById(questionViewModel, questionId)
+    val question = questionViewModel.getQuestionById(questionId)
     var remainingTime by rememberSaveable { mutableIntStateOf(timePerQuestion) }
     var isTimeUp by remember { mutableStateOf(false) }
     var next by remember { mutableStateOf(false) }

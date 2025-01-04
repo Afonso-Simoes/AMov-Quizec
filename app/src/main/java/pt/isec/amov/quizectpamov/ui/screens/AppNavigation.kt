@@ -5,6 +5,15 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import pt.isec.amov.quizectpamov.ui.screens.questions.AssociationScreen
+import pt.isec.amov.quizectpamov.ui.screens.questions.FillInTheBlankScreen
+import pt.isec.amov.quizectpamov.ui.screens.questions.MatchingScreen
+import pt.isec.amov.quizectpamov.ui.screens.questions.MultipleChoiceScreen
+import pt.isec.amov.quizectpamov.ui.screens.questions.OrderingScreen
+import pt.isec.amov.quizectpamov.ui.screens.questions.SingleChoiceScreen
+import pt.isec.amov.quizectpamov.ui.screens.questions.TrueFalseScreen
+import pt.isec.amov.quizectpamov.ui.screens.questions.WordBasedScreen
+import pt.isec.amov.quizectpamov.ui.screens.reports.GraficsScreen
 
 @Composable
 fun AppNavigation() {
@@ -44,7 +53,7 @@ fun AppNavigation() {
             HistoryScreen(navController, userViewModel)
         }
         composable("truefalse/{questionId}/{timePerQuestion}/{indexQuestion}") { backStackEntry ->
-            val questionId = backStackEntry.arguments?.getString("questionId")?.toIntOrNull()
+            val questionId = backStackEntry.arguments?.getString("questionId")
             val timePerQuestion = backStackEntry.arguments?.getString("timePerQuestion")?.toIntOrNull()
             val indexQuestion = backStackEntry.arguments?.getString("indexQuestion")?.toIntOrNull()
 
@@ -64,7 +73,7 @@ fun AppNavigation() {
 
 
         composable("singlechoice/{questionId}/{timePerQuestion}/{indexQuestion}") { backStackEntry ->
-            val questionId = backStackEntry.arguments?.getString("questionId")?.toIntOrNull()
+            val questionId = backStackEntry.arguments?.getString("questionId")
             val timePerQuestion = backStackEntry.arguments?.getString("timePerQuestion")?.toIntOrNull()
             val indexQuestion = backStackEntry.arguments?.getString("indexQuestion")?.toIntOrNull()
 
@@ -83,7 +92,7 @@ fun AppNavigation() {
         }
 
         composable("multiplechoice/{questionId}/{timePerQuestion}/{indexQuestion}") { backStackEntry ->
-            val questionId = backStackEntry.arguments?.getString("questionId")?.toIntOrNull()
+            val questionId = backStackEntry.arguments?.getString("questionId")
             val timePerQuestion = backStackEntry.arguments?.getString("timePerQuestion")?.toIntOrNull()
             val indexQuestion = backStackEntry.arguments?.getString("indexQuestion")?.toIntOrNull()
 
@@ -102,7 +111,7 @@ fun AppNavigation() {
         }
 
         composable("matching/{questionId}/{timePerQuestion}/{indexQuestion}") { backStackEntry ->
-            val questionId = backStackEntry.arguments?.getString("questionId")?.toIntOrNull()
+            val questionId = backStackEntry.arguments?.getString("questionId")
             val timePerQuestion =
                 backStackEntry.arguments?.getString("timePerQuestion")?.toIntOrNull()
             val indexQuestion = backStackEntry.arguments?.getString("indexQuestion")?.toIntOrNull()
@@ -122,7 +131,7 @@ fun AppNavigation() {
         }
 
         composable("ordering/{questionId}/{timePerQuestion}/{indexQuestion}") { backStackEntry ->
-            val questionId = backStackEntry.arguments?.getString("questionId")?.toIntOrNull()
+            val questionId = backStackEntry.arguments?.getString("questionId")
             val timePerQuestion =
                 backStackEntry.arguments?.getString("timePerQuestion")?.toIntOrNull()
             val indexQuestion = backStackEntry.arguments?.getString("indexQuestion")?.toIntOrNull()
@@ -142,7 +151,7 @@ fun AppNavigation() {
         }
 
         composable("fillintheblank/{questionId}/{timePerQuestion}/{indexQuestion}") { backStackEntry ->
-            val questionId = backStackEntry.arguments?.getString("questionId")?.toIntOrNull()
+            val questionId = backStackEntry.arguments?.getString("questionId")
             val timePerQuestion =
                 backStackEntry.arguments?.getString("timePerQuestion")?.toIntOrNull()
             val indexQuestion = backStackEntry.arguments?.getString("indexQuestion")?.toIntOrNull()
@@ -162,7 +171,7 @@ fun AppNavigation() {
         }
 
         composable("association/{questionId}/{timePerQuestion}/{indexQuestion}") { backStackEntry ->
-            val questionId = backStackEntry.arguments?.getString("questionId")?.toIntOrNull()
+            val questionId = backStackEntry.arguments?.getString("questionId")
             val timePerQuestion =
                 backStackEntry.arguments?.getString("timePerQuestion")?.toIntOrNull()
             val indexQuestion = backStackEntry.arguments?.getString("indexQuestion")?.toIntOrNull()
@@ -182,7 +191,7 @@ fun AppNavigation() {
         }
 
         composable("wordbased/{questionId}/{timePerQuestion}/{indexQuestion}") { backStackEntry ->
-            val questionId = backStackEntry.arguments?.getString("questionId")?.toIntOrNull()
+            val questionId = backStackEntry.arguments?.getString("questionId")
             val timePerQuestion =
                 backStackEntry.arguments?.getString("timePerQuestion")?.toIntOrNull()
             val indexQuestion = backStackEntry.arguments?.getString("indexQuestion")?.toIntOrNull()
@@ -201,6 +210,17 @@ fun AppNavigation() {
             }
         }
 
+        composable("grafics/{questionId}/{indexQuestion}") { backStackEntry ->
+            val questionId = backStackEntry.arguments?.getString("questionId")
+            val indexQuestion = backStackEntry.arguments?.getString("indexQuestion")?.toIntOrNull()
+
+            if (questionId != null && indexQuestion != null) {
+                GraficsScreen(
+                    questionId = questionId,
+                    indexQuestion = indexQuestion
+                )
+            }
+        }
     }
 }
 

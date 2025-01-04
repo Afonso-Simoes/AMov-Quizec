@@ -1,4 +1,4 @@
-package pt.isec.amov.quizectpamov.ui.screens
+package pt.isec.amov.quizectpamov.ui.screens.questions
 
 import android.content.res.Configuration
 import android.widget.Toast
@@ -37,13 +37,13 @@ import pt.isec.amov.quizectpamov.viewmodel.QuestionViewModel
 
 @Composable
 fun OrderingScreen(
-    questionId: Int,
+    questionId: String,
     timePerQuestion: Int,
     onNext: @Composable () -> Unit,
     indexQuestion: Int
 ) {
     val questionViewModel: QuestionViewModel = viewModel()
-    val question = getQuestionById(questionViewModel, questionId)
+    val question = questionViewModel.getQuestionById(questionId)
     var remainingTime by rememberSaveable { mutableIntStateOf(timePerQuestion) }
     var isTimeUp by remember { mutableStateOf(false) }
     var next by remember { mutableStateOf(false) }

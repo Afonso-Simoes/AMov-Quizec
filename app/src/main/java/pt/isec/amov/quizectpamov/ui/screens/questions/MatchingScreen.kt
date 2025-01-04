@@ -1,4 +1,4 @@
-package pt.isec.amov.quizectpamov.ui.screens
+package pt.isec.amov.quizectpamov.ui.screens.questions
 
 import android.content.res.Configuration
 import android.widget.Toast
@@ -34,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -43,13 +44,13 @@ import pt.isec.amov.quizectpamov.viewmodel.QuestionViewModel
 
 @Composable
 fun MatchingScreen(
-    questionId: Int,
+    questionId: String,
     timePerQuestion: Int,
     indexQuestion: Int,
     onNext: @Composable () -> Unit
 ) {
     val questionViewModel: QuestionViewModel = viewModel()
-    val question = getQuestionById(questionViewModel, questionId)
+    val question = questionViewModel.getQuestionById(questionId)
     var remainingTime by rememberSaveable { mutableIntStateOf(timePerQuestion) }
     var isTimeUp by remember { mutableStateOf(false) }
     var next by remember { mutableStateOf(false) }
@@ -146,8 +147,7 @@ fun MatchingScreen(
                                                 }
                                             }
                                         },
-                                        placeholder = { Text("Enter number") },
-                                        modifier = Modifier.fillMaxWidth()
+                                        placeholder = { Text(stringResource(id = R.string.placeholder_enter_number)) },                                        modifier = Modifier.fillMaxWidth()
                                     )
                                 }
                             }

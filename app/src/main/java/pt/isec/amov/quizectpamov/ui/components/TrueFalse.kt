@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import pt.isec.amov.quizectpamov.R
-import pt.isec.amov.quizectpamov.ui.screens.QuestionTextField
+import pt.isec.amov.quizectpamov.ui.screens.questions.QuestionTextField
 
 @Composable
 fun TrueFalse(

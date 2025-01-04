@@ -25,7 +25,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import pt.isec.amov.quizectpamov.R
-import pt.isec.amov.quizectpamov.data.model.Question
 import pt.isec.amov.quizectpamov.utils.enums.QuestionType
 import pt.isec.amov.quizectpamov.viewmodel.QuestionViewModel
 
@@ -108,12 +107,22 @@ fun ShowStartQuizScreen(navController: NavHostController, isLandscape: Boolean) 
 @Composable
 fun NavigateToQuestion(navController: NavHostController,timePerQuestion: Int, indexQuestion: Int) {
     val questionViewModel: QuestionViewModel = viewModel()
-    val questions = questionViewModel.getExampleQuestions()
+    val questions = questionViewModel.getQuestions()
 
     if (indexQuestion >= questions.size) {
         navController.navigate("startQuiz")
         return
+    
     }
+//    else if (indexQuestion > 0) {
+//        val question = questions[indexQuestion]
+//        if (question.questionType == QuestionType.TRUE_FALSE || question.questionType == QuestionType.SINGLE_CHOICE || question.questionType == QuestionType.MULTIPLE_CHOICE) {
+//            navController.navigate("grafics/${question.id}/$indexQuestion")
+//        }else if(question.questionType == QuestionType.MATCHING || question.questionType == QuestionType.ORDERING || question.questionType == QuestionType.FILL_IN_THE_BLANK || question.questionType == QuestionType.ASSOCIATION || question.questionType == QuestionType.WORD_BASED){
+//            // TODO: Lista de respostas mais usadas
+//        }
+//        return
+//    }
 
     val question = questions[indexQuestion]
 
@@ -134,12 +143,13 @@ fun NavigateToQuestion(navController: NavHostController,timePerQuestion: Int, in
     } else if (question.questionType == QuestionType.WORD_BASED) {
         navController.navigate("wordbased/${question.id}/$timePerQuestion/$indexQuestion")
     }
+
 }
 
 @Composable
 fun StartQuiz(navController: NavHostController, timePerQuestion: Int) {
     val questionViewModel: QuestionViewModel = viewModel()
-    val questions = questionViewModel.getExampleQuestions()
+    val questions = questionViewModel.getQuestions()
 
     var hasStarted by remember { mutableStateOf(false) }
 
@@ -156,10 +166,4 @@ fun StartQuiz(navController: NavHostController, timePerQuestion: Int) {
         )
     }
 }
-
-@Composable
-fun getQuestionById(questionViewModel: QuestionViewModel, questionId: Int): Question? {
-    return questionViewModel.getExampleQuestions().find { it.id == questionId.toString() }
-}
-
 
