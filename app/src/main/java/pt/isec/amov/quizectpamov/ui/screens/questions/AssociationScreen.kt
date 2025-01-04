@@ -1,4 +1,4 @@
-package pt.isec.amov.quizectpamov.ui.screens
+package pt.isec.amov.quizectpamov.ui.screens.questions
 
 import android.content.res.Configuration
 import android.widget.Toast
@@ -43,13 +43,13 @@ import pt.isec.amov.quizectpamov.viewmodel.QuestionViewModel
 
 @Composable
 fun AssociationScreen(
-    questionId: Int,
+    questionId: String,
     timePerQuestion: Int,
     indexQuestion: Int,
     onNext: @Composable () -> Unit
 ) {
     val questionViewModel: QuestionViewModel = viewModel()
-    val question = getQuestionById(questionViewModel, questionId)
+    val question = questionViewModel.getQuestionById(questionId)
     var remainingTime by rememberSaveable { mutableIntStateOf(timePerQuestion) }
     var isTimeUp by remember { mutableStateOf(false) }
     var next by remember { mutableStateOf(false) }
@@ -68,6 +68,7 @@ fun AssociationScreen(
         }
         isTimeUp = true
     }
+
 
     if (isTimeUp && !next) {
         next = true

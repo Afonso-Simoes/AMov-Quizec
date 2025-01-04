@@ -1,4 +1,4 @@
-package pt.isec.amov.quizectpamov.ui.screens
+package pt.isec.amov.quizectpamov.ui.screens.questions
 
 import android.content.res.Configuration
 import android.widget.Toast
@@ -6,7 +6,6 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -18,10 +17,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -36,18 +37,18 @@ import kotlinx.coroutines.delay
 import pt.isec.amov.quizectpamov.R
 
 @Composable
-fun SingleChoiceScreen(
-    questionId: Int,
+fun MultipleChoiceScreen(
+    questionId: String,
     timePerQuestion: Int,
     onNext: @Composable () -> Unit,
     indexQuestion: Int
 ) {
     val questionViewModel: QuestionViewModel = viewModel()
-    val question = getQuestionById(questionViewModel, questionId)
-
+    val question = questionViewModel.getQuestionById(questionId)
     var remainingTime by rememberSaveable { mutableIntStateOf(timePerQuestion) }
     var isTimeUp by remember { mutableStateOf(false) }
     var next by remember { mutableStateOf(false) }
+    val selectedOptions = remember { mutableStateListOf<String>() }
 
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
@@ -118,9 +119,15 @@ fun SingleChoiceScreen(
                                 .padding(8.dp)
                                 .fillMaxWidth()
                         ) {
-                            RadioButton(
-                                selected = false,
-                                onClick = { /* Handle option selection */ }
+                            Checkbox(
+                                checked = option in selectedOptions,
+                                onCheckedChange = { isChecked ->
+                                    if (isChecked) {
+                                        selectedOptions.add(option)
+                                    } else {
+                                        selectedOptions.remove(option)
+                                    }
+                                }
                             )
                             Text(
                                 text = option,
@@ -132,7 +139,6 @@ fun SingleChoiceScreen(
                 }
             }
         } else {
-            // Portrait layout
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -166,9 +172,15 @@ fun SingleChoiceScreen(
                                 .padding(8.dp)
                                 .fillMaxWidth()
                         ) {
-                            RadioButton(
-                                selected = false,
-                                onClick = { /* Handle option selection */ }
+                            Checkbox(
+                                checked = option in selectedOptions,
+                                onCheckedChange = { isChecked ->
+                                    if (isChecked) {
+                                        selectedOptions.add(option)
+                                    } else {
+                                        selectedOptions.remove(option)
+                                    }
+                                }
                             )
                             Text(
                                 text = option,

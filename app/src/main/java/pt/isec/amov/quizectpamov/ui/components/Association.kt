@@ -18,7 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import pt.isec.amov.quizectpamov.R
-import pt.isec.amov.quizectpamov.ui.screens.QuestionTextField
+import pt.isec.amov.quizectpamov.ui.screens.questions.QuestionTextField
 
 @Composable
 fun Association(
@@ -28,9 +28,11 @@ fun Association(
     onSave: (String, List<Pair<String?, String>>) -> Unit
 ) {
     var numberOfPairs by remember { mutableIntStateOf(2) }
-    var pairs by remember { mutableStateOf(
-        List(numberOfPairs) { Triple(true, null as String?, "") }
-    ) }
+    var pairs by remember {
+        mutableStateOf(
+            List(numberOfPairs) { Triple(true, null as String?, "") }
+        )
+    }
     var expanded by remember { mutableStateOf(false) }
 
     val errorEmptyQuestion = stringResource(id = R.string.error_empty_question)

@@ -1,4 +1,4 @@
-package pt.isec.amov.quizectpamov.ui.screens
+package pt.isec.amov.quizectpamov.ui.screens.questions
 
 import android.content.res.Configuration
 import android.widget.Toast
@@ -36,17 +36,19 @@ import kotlinx.coroutines.delay
 import pt.isec.amov.quizectpamov.R
 
 @Composable
-fun MultipleChoiceScreen(
-    questionId: Int,
+fun SingleChoiceScreen(
+    questionId: String,
     timePerQuestion: Int,
     onNext: @Composable () -> Unit,
     indexQuestion: Int
 ) {
     val questionViewModel: QuestionViewModel = viewModel()
-    val question = getQuestionById(questionViewModel, questionId)
+    val question = questionViewModel.getQuestionById(questionId)
+
     var remainingTime by rememberSaveable { mutableIntStateOf(timePerQuestion) }
     var isTimeUp by remember { mutableStateOf(false) }
     var next by remember { mutableStateOf(false) }
+    var selectedOption by remember { mutableStateOf<String?>(null) } // Estado para armazenar a opção selecionada
 
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
@@ -87,7 +89,7 @@ fun MultipleChoiceScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     CircularProgressIndicator(
-                        progress = { remainingTime / timePerQuestion.toFloat() },
+                        progress = remainingTime / timePerQuestion.toFloat(),
                         modifier = Modifier
                             .padding(bottom = 16.dp)
                             .size(50.dp),
@@ -118,8 +120,8 @@ fun MultipleChoiceScreen(
                                 .fillMaxWidth()
                         ) {
                             RadioButton(
-                                selected = false,
-                                onClick = { /* Handle option selection */ }
+                                selected = selectedOption == option, // Verifica se a opção está selecionada
+                                onClick = { selectedOption = option } // Atualiza o estado ao clicar
                             )
                             Text(
                                 text = option,
@@ -129,10 +131,9 @@ fun MultipleChoiceScreen(
                         }
                     }
                 }
-
             }
         } else {
-            // Layout for portrait orientation
+            // Portrait layout
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -141,7 +142,7 @@ fun MultipleChoiceScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 CircularProgressIndicator(
-                    progress = { remainingTime / timePerQuestion.toFloat() },
+                    progress = remainingTime / timePerQuestion.toFloat(),
                     modifier = Modifier
                         .padding(bottom = 16.dp)
                         .size(50.dp),
@@ -167,8 +168,8 @@ fun MultipleChoiceScreen(
                                 .fillMaxWidth()
                         ) {
                             RadioButton(
-                                selected = false, // You can manage the selected state as needed
-                                onClick = { /* Handle option selection */ }
+                                selected = selectedOption == option,
+                                onClick = { selectedOption = option }
                             )
                             Text(
                                 text = option,

@@ -31,7 +31,7 @@ fun SettingsScreen(navController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(vertical = 35.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
@@ -45,7 +45,7 @@ fun SettingsScreen(navController: NavHostController) {
             modifier = Modifier
                 .padding(vertical = if (isLandscape) 8.dp else 16.dp)
                 .width(290.dp)
-                .clip(RoundedCornerShape(8.dp)),
+                .clip(RoundedCornerShape(4.dp)),
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.secondary,
             ),
@@ -60,7 +60,7 @@ fun SettingsScreen(navController: NavHostController) {
             modifier = Modifier
                 .padding(vertical = if (isLandscape) 8.dp else 16.dp)
                 .width(290.dp)
-                .clip(RoundedCornerShape(8.dp)),
+                .clip(RoundedCornerShape(4.dp)),
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.secondary,
             ),
@@ -77,7 +77,7 @@ fun SettingsScreen(navController: NavHostController) {
             modifier = Modifier
                 .padding(vertical = if (isLandscape) 8.dp else 16.dp)
                 .width(290.dp)
-                .clip(RoundedCornerShape(8.dp)),
+                .clip(RoundedCornerShape(4.dp)),
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.Red,
                 contentColor = Color.White
