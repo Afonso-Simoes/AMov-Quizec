@@ -1,6 +1,7 @@
 package pt.isec.amov.quizectpamov.ui.screens
 
 import android.content.res.Configuration
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -43,6 +44,10 @@ fun ShowStartQuizScreen(navController: NavHostController, isLandscape: Boolean) 
 
     val titlePadding = if (isLandscape) 32.dp else 16.dp
     val inputPadding = if (isLandscape) 32.dp else 16.dp
+
+    BackHandler {
+        navController.navigate("mainMenu")
+    }
 
     if (startQuizState) {
         StartQuiz(navController, 5)
@@ -141,7 +146,7 @@ fun StartQuiz(navController: NavHostController, timePerQuestion: Int) {
     if (questions.isNotEmpty()) {
         if (!hasStarted) {
             hasStarted = true
-            NavigateToQuestion(navController, timePerQuestion,0);
+            NavigateToQuestion(navController, timePerQuestion,0)
         }
     } else {
         Text(

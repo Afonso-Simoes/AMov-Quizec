@@ -1,6 +1,8 @@
 package pt.isec.amov.quizectpamov.ui.screens
 
 import android.content.res.Configuration
+import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,15 +27,18 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.delay
+import pt.isec.amov.quizectpamov.R
 import pt.isec.amov.quizectpamov.viewmodel.QuestionViewModel
 
 @Composable
@@ -45,11 +50,16 @@ fun MatchingScreen(
 ) {
     val questionViewModel: QuestionViewModel = viewModel()
     val question = getQuestionById(questionViewModel, questionId)
-    var remainingTime by remember { mutableIntStateOf(timePerQuestion) }
+    var remainingTime by rememberSaveable { mutableIntStateOf(timePerQuestion) }
     var isTimeUp by remember { mutableStateOf(false) }
     var next by remember { mutableStateOf(false) }
-    var selectedLeft by remember { mutableStateOf<String?>(null) }
     val matchedPairs = remember { mutableStateListOf<Pair<String, String>>() }
+
+    val context = LocalContext.current
+
+    BackHandler {
+        Toast.makeText(context, R.string.error_go_back, Toast.LENGTH_SHORT).show()
+    }
 
     LaunchedEffect(Unit) {
         while (remainingTime > 0) {
@@ -84,10 +94,10 @@ fun MatchingScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     CircularProgressIndicator(
-                        progress = remainingTime / timePerQuestion.toFloat(),
+                        progress = { remainingTime / timePerQuestion.toFloat() },
                         modifier = Modifier
                             .padding(bottom = 16.dp)
-                            .size(50.dp)
+                            .size(50.dp),
                     )
                     Text(
                         text = "$remainingTime seconds",
@@ -175,10 +185,10 @@ fun MatchingScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 CircularProgressIndicator(
-                    progress = remainingTime / timePerQuestion.toFloat(),
+                    progress = { remainingTime / timePerQuestion.toFloat() },
                     modifier = Modifier
                         .padding(bottom = 16.dp)
-                        .size(50.dp)
+                        .size(50.dp),
                 )
                 Text(
                     text = "$remainingTime seconds",

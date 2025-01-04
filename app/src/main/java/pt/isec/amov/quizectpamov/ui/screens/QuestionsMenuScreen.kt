@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.ContentCopy
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -20,23 +21,20 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
 import pt.isec.amov.quizectpamov.R
 import pt.isec.amov.quizectpamov.ui.theme.WelcomeTitleStyle
 import pt.isec.amov.quizectpamov.viewmodel.QuestionViewModel
-import pt.isec.amov.quizectpamov.viewmodel.UserViewModel
 
 @Composable
-fun QuestionsMenuScreen(navController: NavHostController, userViewModel: UserViewModel) {
+fun QuestionsMenuScreen() {
     var showDialog by remember { mutableStateOf(false) }
     var questionText by remember { mutableStateOf("") }
     val initialQuestionType = stringResource(id = R.string.true_false)
     var selectedQuestionType by remember { mutableStateOf(initialQuestionType) }
-    val questionsList by remember { mutableStateOf(listOf<String>()) }
     val questionViewModel: QuestionViewModel = viewModel()
     val context = LocalContext.current
 
-    val Questions = questionViewModel.getExampleQuestions()
+    val questions = questionViewModel.getExampleQuestions()
 
     Column(
         modifier = Modifier
@@ -81,7 +79,7 @@ fun QuestionsMenuScreen(navController: NavHostController, userViewModel: UserVie
                 .fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(Questions) { question ->
+            items(questions) { question ->
                 Card(
                     modifier = Modifier
                         .padding(8.dp)
@@ -129,13 +127,11 @@ fun QuestionsMenuScreen(navController: NavHostController, userViewModel: UserVie
                                     // TODO: Implement delete question
                                 },
                                 modifier = Modifier
-                                    .background(Color.Gray, shape = CircleShape)
                                     .size(24.dp)
                             ) {
                                 Icon(
-                                    imageVector = Icons.Default.Close,
+                                    imageVector = Icons.Default.Delete,
                                     contentDescription = "Delete",
-                                    tint = Color.White
                                 )
                             }
                             Spacer(modifier = Modifier.height(8.dp))
@@ -144,13 +140,11 @@ fun QuestionsMenuScreen(navController: NavHostController, userViewModel: UserVie
                                     // TODO: Implement duplicate question
                                 },
                                 modifier = Modifier
-                                    .background(Color.Gray, shape = CircleShape)
                                     .size(24.dp)
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.ContentCopy,
                                     contentDescription = "Duplicate",
-                                    tint = Color.White
                                 )
                             }
                         }

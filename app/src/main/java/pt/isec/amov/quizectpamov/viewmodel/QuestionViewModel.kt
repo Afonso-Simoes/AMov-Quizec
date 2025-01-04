@@ -12,9 +12,8 @@ import pt.isec.amov.quizectpamov.utils.enums.QuestionType
 
 class QuestionViewModel : ViewModel() {
     private val repository = QuestionRepository()
-
-
     private val _questions = MutableStateFlow<List<Question>>(emptyList())
+
     val questions: StateFlow<List<Question>> get() = _questions
 
     private val _error = MutableStateFlow<String?>(null)
@@ -90,7 +89,7 @@ class QuestionViewModel : ViewModel() {
         }
     }
 
-
+    //TODO: Remover o hardcoded
     fun getExampleQuestions(): List<Question> {
         return listOf(
             // P01 - Perguntas de Sim/Não, Verdadeiro/Falso

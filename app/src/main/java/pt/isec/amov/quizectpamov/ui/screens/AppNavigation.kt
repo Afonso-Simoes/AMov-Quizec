@@ -5,7 +5,6 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import pt.isec.amov.quizectpamov.ui.components.Association
 
 @Composable
 fun AppNavigation() {
@@ -24,13 +23,13 @@ fun AppNavigation() {
             SignUpScreen(navController, userViewModel)
         }
         composable("mainMenu") {
-            MainMenuScreen(navController, userViewModel)
+            MainMenuScreen(navController)
         }
         composable("quizzesMenu") {
-            QuizzesMenuScreen(navController,userViewModel)
+            QuizzesMenuScreen()
         }
         composable("questionsMenu") {
-            QuestionsMenuScreen(navController, userViewModel)
+            QuestionsMenuScreen()
         }
         composable("startQuiz") {
             StartQuizScreen(navController)

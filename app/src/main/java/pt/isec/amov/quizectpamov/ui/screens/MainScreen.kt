@@ -54,7 +54,6 @@ fun ShowMainScreen(navController: NavHostController, isLandscape: Boolean, userV
     var password by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var isError by remember { mutableStateOf(false) }
-    var showDialog by remember { mutableStateOf(false) } // Controla o estado do dialog
 
     val errorMessage = stringResource(id = R.string.login_error)
 
