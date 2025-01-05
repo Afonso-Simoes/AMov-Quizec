@@ -75,7 +75,8 @@ fun MultipleChoiceMultipleAnswers(
                             val updatedAnswers = List(number) { index ->
                                 mutableData.value.options.getOrNull(index) ?: ""
                             }
-                            val updatedCorrectIndexes = mutableData.value.correctAnswerIndexes.filter { it < number }
+                            val updatedCorrectIndexes =
+                                mutableData.value.correctAnswerIndexes.filter { it < number }
                             mutableData.value = mutableData.value.copy(
                                 options = updatedAnswers,
                                 correctAnswerIndexes = updatedCorrectIndexes
@@ -90,15 +91,22 @@ fun MultipleChoiceMultipleAnswers(
 
     Spacer(modifier = Modifier.height(16.dp))
 
+
     for (index in 0 until numberOfAnswers) {
+        var value = "";
+        if (mutableData.value.options.size > 0) {
+            value = mutableData.value.options[index];
+        }
+
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
         ) {
             TextField(
-                value = mutableData.value.options[index],
+                value = value,
                 onValueChange = { text ->
-                    val updatedAnswers = mutableData.value.options.toMutableList().apply { this[index] = text }
+                    val updatedAnswers =
+                        mutableData.value.options.toMutableList().apply { this[index] = text }
                     mutableData.value = mutableData.value.copy(options = updatedAnswers)
                 },
                 label = { Text(stringResource(id = R.string.answer_label, index + 1)) },
@@ -110,10 +118,12 @@ fun MultipleChoiceMultipleAnswers(
             Checkbox(
                 checked = mutableData.value.correctAnswerIndexes.contains(index),
                 onCheckedChange = { isChecked ->
-                    val updatedCorrectIndexes = mutableData.value.correctAnswerIndexes.toMutableSet().apply {
-                        if (isChecked) add(index) else remove(index)
-                    }
-                    mutableData.value = mutableData.value.copy(correctAnswerIndexes = updatedCorrectIndexes.toList())
+                    val updatedCorrectIndexes =
+                        mutableData.value.correctAnswerIndexes.toMutableSet().apply {
+                            if (isChecked) add(index) else remove(index)
+                        }
+                    mutableData.value =
+                        mutableData.value.copy(correctAnswerIndexes = updatedCorrectIndexes.toList())
                 }
             )
         }
@@ -141,14 +151,17 @@ fun MultipleChoiceMultipleAnswers(
                         hasError.value = true
                         errorMessage.value = errorEmptyQuestion
                     }
+
                     mutableData.value.options.any { it.isBlank() } -> {
                         hasError.value = true
                         errorMessage.value = errorEmptyAnswer
                     }
+
                     mutableData.value.correctAnswerIndexes.isEmpty() -> {
                         hasError.value = true
                         errorMessage.value = errorNoAnswerSelected
                     }
+
                     else -> {
                         onSave(mutableData.value)
                         onDismiss()

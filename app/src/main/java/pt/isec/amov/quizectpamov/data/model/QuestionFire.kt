@@ -91,7 +91,7 @@ data class MultipleChoiceSingleAnswerQuestion(
         fun fromMap(data: Map<String, Any>): BaseQuestion {
             val question = data["question"] as String
             val options = data["options"] as List<String>
-            val correctAnswerIndex = data["correctAnswerIndex"] as Int
+            val correctAnswerIndex = data["correctAnswerIndex"].toString().toInt()
             return MultipleChoiceSingleAnswerQuestion(question, options, correctAnswerIndex)
         }
     }
