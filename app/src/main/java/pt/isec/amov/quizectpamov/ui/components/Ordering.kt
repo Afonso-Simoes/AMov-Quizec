@@ -103,9 +103,10 @@ fun Ordering(
                 }
 
                 TextField(
-                    value = option,
+                    value = mutableData.value.options.getOrNull(index) ?: option,
                     onValueChange = { text ->
                         options = options.toMutableList().apply { this[index] = text }
+                        mutableData.value = mutableData.value.copy(options = options)
                     },
                     label = { Text(stringResource(id = R.string.option_label, index + 1)) },
                     modifier = Modifier.weight(1f)

@@ -198,10 +198,23 @@ fun AddQuestion(
 
                     stringResource(id = R.string.ordering) -> {
                         Ordering(
-                            questionData = OrderingQuestion(questionText, listOf(), listOf()),
+                            questionData = if (editableQuestion != null
+                                && editableQuestion.data is OrderingQuestion
+                            ) {
+                                editableQuestion.data
+                            } else {
+                                OrderingQuestion(questionText,
+                                    listOf(),
+                                    listOf()
+                                )
+                            },
                             onDismiss = onDismiss,
                             onSave = { data ->
-                                viewModel.addQuestion(QuestionType.ORDERING, data)
+                                if (editableQuestion != null && editableQuestion.id != null) {
+                                    viewModel.updateQuestion(editableQuestion.id, data)
+                                } else {
+                                    viewModel.addQuestion(QuestionType.ORDERING, data)
+                                }
                                 onAddQuestion()
                                 viewModel.resetSaveState()
                             }

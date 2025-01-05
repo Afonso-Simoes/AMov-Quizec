@@ -34,6 +34,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -48,6 +49,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import pt.isec.amov.quizectpamov.R
 import pt.isec.amov.quizectpamov.data.model.Question
+import pt.isec.amov.quizectpamov.data.model.QuestionFire
 import pt.isec.amov.quizectpamov.data.model.Quiz
 import pt.isec.amov.quizectpamov.ui.theme.WelcomeTitleStyle
 import pt.isec.amov.quizectpamov.viewmodel.QuestionViewModel
@@ -66,10 +68,14 @@ fun QuizzesMenuScreen() {
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
     val hasError = remember { mutableStateOf(false) }
     val errorMessage = remember { mutableStateOf("") }
+    var isLoading by remember { mutableStateOf(true) }
+    val questions = remember { mutableStateOf<List<QuestionFire>>(emptyList()) }
+    val viewModel: QuestionViewModel = viewModel()
 
-    //TODO: Remover o hardcoded
-    val questionViewModel: QuestionViewModel = viewModel()
-    val questions = questionViewModel.getQuestions()
+    LaunchedEffect(Unit) {
+        loadQuestions(viewModel, questions) { isLoading = false }
+    }
+
 
     Column(
         modifier = Modifier
@@ -121,7 +127,7 @@ fun QuizzesMenuScreen() {
                 selectedImageUri = selectedImageUri,
                 onImageSelect = { selectedImageUri = it },
                 isLandscape = isLandscape,
-                trueFalseQuestions = questions,
+                questions = questions.value,
                 selectedQuestions = selectedQuestions,
                 onQuestionClick = { newQuestionText, questionType ->
                     questionText = newQuestionText
@@ -162,7 +168,7 @@ fun AddQuizForm(
     selectedImageUri: Uri?,
     onImageSelect: (Uri?) -> Unit,
     isLandscape: Boolean,
-    trueFalseQuestions: List<Question>,
+    questions: List<QuestionFire>,
     selectedQuestions: List<String>,
     onQuestionClick: (String, String) -> Unit,
     onAddQuestionClick: (String) -> Unit,
@@ -249,13 +255,13 @@ fun AddQuizForm(
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(trueFalseQuestions) { question ->
+            items(questions) { question ->
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(8.dp)
                         .clickable {
-                            onQuestionClick(question.questionText, question.questionType.getLocalizedName(context = context))
+                            onQuestionClick(question.data.question, question.type.getLocalizedName(context = context))
                         },
                 ) {
                     Row(modifier = Modifier.padding(16.dp)) {
@@ -265,28 +271,28 @@ fun AddQuizForm(
                                 .padding(end = 20.dp)
                         ) {
                             Text(
-                                text = question.questionText,
+                                text = question.data.question,
                                 style = MaterialTheme.typography.bodyLarge
                             )
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
-                                text = stringResource(id = R.string.question_type, question.questionType.getLocalizedName(context = LocalContext.current)),
+                                text = stringResource(id = R.string.question_type, question.type.getLocalizedName(context = LocalContext.current)),
                                 style = MaterialTheme.typography.bodyMedium
                             )
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Text(
-                                text = stringResource(id = R.string.correct_answer, question.correctAnswer?.joinToString(", ") ?: ""),
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Text(
-                                text = stringResource(id = R.string.answers, question.options?.joinToString(", ") ?: ""),
-                                style = MaterialTheme.typography.bodyMedium
-                            )
+//                            Spacer(modifier = Modifier.height(8.dp))
+//                            Text(
+//                                text = stringResource(id = R.string.correct_answer, question.correctAnswer?.joinToString(", ") ?: ""),
+//                                style = MaterialTheme.typography.bodyMedium
+//                            )
+//                            Spacer(modifier = Modifier.height(8.dp))
+//                            Text(
+//                                text = stringResource(id = R.string.answers, question.options?.joinToString(", ") ?: ""),
+//                                style = MaterialTheme.typography.bodyMedium
+//                            )
                         }
 
                         IconButton(
-                            onClick = { onAddQuestionClick(question.id) },
+                            onClick = { onAddQuestionClick(question.questionID) },
                             modifier = Modifier
                                 .background(if (selectedQuestions.contains(question.id)) Color.Green else Color.Gray, shape = CircleShape)
                                 .size(24.dp)
