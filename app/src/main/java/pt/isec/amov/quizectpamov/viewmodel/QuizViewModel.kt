@@ -28,6 +28,13 @@ class QuizViewModel : ViewModel() {
                     questionType = QuestionType.SINGLE_CHOICE,
                     options = listOf("Paris", "London", "Berlin", "Madrid", "Rome", "Lisbon"),
                     correctAnswer = listOf("Paris")
+                ),
+                Question(
+                    id = "3",
+                    questionText = "The quick brown ___ jumps over the lazy dog.",
+                    questionType = QuestionType.FILL_IN_THE_BLANK,
+                    options = null,
+                    correctAnswer = listOf("fox")
                 )
             )
         )
@@ -46,5 +53,11 @@ class QuizViewModel : ViewModel() {
     fun getQuizById(id: String): Quiz? {
         return quizzes.find { it.id == id }
     }
+
+
+    fun doesQuizExist(value: String): Boolean {
+        return quizzes.any { it.id == value }
+    }
+
 
 }

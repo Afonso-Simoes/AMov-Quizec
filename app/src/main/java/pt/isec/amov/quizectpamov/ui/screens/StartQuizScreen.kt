@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -27,6 +28,7 @@ import androidx.navigation.NavHostController
 import pt.isec.amov.quizectpamov.R
 import pt.isec.amov.quizectpamov.utils.enums.QuestionType
 import pt.isec.amov.quizectpamov.viewmodel.QuestionViewModel
+import pt.isec.amov.quizectpamov.viewmodel.QuizViewModel
 
 @Composable
 fun StartQuizScreen(
@@ -40,7 +42,9 @@ fun StartQuizScreen(
 fun ShowStartQuizScreen(navController: NavHostController, isLandscape: Boolean) {
     val gameCode = remember { mutableStateOf("") }
     var startQuizState by remember { mutableStateOf(false) }
-
+    var isError by remember { mutableStateOf(false) }
+    val errorMessage = stringResource(id = R.string.quiz_code_error)
+    val quizViewModel: QuizViewModel = viewModel()
     val titlePadding = if (isLandscape) 32.dp else 16.dp
     val inputPadding = if (isLandscape) 32.dp else 16.dp
 
@@ -49,7 +53,7 @@ fun ShowStartQuizScreen(navController: NavHostController, isLandscape: Boolean) 
     }
 
     if (startQuizState) {
-        StartQuiz(navController, 5)
+        StartQuiz(navController, 5,gameCode.value)
     }else{
         Column(
             modifier = Modifier
@@ -63,6 +67,15 @@ fun ShowStartQuizScreen(navController: NavHostController, isLandscape: Boolean) 
                 fontSize = 24.sp,
                 modifier = Modifier.padding(bottom = titlePadding)
             )
+
+            if (isError) {
+                Text(
+                    text = errorMessage,
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
+            }
 
             TextField(
                 value = gameCode.value,
@@ -88,10 +101,10 @@ fun ShowStartQuizScreen(navController: NavHostController, isLandscape: Boolean) 
 
             Button(
                 onClick = {
-                    if (gameCode.value == "1") {
+                    if (quizViewModel.doesQuizExist(gameCode.value)) {
                         startQuizState = true
                     } else {
-                        // TODO: Mostar mensagem de erro
+                        isError = true
                     }
                 },
                 modifier = buttonModifier
@@ -105,24 +118,25 @@ fun ShowStartQuizScreen(navController: NavHostController, isLandscape: Boolean) 
 }
 
 @Composable
-fun NavigateToQuestion(navController: NavHostController,timePerQuestion: Int, indexQuestion: Int) {
+fun NavigateToQuestion(navController: NavHostController, timePerQuestion: Int, indexQuestion: Int, isGrafics: Boolean = false) {
     val questionViewModel: QuestionViewModel = viewModel()
     val questions = questionViewModel.getQuestions()
+
+    if (indexQuestion > 0 && isGrafics) {
+        val question = questions[indexQuestion - 1]
+        if (question.questionType == QuestionType.TRUE_FALSE || question.questionType == QuestionType.SINGLE_CHOICE || question.questionType == QuestionType.MULTIPLE_CHOICE) {
+            navController.navigate("grafics/${question.id}/$indexQuestion/$timePerQuestion")
+        }else if(question.questionType == QuestionType.MATCHING || question.questionType == QuestionType.ORDERING || question.questionType == QuestionType.FILL_IN_THE_BLANK || question.questionType == QuestionType.ASSOCIATION || question.questionType == QuestionType.WORD_BASED){
+            navController.navigate("mostusedanswers/${question.id}/$indexQuestion/$timePerQuestion")
+        }
+        return
+    }
 
     if (indexQuestion >= questions.size) {
         navController.navigate("startQuiz")
         return
     
     }
-//    else if (indexQuestion > 0) {
-//        val question = questions[indexQuestion]
-//        if (question.questionType == QuestionType.TRUE_FALSE || question.questionType == QuestionType.SINGLE_CHOICE || question.questionType == QuestionType.MULTIPLE_CHOICE) {
-//            navController.navigate("grafics/${question.id}/$indexQuestion")
-//        }else if(question.questionType == QuestionType.MATCHING || question.questionType == QuestionType.ORDERING || question.questionType == QuestionType.FILL_IN_THE_BLANK || question.questionType == QuestionType.ASSOCIATION || question.questionType == QuestionType.WORD_BASED){
-//            // TODO: Lista de respostas mais usadas
-//        }
-//        return
-//    }
 
     val question = questions[indexQuestion]
 
@@ -147,23 +161,27 @@ fun NavigateToQuestion(navController: NavHostController,timePerQuestion: Int, in
 }
 
 @Composable
-fun StartQuiz(navController: NavHostController, timePerQuestion: Int) {
-    val questionViewModel: QuestionViewModel = viewModel()
-    val questions = questionViewModel.getQuestions()
+fun StartQuiz(navController: NavHostController, timePerQuestion: Int, gameCode: String) {
+    val quizViewModel: QuizViewModel = viewModel()
+    val quiz = quizViewModel.getQuizById(gameCode)
+
+    val questions = quiz?.questions
 
     var hasStarted by remember { mutableStateOf(false) }
 
-    if (questions.isNotEmpty()) {
-        if (!hasStarted) {
-            hasStarted = true
-            NavigateToQuestion(navController, timePerQuestion,0)
+    if (questions != null) {
+        if (questions.isNotEmpty()) {
+            if (!hasStarted) {
+                hasStarted = true
+                NavigateToQuestion(navController, timePerQuestion,0)
+            }
+        } else {
+            Text(
+                text = "No questions available.",
+                modifier = Modifier.fillMaxSize(),
+                fontSize = 24.sp
+            )
         }
-    } else {
-        Text(
-            text = "No questions available.",
-            modifier = Modifier.fillMaxSize(),
-            fontSize = 24.sp
-        )
     }
 }
 
