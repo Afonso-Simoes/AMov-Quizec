@@ -20,8 +20,9 @@ fun WordBasedResponse(
     onDismiss: () -> Unit,
     onSave: (WordBasedQuestion) -> Unit
 ) {
+    val mutableData = remember { mutableStateOf(questionData) }
     var answerText by remember { mutableStateOf("") }
-    val numberOfBlanks = remember(answerText) { answerText.split("___").size - 1 }
+    val numberOfBlanks = remember(answerText) { mutableData.value.initialAnswerText.split("___").size - 1 }
     var answers by remember(numberOfBlanks) { mutableStateOf(List(numberOfBlanks) { "" }) }
     val errorEmptyQuestion = stringResource(id = R.string.error_empty_question)
     val errorEmptyAnswer = stringResource(id = R.string.error_empty_answer)
@@ -30,7 +31,6 @@ fun WordBasedResponse(
     val hasError = remember { mutableStateOf(false) }
     val errorMessage = remember { mutableStateOf("") }
 
-    val mutableData = remember { mutableStateOf(questionData) }
 
     @Composable
     fun formatResponseWithBlanks(text: String): String {
@@ -68,7 +68,7 @@ fun WordBasedResponse(
         )
 
         TextField(
-            value = answerText,
+            value = mutableData.value.initialAnswerText,
             onValueChange = {
                 answerText = it
                 mutableData.value = mutableData.value.copy(initialAnswerText = it)
@@ -80,7 +80,8 @@ fun WordBasedResponse(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        val formattedAnswerText = formatResponseWithBlanks(answerText)
+        val formattedAnswerText = formatResponseWithBlanks(mutableData.value.initialAnswerText)
+
         Text(
             text = formattedAnswerText,
             modifier = Modifier.fillMaxWidth()
@@ -94,7 +95,7 @@ fun WordBasedResponse(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 TextField(
-                    value = answers.getOrElse(index) { "" },
+                    value = if (index < mutableData.value.answers.size) mutableData.value.answers[index] else "",
                     onValueChange = { text ->
                         answers = answers.toMutableList().apply { this[index] = text }
                     },

@@ -81,9 +81,10 @@ fun FillInTheBlank(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 TextField(
-                    value = answers.getOrElse(index) { "" },
+                    value = if (index < mutableData.value.correctAnswers.size) mutableData.value.correctAnswers[index] else "",
                     onValueChange = { text ->
                         answers = answers.toMutableList().apply { this[index] = text }
+                        mutableData.value = mutableData.value.copy(correctAnswers = answers)
                     },
                     label = { Text(stringResource(id = R.string.blank_space_label, index + 1)) },
                     modifier = Modifier.weight(1f)

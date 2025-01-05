@@ -223,10 +223,20 @@ fun AddQuestion(
 
                     stringResource(id = R.string.fill_in_the_blank) -> {
                         FillInTheBlank(
-                            questionData = FillInTheBlankQuestion(questionText, listOf()),
+                            questionData = if (editableQuestion != null
+                                && editableQuestion.data is FillInTheBlankQuestion
+                            ) {
+                                editableQuestion.data
+                            } else {
+                                FillInTheBlankQuestion(questionText, listOf())
+                            },
                             onDismiss = onDismiss,
                             onSave = { data ->
-                                viewModel.addQuestion(QuestionType.FILL_IN_THE_BLANK, data)
+                                if (editableQuestion != null && editableQuestion.id != null) {
+                                    viewModel.updateQuestion(editableQuestion.id, data)
+                                } else {
+                                    viewModel.addQuestion(QuestionType.FILL_IN_THE_BLANK, data)
+                                }
                                 onAddQuestion()
                                 viewModel.resetSaveState()
                             }
@@ -235,15 +245,25 @@ fun AddQuestion(
 
                     stringResource(id = R.string.association) -> {
                         Association(
-                            questionData = AssociationQuestion(
-                                questionText,
-                                listOf(),
-                                listOf(),
-                                listOf()
-                            ),
+                            questionData = if (editableQuestion != null
+                                && editableQuestion.data is AssociationQuestion
+                            ) {
+                                editableQuestion.data
+                            } else {
+                                AssociationQuestion(
+                                    questionText,
+                                    listOf(),
+                                    listOf(),
+                                    listOf()
+                                )
+                            },
                             onDismiss = onDismiss,
                             onSave = { data ->
-                                viewModel.addQuestion(QuestionType.ASSOCIATION, data)
+                                if (editableQuestion != null && editableQuestion.id != null) {
+                                    viewModel.updateQuestion(editableQuestion.id, data)
+                                } else {
+                                    viewModel.addQuestion(QuestionType.ASSOCIATION, data)
+                                }
                                 onAddQuestion()
                                 viewModel.resetSaveState()
                             }
@@ -252,10 +272,20 @@ fun AddQuestion(
 
                     stringResource(id = R.string.word_based_response) -> {
                         WordBasedResponse(
-                            questionData = WordBasedQuestion(questionText, "", listOf()),
+                            questionData = if (editableQuestion != null
+                                && editableQuestion.data is WordBasedQuestion
+                            ) {
+                                editableQuestion.data
+                            } else {
+                                WordBasedQuestion(questionText, "", listOf())
+                            },
                             onDismiss = onDismiss,
                             onSave = { data ->
-                                viewModel.addQuestion(QuestionType.WORD_BASED, data)
+                                if (editableQuestion != null && editableQuestion.id != null) {
+                                    viewModel.updateQuestion(editableQuestion.id, data)
+                                } else {
+                                    viewModel.addQuestion(QuestionType.WORD_BASED, data)
+                                }
                                 onAddQuestion()
                                 viewModel.resetSaveState()
                             }
