@@ -22,7 +22,7 @@ data class QuestionFire(
     }
 
     companion object {
-        fun fromJson(id: String, data: Map<String, Object>): QuestionFire? {
+        fun fromJson(id: String, data: Map<String, Any>): QuestionFire? {
             val id = id
             val questionID = data["questionID"] as? String ?: return null
             val createdAt = data["created_at"] as? Long ?: return null
