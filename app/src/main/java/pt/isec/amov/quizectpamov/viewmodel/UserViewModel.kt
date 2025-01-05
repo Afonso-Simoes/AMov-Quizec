@@ -9,21 +9,26 @@ import kotlinx.coroutines.launch
 import pt.isec.amov.quizectpamov.data.dtos.UserDTO
 import pt.isec.amov.quizectpamov.data.repository.UserRepository
 
-fun FirebaseUser.toUser() : UserDTO {
+fun FirebaseUser.toUser(): UserDTO {
     val displayName = this.displayName ?: ""
     val strEmail = this.email ?: "n.d."
-    return UserDTO(displayName,strEmail)
+    return UserDTO(displayName, strEmail)
 }
 
 class UserViewModel : ViewModel() {
     private val userRepository = UserRepository()
 
     private val _user = mutableStateOf(userRepository.currentUser?.toUser())
-    val user : MutableState<UserDTO?>
+
+
+    val user: MutableState<UserDTO?>
         get() = _user
 
+    val isLoggedIn: Boolean
+        get() = _user.value != null
+
     private val _error = mutableStateOf<String?>(null)
-    val error : MutableState<String?>
+    val error: MutableState<String?>
         get() = _error
 
     fun createUserWithEmail(email: String, password: String, onResult: (Boolean) -> Unit) {
@@ -46,7 +51,7 @@ class UserViewModel : ViewModel() {
     }
 
     fun signInWithEmail(email: String, password: String, onResult: (Boolean) -> Unit) {
-        if (email.isBlank() || password.isBlank()){
+        if (email.isBlank() || password.isBlank()) {
             onResult(false) // Return false for invalid input
             return
         }
@@ -68,6 +73,20 @@ class UserViewModel : ViewModel() {
         userRepository.signOut()
         _user.value = null
         _error.value = null
+    }
+
+    fun deleteAccount(onResult: (Boolean) -> Unit) {
+        userRepository.deleteAccount { success ->
+            if (success) {
+                _user.value = null
+                _error.value = null
+                onResult(true)
+            } else {
+
+                _error.value = "Erro ao excluir conta."
+                onResult(false)
+            }
+        }
     }
 
 }

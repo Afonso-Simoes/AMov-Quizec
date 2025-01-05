@@ -24,6 +24,23 @@ class UserRepository {
             }
     }
 
+    fun deleteAccount(onResult: (Boolean) -> Unit) {
+        val user = auth.currentUser
+        if (user != null) {
+            user.delete()
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        onResult(true)
+                    } else {
+                        onResult(false)
+                    }
+                }
+        } else {
+            // Caso o usuário não esteja autenticado
+            onResult(false)
+        }
+    }
+
     fun signOut() {
         if (auth.currentUser != null) {
             auth.signOut()

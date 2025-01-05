@@ -166,7 +166,6 @@ fun ShowMainScreen(navController: NavHostController, isLandscape: Boolean, userV
         ) {
             Text(stringResource(id = R.string.credits_button), style = MaterialTheme.typography.bodyLarge)
         }
-
     }
 
 }

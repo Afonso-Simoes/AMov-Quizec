@@ -90,4 +90,5 @@
     <string name="remaining_time">%1$d seconds remaining</string>
     <string name="quiz_code_label">Game Code</string>
     <string name="no_questions_available">No questions available</string>
+    <string name="logout">Logout</string>
 </resources>

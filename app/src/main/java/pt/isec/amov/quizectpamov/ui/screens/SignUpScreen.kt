@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import pt.isec.amov.quizectpamov.R
@@ -109,6 +110,7 @@ fun ShowSingUpScreen(navController: NavHostController, userViewModel: UserViewMo
             value = password,
             onValueChange = { newPassword -> password = newPassword },
             label = { Text(stringResource(id = R.string.pass_label)) },
+            visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier
                 .padding(vertical = if (isLandscape) 8.dp else 16.dp)
                 .clip(RoundedCornerShape(8.dp)),

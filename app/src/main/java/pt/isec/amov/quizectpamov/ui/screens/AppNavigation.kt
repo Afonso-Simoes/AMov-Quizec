@@ -2,6 +2,7 @@ package pt.isec.amov.quizectpamov.ui.screens
 
 import pt.isec.amov.quizectpamov.viewmodel.UserViewModel
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -24,7 +25,7 @@ fun AppNavigation() {
     //ON DEMAND
 
     var start = "login";
-    if (userViewModel.user != null) {
+    if (userViewModel.isLoggedIn) {
         start = "mainMenu"
     }
 
@@ -51,7 +52,7 @@ fun AppNavigation() {
             StartQuizScreen(navController)
         }
         composable("settings") {
-            SettingsScreen(navController)
+            SettingsScreen(navController, userViewModel)
         }
         composable("credits") {
             CreditsScreen()
