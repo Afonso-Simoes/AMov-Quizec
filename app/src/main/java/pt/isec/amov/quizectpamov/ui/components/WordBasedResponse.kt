@@ -11,17 +11,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import pt.isec.amov.quizectpamov.R
+import pt.isec.amov.quizectpamov.data.model.WordBasedQuestion
+import pt.isec.amov.quizectpamov.ui.screens.questions.QuestionTextField
 
 @Composable
 fun WordBasedResponse(
-    questionText: String,
-    initialAnswerText: String,
-    onQuestionTextChange: (String) -> Unit,
-    onAnswerTextChange: (String) -> Unit,
+    questionData: WordBasedQuestion,
     onDismiss: () -> Unit,
-    onSave: (String, String, List<String>) -> Unit
+    onSave: (WordBasedQuestion) -> Unit
 ) {
-    var answerText by remember { mutableStateOf(initialAnswerText) }
+    var answerText by remember { mutableStateOf("") }
     val numberOfBlanks = remember(answerText) { answerText.split("___").size - 1 }
     var answers by remember(numberOfBlanks) { mutableStateOf(List(numberOfBlanks) { "" }) }
     val errorEmptyQuestion = stringResource(id = R.string.error_empty_question)
@@ -30,6 +29,8 @@ fun WordBasedResponse(
 
     val hasError = remember { mutableStateOf(false) }
     val errorMessage = remember { mutableStateOf("") }
+
+    val mutableData = remember { mutableStateOf(questionData) }
 
     @Composable
     fun formatResponseWithBlanks(text: String): String {
@@ -51,12 +52,11 @@ fun WordBasedResponse(
             Spacer(modifier = Modifier.height(8.dp))
         }
 
-        TextField(
-            value = questionText,
-            onValueChange = onQuestionTextChange,
-            label = { Text(stringResource(id = R.string.question_text)) },
-            modifier = Modifier.fillMaxWidth(),
-            maxLines = 2
+        QuestionTextField(
+            questionText = mutableData.value.question,
+            onQuestionTextChange = { text ->
+                mutableData.value = mutableData.value.copy(question = text)
+            }
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -71,7 +71,7 @@ fun WordBasedResponse(
             value = answerText,
             onValueChange = {
                 answerText = it
-                onAnswerTextChange(it) // Propague a mudança para o estado externo
+                mutableData.value = mutableData.value.copy(initialAnswerText = it)
             },
             label = { Text(stringResource(id = R.string.answer)) },
             modifier = Modifier.fillMaxWidth(),
@@ -121,7 +121,7 @@ fun WordBasedResponse(
 
             Button(
                 onClick = {
-                    if (questionText.isBlank()) {
+                    if (mutableData.value.question.isBlank()) {
                         hasError.value = true
                         errorMessage.value = errorEmptyQuestion
                     } else if (answerText.isBlank()) {
@@ -134,7 +134,8 @@ fun WordBasedResponse(
                         hasError.value = true
                         errorMessage.value = errorEmptyAnswer
                     } else {
-                        onSave(questionText, answerText, answers)
+                        mutableData.value = mutableData.value.copy(answers = answers)
+                        onSave(mutableData.value)
                         onDismiss()
                     }
                 },

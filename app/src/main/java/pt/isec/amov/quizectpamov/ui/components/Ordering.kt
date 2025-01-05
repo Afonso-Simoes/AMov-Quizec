@@ -18,13 +18,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import pt.isec.amov.quizectpamov.R
+import pt.isec.amov.quizectpamov.data.model.MultipleChoiceSingleAnswerQuestion
+import pt.isec.amov.quizectpamov.data.model.OrderingQuestion
 import pt.isec.amov.quizectpamov.ui.screens.questions.QuestionTextField
 @Composable
 fun Ordering(
-    questionText: String,
-    onQuestionTextChange: (String) -> Unit,
+    questionData: OrderingQuestion,
     onDismiss: () -> Unit,
-    onSave: (String, List<String>) -> Unit
+    onSave: (OrderingQuestion) -> Unit
 ) {
     var numberOfOptions by remember { mutableIntStateOf(2) }
     var options by remember { mutableStateOf(List(numberOfOptions) { "" }) }
@@ -34,6 +35,8 @@ fun Ordering(
 
     val hasError = remember { mutableStateOf(false) }
     val errorMessage = remember { mutableStateOf("") }
+
+    val mutableData = remember { mutableStateOf(questionData) }
 
     Column(modifier = Modifier.fillMaxWidth()) {
         if (hasError.value) {
@@ -46,8 +49,10 @@ fun Ordering(
         }
 
         QuestionTextField(
-            questionText = questionText,
-            onQuestionTextChange = onQuestionTextChange
+            questionText = mutableData.value.question,
+            onQuestionTextChange = { text ->
+                mutableData.value = mutableData.value.copy(question = text)
+            },
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -139,14 +144,16 @@ fun Ordering(
 
             Button(
                 onClick = {
-                    if (questionText.isBlank()) {
+                    if (mutableData.value.question.isBlank()) {
                         hasError.value = true
                         errorMessage.value = errorEmptyQuestion
                     } else if (options.any { it.isBlank() }) {
                         hasError.value = true
                         errorMessage.value = errorEmptyAnswer
                     } else {
-                        onSave(questionText, options.filter { it.isNotBlank() })
+                        val shuffledOptions = options.shuffled()
+                        mutableData.value = mutableData.value.copy(options = options, correctOrder = options.indices.toList())
+                        onSave(mutableData.value.copy(options = shuffledOptions, correctOrder = shuffledOptions.map { options.indexOf(it) }))
                         onDismiss()
                     }
                 },

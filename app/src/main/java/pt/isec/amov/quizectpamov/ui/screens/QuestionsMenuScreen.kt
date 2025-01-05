@@ -36,6 +36,7 @@ fun QuestionsMenuScreen() {
     val coroutineScope = rememberCoroutineScope()
 
     val questions = remember { mutableStateOf<List<QuestionFire>>(emptyList()) }
+
     LaunchedEffect(Unit) {
         // Call the suspend function getAllQuestions from the ViewModel
         val fetchedQuestions = viewModel.getAllQuestions()

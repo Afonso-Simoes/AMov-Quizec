@@ -11,16 +11,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import pt.isec.amov.quizectpamov.R
+import pt.isec.amov.quizectpamov.data.model.FillInTheBlankQuestion
 import pt.isec.amov.quizectpamov.ui.screens.questions.QuestionTextField
 
 @Composable
 fun FillInTheBlank(
-    questionText: String,
-    onQuestionTextChange: (String) -> Unit,
+    questionData: FillInTheBlankQuestion,
     onDismiss: () -> Unit,
-    onSave: (String, List<String>) -> Unit
+    onSave: (FillInTheBlankQuestion) -> Unit
 ) {
-    val numberOfBlanks = remember(questionText) { questionText.split("___").size - 1 }
+    val mutableData = remember { mutableStateOf(questionData) }
+
+    val numberOfBlanks = remember(mutableData.value.question) { mutableData.value.question.split("___").size - 1 }
     var answers by remember(numberOfBlanks) { mutableStateOf(List(numberOfBlanks) { "" }) }
     val errorEmptyQuestion = stringResource(id = R.string.error_empty_question)
     val errorEmptyAnswer = stringResource(id = R.string.error_empty_answer)
@@ -56,14 +58,16 @@ fun FillInTheBlank(
         )
 
         QuestionTextField(
-            questionText = questionText,
-            onQuestionTextChange = onQuestionTextChange
+            questionText = mutableData.value.question,
+            onQuestionTextChange = { text ->
+                mutableData.value = mutableData.value.copy(question = text)
+            },
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
 
-        val formattedQuestionText = formatQuestionWithBlanks(questionText)
+        val formattedQuestionText = formatQuestionWithBlanks(mutableData.value.question)
         Text(
             text = formattedQuestionText,
             modifier = Modifier.fillMaxWidth()
@@ -104,7 +108,7 @@ fun FillInTheBlank(
 
             Button(
                 onClick = {
-                    if (questionText.isBlank()) {
+                    if (mutableData.value.question.isBlank()) {
                         hasError.value = true
                         errorMessage.value = errorEmptyQuestion
                     }else if (numberOfBlanks == 0) {
@@ -114,7 +118,8 @@ fun FillInTheBlank(
                         hasError.value = true
                         errorMessage.value = errorEmptyAnswer
                     } else {
-                        onSave(questionText, answers)
+                        mutableData.value = mutableData.value.copy(correctAnswers = answers)
+                        onSave(mutableData.value)
                         onDismiss()
                     }
                 },

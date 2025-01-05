@@ -13,14 +13,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import pt.isec.amov.quizectpamov.R
+import pt.isec.amov.quizectpamov.data.model.MatchingQuestion
 import pt.isec.amov.quizectpamov.ui.screens.questions.QuestionTextField
 
 @Composable
 fun Matching(
-    questionText: String,
-    onQuestionTextChange: (String) -> Unit,
+    questionData: MatchingQuestion,
     onDismiss: () -> Unit,
-    onSave: (String, List<Pair<String, String>>) -> Unit
+    onSave: (MatchingQuestion) -> Unit,
+
 ) {
     var numberOfPairs by remember { mutableIntStateOf(2) }
     var pairs by remember { mutableStateOf(List(numberOfPairs) { "" to "" }) }
@@ -30,6 +31,8 @@ fun Matching(
 
     val hasError = remember { mutableStateOf(false) }
     val errorMessage = remember { mutableStateOf("") }
+
+    val mutableData = remember { mutableStateOf(questionData) }
 
     if (hasError.value) {
         Text(
@@ -41,8 +44,10 @@ fun Matching(
     }
 
     QuestionTextField(
-        questionText = questionText,
-        onQuestionTextChange = onQuestionTextChange
+        questionText = mutableData.value.question,
+        onQuestionTextChange = { text ->
+            mutableData.value = mutableData.value.copy(question = text)
+        },
     )
 
     Spacer(modifier = Modifier.height(16.dp))
@@ -120,14 +125,17 @@ fun Matching(
 
         Button(
             onClick = {
-                if (questionText.isBlank()) {
+                if (mutableData.value.question.isBlank()) {
                     hasError.value = true
                     errorMessage.value = errorEmptyQuestion
                 } else if (pairs.any { it.first.isBlank() || it.second.isBlank() }) {
                     hasError.value = true
                     errorMessage.value = errorEmptyPair
                 } else {
-                    onSave(questionText, pairs)
+                    val leftOptions = pairs.map { it.first }.shuffled()
+                    val rightOptions = pairs.map { it.second }.shuffled()
+                    val correctMatches = leftOptions.mapIndexed { index, leftOption -> index to rightOptions.indexOf(pairs.find { it.first == leftOption }!!.second) }
+                    onSave(mutableData.value.copy(leftOptions = leftOptions, rightOptions = rightOptions, correctMatches = correctMatches))
                     onDismiss()
                 }
             },

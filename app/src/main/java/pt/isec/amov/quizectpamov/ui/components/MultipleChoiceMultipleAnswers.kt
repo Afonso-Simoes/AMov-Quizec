@@ -15,15 +15,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import pt.isec.amov.quizectpamov.R
+import pt.isec.amov.quizectpamov.data.model.MultipleChoiceMultipleAnswerQuestion
 import pt.isec.amov.quizectpamov.ui.screens.questions.QuestionTextField
 
 @SuppressLint("MutableCollectionMutableState")
 @Composable
 fun MultipleChoiceMultipleAnswers(
-    questionText: String,
-    onQuestionTextChange: (String) -> Unit,
+    questionData: MultipleChoiceMultipleAnswerQuestion,
     onDismiss: () -> Unit,
-    onSave: (String, List<String>, List<Int>) -> Unit
+    onSave: (MultipleChoiceMultipleAnswerQuestion) -> Unit
 ) {
     var numberOfAnswers by remember { mutableIntStateOf(2) }
     var answers by remember { mutableStateOf(List(numberOfAnswers) { "" }) }
@@ -36,6 +36,8 @@ fun MultipleChoiceMultipleAnswers(
     val hasError = remember { mutableStateOf(false) }
     val errorMessage = remember { mutableStateOf("") }
 
+    val mutableData = remember { mutableStateOf(questionData) }
+
     if (hasError.value) {
         Text(
             text = errorMessage.value,
@@ -46,8 +48,10 @@ fun MultipleChoiceMultipleAnswers(
     }
 
     QuestionTextField(
-        questionText = questionText,
-        onQuestionTextChange = onQuestionTextChange
+        questionText = mutableData.value.question,
+        onQuestionTextChange = { text ->
+            mutableData.value = mutableData.value.copy(question = text)
+        },
     )
 
     Spacer(modifier = Modifier.height(16.dp))
@@ -88,7 +92,10 @@ fun MultipleChoiceMultipleAnswers(
         ) {
             TextField(
                 value = answers[index],
-                onValueChange = { text -> answers = answers.toMutableList().apply { this[index] = text } },
+                onValueChange = { text ->
+                    answers = answers.toMutableList().apply { this[index] = text }
+                    mutableData.value = mutableData.value.copy(options = answers)
+                },
                 label = { Text(stringResource(id = R.string.answer_label, index + 1)) },
                 modifier = Modifier.weight(1f)
             )
@@ -101,6 +108,7 @@ fun MultipleChoiceMultipleAnswers(
                     correctAnswerIndexes = correctAnswerIndexes.toMutableSet().apply {
                         if (isChecked) add(index) else remove(index)
                     }
+                    mutableData.value = mutableData.value.copy(correctAnswerIndexes = correctAnswerIndexes.toList())
                 }
             )
         }
@@ -124,7 +132,7 @@ fun MultipleChoiceMultipleAnswers(
         Button(
             onClick = {
                 when {
-                    questionText.isBlank() -> {
+                    mutableData.value.question.isBlank() -> {
                         hasError.value = true
                         errorMessage.value = errorEmptyQuestion
                     }
@@ -137,7 +145,7 @@ fun MultipleChoiceMultipleAnswers(
                         errorMessage.value = errorNoAnswerSelected
                     }
                     else -> {
-                        onSave(questionText, answers, correctAnswerIndexes.toList())
+                        onSave(mutableData.value)
                         onDismiss()
                     }
                 }

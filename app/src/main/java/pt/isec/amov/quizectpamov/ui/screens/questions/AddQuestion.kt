@@ -28,7 +28,14 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import pt.isec.amov.quizectpamov.R
+import pt.isec.amov.quizectpamov.data.model.AssociationQuestion
+import pt.isec.amov.quizectpamov.data.model.FillInTheBlankQuestion
+import pt.isec.amov.quizectpamov.data.model.MatchingQuestion
+import pt.isec.amov.quizectpamov.data.model.MultipleChoiceMultipleAnswerQuestion
+import pt.isec.amov.quizectpamov.data.model.MultipleChoiceSingleAnswerQuestion
+import pt.isec.amov.quizectpamov.data.model.OrderingQuestion
 import pt.isec.amov.quizectpamov.data.model.TrueFalseQuestion
+import pt.isec.amov.quizectpamov.data.model.WordBasedQuestion
 import pt.isec.amov.quizectpamov.ui.components.Association
 import pt.isec.amov.quizectpamov.ui.components.FillInTheBlank
 import pt.isec.amov.quizectpamov.ui.components.Matching
@@ -98,8 +105,6 @@ fun AddQuestion(
                     stringResource(id = R.string.true_false) -> {
                         TrueFalse(
                             questionData = TrueFalseQuestion(questionText, false),
-                            /*onQuestionTextChange = { questionText = it },*/
-                            /*onAnswerSelected = { answer -> trueFalseAnswer = answer },*/
                             onDismiss = onDismiss,
                             onSave = { data ->
                                 viewModel.addQuestion(QuestionType.TRUE_FALSE, data);
@@ -109,79 +114,70 @@ fun AddQuestion(
 
                     stringResource(id = R.string.multiple_choice_single_answer) -> {
                         MultipleChoiceSingleAnswer(
-                            questionText = questionText,
-                            onQuestionTextChange = { questionText = it },
+                            questionData = MultipleChoiceSingleAnswerQuestion(questionText, listOf(), 0),
                             onDismiss = onDismiss,
-                            onSave = { questionText, answers, correctAnswerIndex ->
-                                //TODO: Implementar lógica para salvar a pergunta
+                            onSave = { data ->
+                                viewModel.addQuestion(QuestionType.SINGLE_CHOICE, data);
                             }
                         )
                     }
 
                     stringResource(id = R.string.multiple_choice_multiple_answers) -> {
                         MultipleChoiceMultipleAnswers(
-                            questionText = questionText,
-                            onQuestionTextChange = { questionText = it },
+                            questionData = MultipleChoiceMultipleAnswerQuestion(questionText, listOf(), listOf()),
                             onDismiss = onDismiss,
-                            onSave = { questionText, answers, correctAnswerIndices ->
-                                //TODO: Implementar lógica para salvar a pergunta
+                            onSave = { data ->
+                                viewModel.addQuestion(QuestionType.MULTIPLE_CHOICE, data);
                             }
                         )
                     }
 
                     stringResource(id = R.string.matching) -> {
                         Matching(
-                            questionText = questionText,
-                            onQuestionTextChange = { newText -> questionText = newText },
+                            questionData = MatchingQuestion(questionText, listOf(), listOf(), listOf()),
                             onDismiss = onDismiss,
-                            onSave = { questionText, pairs ->
-                                //TODO: Implementar lógica para salvar a pergunta
+                            onSave = { data ->
+                                viewModel.addQuestion(QuestionType.MATCHING, data);
                             }
                         )
                     }
 
                     stringResource(id = R.string.ordering) -> {
                         Ordering(
-                            questionText = questionText,
-                            onQuestionTextChange = { questionText = it },
+                            questionData = OrderingQuestion(questionText, listOf(), listOf()),
                             onDismiss = onDismiss,
-                            onSave = { questionText, orderedList ->
-                                //TODO: Implementar lógica para salvar a pergunta
+                            onSave = { data ->
+                                viewModel.addQuestion(QuestionType.ORDERING, data);
                             }
                         )
                     }
 
                     stringResource(id = R.string.fill_in_the_blank) -> {
                         FillInTheBlank(
-                            questionText = questionText,
-                            onQuestionTextChange = { questionText = it },
+                            questionData = FillInTheBlankQuestion(questionText, listOf()),
                             onDismiss = onDismiss,
-                            onSave = { questionText, answers ->
-                                //TODO: Implementar lógica para salvar a pergunta
+                            onSave = { data ->
+                                viewModel.addQuestion(QuestionType.FILL_IN_THE_BLANK, data);
                             }
                         )
                     }
 
                     stringResource(id = R.string.association) -> {
                         Association(
-                            questionText = questionText,
-                            onQuestionTextChange = { newText -> questionText = newText },
+                            questionData = AssociationQuestion(questionText, listOf(), listOf(), listOf()),
                             onDismiss = onDismiss,
-                            onSave = { questionText, pairs ->
-                                //TODO: Implementar lógica para salvar a pergunta
+                            onSave = { data ->
+                                viewModel.addQuestion(QuestionType.ASSOCIATION, data);
                             }
                         )
                     }
 
                     stringResource(id = R.string.word_based_response) -> {
                         WordBasedResponse(
-                            questionText = questionText,
-                            initialAnswerText = "",
-                            onQuestionTextChange = { questionText = it },
-                            onAnswerTextChange = { },
+                            questionData = WordBasedQuestion(questionText, "", listOf()),
                             onDismiss = onDismiss,
-                            onSave = { questionText, initialAnswerText, answers ->
-                                //TODO: Implementar lógica para salvar a pergunta
+                            onSave = { data ->
+                                viewModel.addQuestion(QuestionType.WORD_BASED, data);
                             }
                         )
                     }

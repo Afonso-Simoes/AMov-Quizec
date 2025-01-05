@@ -18,14 +18,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import pt.isec.amov.quizectpamov.R
+import pt.isec.amov.quizectpamov.data.model.AssociationQuestion
 import pt.isec.amov.quizectpamov.ui.screens.questions.QuestionTextField
 
 @Composable
 fun Association(
-    questionText: String,
-    onQuestionTextChange: (String) -> Unit,
+    questionData: AssociationQuestion,
     onDismiss: () -> Unit,
-    onSave: (String, List<Pair<String?, String>>) -> Unit
+    onSave: (AssociationQuestion) -> Unit
 ) {
     var numberOfPairs by remember { mutableIntStateOf(2) }
     var pairs by remember {
@@ -41,6 +41,8 @@ fun Association(
     val hasError = remember { mutableStateOf(false) }
     val errorMessage = remember { mutableStateOf("") }
 
+    val mutableData = remember { mutableStateOf(questionData) }
+
     Column(modifier = Modifier.fillMaxWidth()) {
         if (hasError.value) {
             Text(
@@ -52,8 +54,10 @@ fun Association(
         }
 
         QuestionTextField(
-            questionText = questionText,
-            onQuestionTextChange = onQuestionTextChange
+            questionText = mutableData.value.question,
+            onQuestionTextChange = { text ->
+                mutableData.value = mutableData.value.copy(question = text)
+            },
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -184,14 +188,17 @@ fun Association(
 
             Button(
                 onClick = {
-                    if (questionText.isBlank()) {
+                    if (mutableData.value.question.isBlank()) {
                         hasError.value = true
                         errorMessage.value = errorEmptyQuestion
                     } else if (pairs.any { it.second.isNullOrBlank() || it.third.isBlank() }) {
                         hasError.value = true
                         errorMessage.value = errorEmptyAnswer
                     } else {
-                        onSave(questionText, pairs.map { it.second to it.third })
+                        val leftOptions = pairs.map { it.second ?: "" }.shuffled()
+                        val rightOptions = pairs.map { it.third }.shuffled()
+                        val correctMatches = leftOptions.mapIndexed { index, leftOption -> index to rightOptions.indexOf(pairs.find { it.second == leftOption }!!.third) }
+                        onSave(mutableData.value.copy(leftOptions = leftOptions, rightOptions = rightOptions, correctMatches = correctMatches))
                         onDismiss()
                     }
                 },
