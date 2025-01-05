@@ -19,12 +19,18 @@ import pt.isec.amov.quizectpamov.ui.screens.reports.MostUsedAnswersScreen
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
-    val userViewModel = UserViewModel() //VERIFICAR SE PRECISO INSTANCIA PARA OUTRAS SE NAO FOR CIRAR UMA UNICA
-        //ON DEMAND
+    val userViewModel =
+        UserViewModel() //VERIFICAR SE PRECISO INSTANCIA PARA OUTRAS SE NAO FOR CIRAR UMA UNICA
+    //ON DEMAND
+
+    var start = "login";
+    if (userViewModel.user != null) {
+        start = "mainMenu"
+    }
 
     NavHost(
         navController = navController,
-        startDestination = "mainMenu"
+        startDestination = start
     ) {
         composable("login") {
             MainScreen(navController, userViewModel)
@@ -55,7 +61,8 @@ fun AppNavigation() {
         }
         composable("truefalse/{questionId}/{timePerQuestion}/{indexQuestion}") { backStackEntry ->
             val questionId = backStackEntry.arguments?.getString("questionId")
-            val timePerQuestion = backStackEntry.arguments?.getString("timePerQuestion")?.toIntOrNull()
+            val timePerQuestion =
+                backStackEntry.arguments?.getString("timePerQuestion")?.toIntOrNull()
             val indexQuestion = backStackEntry.arguments?.getString("indexQuestion")?.toIntOrNull()
 
             if (questionId != null && timePerQuestion != null) {
@@ -65,7 +72,12 @@ fun AppNavigation() {
                         timePerQuestion = timePerQuestion,
                         indexQuestion = indexQuestion,
                         onNext = {
-                            NavigateToQuestion(navController,timePerQuestion, indexQuestion + 1,true)
+                            NavigateToQuestion(
+                                navController,
+                                timePerQuestion,
+                                indexQuestion + 1,
+                                true
+                            )
                         },
                     )
                 }
@@ -75,7 +87,8 @@ fun AppNavigation() {
 
         composable("singlechoice/{questionId}/{timePerQuestion}/{indexQuestion}") { backStackEntry ->
             val questionId = backStackEntry.arguments?.getString("questionId")
-            val timePerQuestion = backStackEntry.arguments?.getString("timePerQuestion")?.toIntOrNull()
+            val timePerQuestion =
+                backStackEntry.arguments?.getString("timePerQuestion")?.toIntOrNull()
             val indexQuestion = backStackEntry.arguments?.getString("indexQuestion")?.toIntOrNull()
 
             if (questionId != null && timePerQuestion != null) {
@@ -85,7 +98,12 @@ fun AppNavigation() {
                         timePerQuestion = timePerQuestion,
                         indexQuestion = indexQuestion,
                         onNext = {
-                            NavigateToQuestion(navController,timePerQuestion, indexQuestion + 1,true)
+                            NavigateToQuestion(
+                                navController,
+                                timePerQuestion,
+                                indexQuestion + 1,
+                                true
+                            )
                         },
                     )
                 }
@@ -94,7 +112,8 @@ fun AppNavigation() {
 
         composable("multiplechoice/{questionId}/{timePerQuestion}/{indexQuestion}") { backStackEntry ->
             val questionId = backStackEntry.arguments?.getString("questionId")
-            val timePerQuestion = backStackEntry.arguments?.getString("timePerQuestion")?.toIntOrNull()
+            val timePerQuestion =
+                backStackEntry.arguments?.getString("timePerQuestion")?.toIntOrNull()
             val indexQuestion = backStackEntry.arguments?.getString("indexQuestion")?.toIntOrNull()
 
             if (questionId != null && timePerQuestion != null) {
@@ -104,7 +123,12 @@ fun AppNavigation() {
                         timePerQuestion = timePerQuestion,
                         indexQuestion = indexQuestion,
                         onNext = {
-                            NavigateToQuestion(navController,timePerQuestion, indexQuestion + 1,true)
+                            NavigateToQuestion(
+                                navController,
+                                timePerQuestion,
+                                indexQuestion + 1,
+                                true
+                            )
                         },
                     )
                 }
@@ -113,7 +137,8 @@ fun AppNavigation() {
 
         composable("matching/{questionId}/{timePerQuestion}/{indexQuestion}") { backStackEntry ->
             val questionId = backStackEntry.arguments?.getString("questionId")
-            val timePerQuestion = backStackEntry.arguments?.getString("timePerQuestion")?.toIntOrNull()
+            val timePerQuestion =
+                backStackEntry.arguments?.getString("timePerQuestion")?.toIntOrNull()
             val indexQuestion = backStackEntry.arguments?.getString("indexQuestion")?.toIntOrNull()
 
             if (questionId != null && timePerQuestion != null) {
@@ -123,7 +148,12 @@ fun AppNavigation() {
                         timePerQuestion = timePerQuestion,
                         indexQuestion = indexQuestion,
                         onNext = {
-                            NavigateToQuestion(navController, timePerQuestion, indexQuestion + 1,true)
+                            NavigateToQuestion(
+                                navController,
+                                timePerQuestion,
+                                indexQuestion + 1,
+                                true
+                            )
                         },
                     )
                 }
@@ -132,7 +162,8 @@ fun AppNavigation() {
 
         composable("ordering/{questionId}/{timePerQuestion}/{indexQuestion}") { backStackEntry ->
             val questionId = backStackEntry.arguments?.getString("questionId")
-            val timePerQuestion = backStackEntry.arguments?.getString("timePerQuestion")?.toIntOrNull()
+            val timePerQuestion =
+                backStackEntry.arguments?.getString("timePerQuestion")?.toIntOrNull()
             val indexQuestion = backStackEntry.arguments?.getString("indexQuestion")?.toIntOrNull()
 
             if (questionId != null && timePerQuestion != null) {
@@ -142,7 +173,12 @@ fun AppNavigation() {
                         timePerQuestion = timePerQuestion,
                         indexQuestion = indexQuestion,
                         onNext = {
-                            NavigateToQuestion(navController, timePerQuestion, indexQuestion + 1,true)
+                            NavigateToQuestion(
+                                navController,
+                                timePerQuestion,
+                                indexQuestion + 1,
+                                true
+                            )
                         },
                     )
                 }
@@ -151,7 +187,8 @@ fun AppNavigation() {
 
         composable("fillintheblank/{questionId}/{timePerQuestion}/{indexQuestion}") { backStackEntry ->
             val questionId = backStackEntry.arguments?.getString("questionId")
-            val timePerQuestion = backStackEntry.arguments?.getString("timePerQuestion")?.toIntOrNull()
+            val timePerQuestion =
+                backStackEntry.arguments?.getString("timePerQuestion")?.toIntOrNull()
             val indexQuestion = backStackEntry.arguments?.getString("indexQuestion")?.toIntOrNull()
 
             if (questionId != null && timePerQuestion != null) {
@@ -161,7 +198,12 @@ fun AppNavigation() {
                         timePerQuestion = timePerQuestion,
                         indexQuestion = indexQuestion,
                         onNext = {
-                            NavigateToQuestion(navController, timePerQuestion, indexQuestion + 1,true)
+                            NavigateToQuestion(
+                                navController,
+                                timePerQuestion,
+                                indexQuestion + 1,
+                                true
+                            )
                         },
                     )
                 }
@@ -170,7 +212,8 @@ fun AppNavigation() {
 
         composable("association/{questionId}/{timePerQuestion}/{indexQuestion}") { backStackEntry ->
             val questionId = backStackEntry.arguments?.getString("questionId")
-            val timePerQuestion = backStackEntry.arguments?.getString("timePerQuestion")?.toIntOrNull()
+            val timePerQuestion =
+                backStackEntry.arguments?.getString("timePerQuestion")?.toIntOrNull()
             val indexQuestion = backStackEntry.arguments?.getString("indexQuestion")?.toIntOrNull()
 
             if (questionId != null && timePerQuestion != null) {
@@ -180,7 +223,12 @@ fun AppNavigation() {
                         timePerQuestion = timePerQuestion,
                         indexQuestion = indexQuestion,
                         onNext = {
-                            NavigateToQuestion(navController, timePerQuestion, indexQuestion + 1,true)
+                            NavigateToQuestion(
+                                navController,
+                                timePerQuestion,
+                                indexQuestion + 1,
+                                true
+                            )
                         },
                     )
                 }
@@ -189,7 +237,8 @@ fun AppNavigation() {
 
         composable("wordbased/{questionId}/{timePerQuestion}/{indexQuestion}") { backStackEntry ->
             val questionId = backStackEntry.arguments?.getString("questionId")
-            val timePerQuestion = backStackEntry.arguments?.getString("timePerQuestion")?.toIntOrNull()
+            val timePerQuestion =
+                backStackEntry.arguments?.getString("timePerQuestion")?.toIntOrNull()
             val indexQuestion = backStackEntry.arguments?.getString("indexQuestion")?.toIntOrNull()
 
             if (questionId != null && timePerQuestion != null) {
@@ -199,7 +248,12 @@ fun AppNavigation() {
                         timePerQuestion = timePerQuestion,
                         indexQuestion = indexQuestion,
                         onNext = {
-                            NavigateToQuestion(navController, timePerQuestion, indexQuestion + 1,true)
+                            NavigateToQuestion(
+                                navController,
+                                timePerQuestion,
+                                indexQuestion + 1,
+                                true
+                            )
                         },
                     )
                 }
@@ -209,7 +263,8 @@ fun AppNavigation() {
         composable("grafics/{questionId}/{indexQuestion}/{timePerQuestion}") { backStackEntry ->
             val questionId = backStackEntry.arguments?.getString("questionId")
             val indexQuestion = backStackEntry.arguments?.getString("indexQuestion")?.toIntOrNull()
-            val timePerQuestion = backStackEntry.arguments?.getString("timePerQuestion")?.toIntOrNull()
+            val timePerQuestion =
+                backStackEntry.arguments?.getString("timePerQuestion")?.toIntOrNull()
 
             if (questionId != null && indexQuestion != null) {
                 if (timePerQuestion != null) {
@@ -218,7 +273,7 @@ fun AppNavigation() {
                         indexQuestion = indexQuestion,
                         timePerQuestion = timePerQuestion,
                         onNext = {
-                            NavigateToQuestion(navController, timePerQuestion, indexQuestion,false)
+                            NavigateToQuestion(navController, timePerQuestion, indexQuestion, false)
                         },
                     )
                 }
@@ -227,7 +282,8 @@ fun AppNavigation() {
         composable("mostusedanswers/{questionId}/{indexQuestion}/{timePerQuestion}") { backStackEntry ->
             val questionId = backStackEntry.arguments?.getString("questionId")
             val indexQuestion = backStackEntry.arguments?.getString("indexQuestion")?.toIntOrNull()
-            val timePerQuestion = backStackEntry.arguments?.getString("timePerQuestion")?.toIntOrNull()
+            val timePerQuestion =
+                backStackEntry.arguments?.getString("timePerQuestion")?.toIntOrNull()
 
             if (questionId != null && indexQuestion != null) {
                 if (timePerQuestion != null) {
@@ -236,7 +292,7 @@ fun AppNavigation() {
                         indexQuestion = indexQuestion,
                         timePerQuestion = timePerQuestion,
                         onNext = {
-                            NavigateToQuestion(navController, timePerQuestion, indexQuestion,false)
+                            NavigateToQuestion(navController, timePerQuestion, indexQuestion, false)
                         },
                     )
                 }

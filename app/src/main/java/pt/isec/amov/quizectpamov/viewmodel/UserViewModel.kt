@@ -16,7 +16,6 @@ fun FirebaseUser.toUser() : UserDTO {
 }
 
 class UserViewModel : ViewModel() {
-
     private val userRepository = UserRepository()
 
     private val _user = mutableStateOf(userRepository.currentUser?.toUser())

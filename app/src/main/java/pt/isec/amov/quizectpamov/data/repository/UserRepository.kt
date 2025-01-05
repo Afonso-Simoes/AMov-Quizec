@@ -6,7 +6,6 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
 class UserRepository {
-
     private val auth by lazy { Firebase.auth }
     val currentUser: FirebaseUser?
         get() = auth.currentUser
