@@ -87,6 +87,24 @@ fun QuestionsMenuScreen() {
             )
         }
 
+        if (editableQuestion != null && showDialog) {
+            AddQuestion(
+                viewModel = viewModel,
+                onDismiss = {
+                    showDialog = false
+                    editableQuestion = null
+                },
+                currentQuestion = editableQuestion?.data?.question.orEmpty(),
+                currentType = editableQuestion?.type?.getLocalizedName(context).orEmpty(),
+                onAddQuestion = {
+                    coroutineScope.launch {
+                        loadQuestions(viewModel, questions) { isLoading = false }
+                    }
+                },
+                editableQuestion = editableQuestion
+            )
+        }
+
         Spacer(modifier = Modifier.height(16.dp))
 
         if (isLoading) {
@@ -121,24 +139,6 @@ fun QuestionsMenuScreen() {
                     )
                 }
             }
-        }
-
-        if (editableQuestion != null && showDialog) {
-            AddQuestion(
-                viewModel = viewModel,
-                onDismiss = {
-                    showDialog = false
-                    editableQuestion = null
-                },
-                currentQuestion = editableQuestion?.data?.question.orEmpty(),
-                currentType = editableQuestion?.type?.getLocalizedName(context).orEmpty(),
-                onAddQuestion = {
-                    coroutineScope.launch {
-                        loadQuestions(viewModel, questions) { isLoading = false }
-                    }
-                },
-                editableQuestion = editableQuestion
-            )
         }
     }
 }

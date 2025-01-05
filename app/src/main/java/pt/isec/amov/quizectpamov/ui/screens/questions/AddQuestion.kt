@@ -114,12 +114,7 @@ fun AddQuestion(
                             onDismiss = onDismiss,
                             onSave = { data ->
                                 if (editableQuestion != null && editableQuestion.id != null) {
-                                    var x = 10;
-
-                                    x = 11;
-                                    /* editableQuestion.data = data;*/
-                                    /*viewModel.updateQuestion(editableQuestion);*/
-
+                                    viewModel.updateQuestion(editableQuestion.id, data)
                                 } else {
                                     viewModel.addQuestion(QuestionType.TRUE_FALSE, data)
                                 }
@@ -130,8 +125,10 @@ fun AddQuestion(
                         )
                     }
 
+                    //TODO: Esta a dar bronca
                     stringResource(id = R.string.multiple_choice_single_answer) -> {
                         MultipleChoiceSingleAnswer(
+
                             questionData = MultipleChoiceSingleAnswerQuestion(
                                 questionText,
                                 listOf(),
@@ -148,14 +145,24 @@ fun AddQuestion(
 
                     stringResource(id = R.string.multiple_choice_multiple_answers) -> {
                         MultipleChoiceMultipleAnswers(
-                            questionData = MultipleChoiceMultipleAnswerQuestion(
-                                questionText,
-                                listOf(),
-                                listOf()
-                            ),
+                            questionData = if (editableQuestion != null
+                                && editableQuestion.data is MultipleChoiceMultipleAnswerQuestion
+                            ) {
+                                editableQuestion.data
+                            } else {
+                                MultipleChoiceMultipleAnswerQuestion(
+                                    questionText,
+                                    listOf(),
+                                    listOf()
+                                )
+                            },
                             onDismiss = onDismiss,
                             onSave = { data ->
-                                viewModel.addQuestion(QuestionType.MULTIPLE_CHOICE, data)
+                                if (editableQuestion != null && editableQuestion.id != null) {
+                                    viewModel.updateQuestion(editableQuestion.id, data)
+                                } else {
+                                    viewModel.addQuestion(QuestionType.MULTIPLE_CHOICE, data)
+                                }
                                 onAddQuestion()
                                 viewModel.resetSaveState()
                             }
@@ -164,15 +171,25 @@ fun AddQuestion(
 
                     stringResource(id = R.string.matching) -> {
                         Matching(
-                            questionData = MatchingQuestion(
-                                questionText,
-                                listOf(),
-                                listOf(),
-                                listOf()
-                            ),
+                            questionData = if (editableQuestion != null
+                                && editableQuestion.data is MatchingQuestion
+                            ) {
+                                editableQuestion.data
+                            } else {
+                                MatchingQuestion(
+                                    questionText,
+                                    listOf(),
+                                    listOf(),
+                                    listOf()
+                                )
+                            },
                             onDismiss = onDismiss,
                             onSave = { data ->
-                                viewModel.addQuestion(QuestionType.MATCHING, data)
+                                if (editableQuestion != null && editableQuestion.id != null) {
+                                    viewModel.updateQuestion(editableQuestion.id, data)
+                                } else {
+                                    viewModel.addQuestion(QuestionType.MATCHING, data)
+                                }
                                 onAddQuestion()
                                 viewModel.resetSaveState()
                             }

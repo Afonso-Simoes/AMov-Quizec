@@ -15,19 +15,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import pt.isec.amov.quizectpamov.R
+import pt.isec.amov.quizectpamov.data.model.BaseQuestion
 import pt.isec.amov.quizectpamov.data.model.MultipleChoiceMultipleAnswerQuestion
 import pt.isec.amov.quizectpamov.ui.screens.questions.QuestionTextField
 
-@SuppressLint("MutableCollectionMutableState")
 @Composable
 fun MultipleChoiceMultipleAnswers(
     questionData: MultipleChoiceMultipleAnswerQuestion,
     onDismiss: () -> Unit,
     onSave: (MultipleChoiceMultipleAnswerQuestion) -> Unit
 ) {
-    var numberOfAnswers by remember { mutableIntStateOf(2) }
-    var answers by remember { mutableStateOf(List(numberOfAnswers) { "" }) }
-    var correctAnswerIndexes by remember { mutableStateOf(mutableSetOf<Int>()) }
+    var numberOfAnswers by remember { mutableIntStateOf(questionData.options.size.coerceAtLeast(2)) }
     var expanded by remember { mutableStateOf(false) }
     val errorEmptyAnswer = stringResource(id = R.string.error_empty_answer)
     val errorNoAnswerSelected = stringResource(id = R.string.error_no_answer_selected)
@@ -74,8 +72,14 @@ fun MultipleChoiceMultipleAnswers(
                         text = { Text(number.toString()) },
                         onClick = {
                             numberOfAnswers = number
-                            answers = List(number) { answers.getOrNull(it) ?: "" }
-                            correctAnswerIndexes.retainAll(0 until number) // Remove indices out of range
+                            val updatedAnswers = List(number) { index ->
+                                mutableData.value.options.getOrNull(index) ?: ""
+                            }
+                            val updatedCorrectIndexes = mutableData.value.correctAnswerIndexes.filter { it < number }
+                            mutableData.value = mutableData.value.copy(
+                                options = updatedAnswers,
+                                correctAnswerIndexes = updatedCorrectIndexes
+                            )
                             expanded = false
                         }
                     )
@@ -83,6 +87,7 @@ fun MultipleChoiceMultipleAnswers(
             }
         }
     }
+
     Spacer(modifier = Modifier.height(16.dp))
 
     for (index in 0 until numberOfAnswers) {
@@ -91,10 +96,10 @@ fun MultipleChoiceMultipleAnswers(
             modifier = Modifier.fillMaxWidth()
         ) {
             TextField(
-                value = answers[index],
+                value = mutableData.value.options[index],
                 onValueChange = { text ->
-                    answers = answers.toMutableList().apply { this[index] = text }
-                    mutableData.value = mutableData.value.copy(options = answers)
+                    val updatedAnswers = mutableData.value.options.toMutableList().apply { this[index] = text }
+                    mutableData.value = mutableData.value.copy(options = updatedAnswers)
                 },
                 label = { Text(stringResource(id = R.string.answer_label, index + 1)) },
                 modifier = Modifier.weight(1f)
@@ -103,12 +108,12 @@ fun MultipleChoiceMultipleAnswers(
             Spacer(modifier = Modifier.width(8.dp))
 
             Checkbox(
-                checked = correctAnswerIndexes.contains(index),
+                checked = mutableData.value.correctAnswerIndexes.contains(index),
                 onCheckedChange = { isChecked ->
-                    correctAnswerIndexes = correctAnswerIndexes.toMutableSet().apply {
+                    val updatedCorrectIndexes = mutableData.value.correctAnswerIndexes.toMutableSet().apply {
                         if (isChecked) add(index) else remove(index)
                     }
-                    mutableData.value = mutableData.value.copy(correctAnswerIndexes = correctAnswerIndexes.toList())
+                    mutableData.value = mutableData.value.copy(correctAnswerIndexes = updatedCorrectIndexes.toList())
                 }
             )
         }
@@ -136,11 +141,11 @@ fun MultipleChoiceMultipleAnswers(
                         hasError.value = true
                         errorMessage.value = errorEmptyQuestion
                     }
-                    answers.any { it.isBlank() } -> {
+                    mutableData.value.options.any { it.isBlank() } -> {
                         hasError.value = true
                         errorMessage.value = errorEmptyAnswer
                     }
-                    correctAnswerIndexes.isEmpty() -> {
+                    mutableData.value.correctAnswerIndexes.isEmpty() -> {
                         hasError.value = true
                         errorMessage.value = errorNoAnswerSelected
                     }

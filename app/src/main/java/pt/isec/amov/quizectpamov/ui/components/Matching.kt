@@ -21,10 +21,13 @@ fun Matching(
     questionData: MatchingQuestion,
     onDismiss: () -> Unit,
     onSave: (MatchingQuestion) -> Unit,
-
 ) {
-    var numberOfPairs by remember { mutableIntStateOf(2) }
-    var pairs by remember { mutableStateOf(List(numberOfPairs) { "" to "" }) }
+    var numberOfPairs by remember { mutableIntStateOf(questionData.leftOptions.size.coerceAtLeast(2)) }
+    var pairs by remember {
+        mutableStateOf(
+            questionData.leftOptions.zip(questionData.rightOptions).toMutableList()
+        )
+    }
     var expanded by remember { mutableStateOf(false) }
     val errorEmptyQuestion = stringResource(id = R.string.error_empty_question)
     val errorEmptyPair = stringResource(id = R.string.error_empty_pair)
@@ -33,6 +36,13 @@ fun Matching(
     val errorMessage = remember { mutableStateOf("") }
 
     val mutableData = remember { mutableStateOf(questionData) }
+
+    LaunchedEffect(pairs) {
+        mutableData.value = mutableData.value.copy(
+            leftOptions = pairs.map { it.first },
+            rightOptions = pairs.map { it.second }
+        )
+    }
 
     if (hasError.value) {
         Text(
@@ -70,7 +80,9 @@ fun Matching(
                         text = { Text(number.toString()) },
                         onClick = {
                             numberOfPairs = number
-                            pairs = List(number) { pairs.getOrNull(it) ?: ("" to "") }
+                            pairs = List(number) { index ->
+                                if (index < pairs.size) pairs[index] else ("" to "")
+                            }.toMutableList()
                             expanded = false
                         }
                     )
@@ -87,9 +99,11 @@ fun Matching(
             modifier = Modifier.fillMaxWidth()
         ) {
             TextField(
-                value = pairs[index].first,
+                value = pairs.getOrNull(index)?.first.orEmpty(),
                 onValueChange = { text ->
-                    pairs = pairs.toMutableList().apply { this[index] = text to pairs[index].second }
+                    pairs = pairs.toMutableList().apply {
+                        if (index < size) this[index] = text to this[index].second
+                    }
                 },
                 label = { Text(stringResource(id = R.string.left_column_label, index + 1)) },
                 modifier = Modifier.weight(1f)
@@ -98,9 +112,11 @@ fun Matching(
             Spacer(modifier = Modifier.width(8.dp))
 
             TextField(
-                value = pairs[index].second,
+                value = pairs.getOrNull(index)?.second.orEmpty(),
                 onValueChange = { text ->
-                    pairs = pairs.toMutableList().apply { this[index] = pairs[index].first to text }
+                    pairs = pairs.toMutableList().apply {
+                        if (index < size) this[index] = this[index].first to text
+                    }
                 },
                 label = { Text(stringResource(id = R.string.right_column_label, index + 1)) },
                 modifier = Modifier.weight(1f)
@@ -132,10 +148,22 @@ fun Matching(
                     hasError.value = true
                     errorMessage.value = errorEmptyPair
                 } else {
+                    val originalMapping = pairs.mapIndexed { index, pair -> pair.first to index }.toMap()
+
                     val leftOptions = pairs.map { it.first }.shuffled()
                     val rightOptions = pairs.map { it.second }.shuffled()
-                    val correctMatches = leftOptions.mapIndexed { index, leftOption -> index to rightOptions.indexOf(pairs.find { it.first == leftOption }!!.second) }
-                    onSave(mutableData.value.copy(leftOptions = leftOptions, rightOptions = rightOptions, correctMatches = correctMatches))
+
+                    val correctMatches = leftOptions.mapIndexed { index, leftOption ->
+                        index to rightOptions.indexOf(pairs[originalMapping[leftOption]!!].second)
+                    }
+
+                    onSave(
+                        mutableData.value.copy(
+                            leftOptions = leftOptions,
+                            rightOptions = rightOptions,
+                            correctMatches = correctMatches
+                        )
+                    )
                     onDismiss()
                 }
             },
@@ -143,5 +171,6 @@ fun Matching(
         ) {
             Text(stringResource(id = R.string.save))
         }
+
     }
 }

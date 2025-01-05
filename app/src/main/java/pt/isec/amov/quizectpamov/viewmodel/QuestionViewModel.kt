@@ -43,14 +43,18 @@ class QuestionViewModel : ViewModel() {
         }
     }
 
-    suspend fun updateQuestion(questionFire: QuestionFire): Boolean {
-        return try {
-            val updates = questionFire.toMap()
-            repository.updateQuestion(questionFire.questionID, updates)
-            true
-        } catch (e: Exception) {
-            e.printStackTrace()
-            false
+    fun updateQuestion(questionId: String, newData: BaseQuestion) {
+        viewModelScope.launch {
+            try {
+                val question = repository.getQuestionById(questionId)
+                if (question != null) {
+                    val updatedQuestion = question.copy(data = newData)
+                    val updates = updatedQuestion.toMap()
+                    repository.updateQuestion(questionId, updates)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 
