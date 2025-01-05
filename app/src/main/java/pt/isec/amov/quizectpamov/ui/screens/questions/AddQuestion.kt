@@ -56,7 +56,6 @@ fun AddQuestion(
     currentQuestion: String,
     currentType: String,
     onAddQuestion: () -> Unit,
-    isEditing: Boolean,
     editableQuestion: QuestionFire?
 ) {
     val questionText by remember { mutableStateOf(currentQuestion) }
@@ -105,15 +104,26 @@ fun AddQuestion(
                 when (questionType) {
                     stringResource(id = R.string.true_false) -> {
                         TrueFalse(
-                            questionData = if (isEditing) {
-                                TrueFalseQuestion(editableQuestion?.data?.question ?: "", (editableQuestion?.data as? TrueFalseQuestion)?.correctAnswer ?: false)
+                            questionData = if (editableQuestion != null
+                                && editableQuestion.data is TrueFalseQuestion
+                            ) {
+                                editableQuestion.data
                             } else {
                                 TrueFalseQuestion(questionText, false)
                             },
-                            isEditing = isEditing,
                             onDismiss = onDismiss,
                             onSave = { data ->
-                                viewModel.addQuestion(QuestionType.TRUE_FALSE, data)
+                                if (editableQuestion != null && editableQuestion.id != null) {
+                                    var x = 10;
+
+                                    x = 11;
+                                    /* editableQuestion.data = data;*/
+                                    /*viewModel.updateQuestion(editableQuestion);*/
+
+                                } else {
+                                    viewModel.addQuestion(QuestionType.TRUE_FALSE, data)
+                                }
+
                                 onAddQuestion()
                                 viewModel.resetSaveState()
                             }
@@ -122,7 +132,11 @@ fun AddQuestion(
 
                     stringResource(id = R.string.multiple_choice_single_answer) -> {
                         MultipleChoiceSingleAnswer(
-                            questionData = MultipleChoiceSingleAnswerQuestion(questionText, listOf(), 0),
+                            questionData = MultipleChoiceSingleAnswerQuestion(
+                                questionText,
+                                listOf(),
+                                0
+                            ),
                             onDismiss = onDismiss,
                             onSave = { data ->
                                 viewModel.addQuestion(QuestionType.SINGLE_CHOICE, data)
@@ -134,7 +148,11 @@ fun AddQuestion(
 
                     stringResource(id = R.string.multiple_choice_multiple_answers) -> {
                         MultipleChoiceMultipleAnswers(
-                            questionData = MultipleChoiceMultipleAnswerQuestion(questionText, listOf(), listOf()),
+                            questionData = MultipleChoiceMultipleAnswerQuestion(
+                                questionText,
+                                listOf(),
+                                listOf()
+                            ),
                             onDismiss = onDismiss,
                             onSave = { data ->
                                 viewModel.addQuestion(QuestionType.MULTIPLE_CHOICE, data)
@@ -146,7 +164,12 @@ fun AddQuestion(
 
                     stringResource(id = R.string.matching) -> {
                         Matching(
-                            questionData = MatchingQuestion(questionText, listOf(), listOf(), listOf()),
+                            questionData = MatchingQuestion(
+                                questionText,
+                                listOf(),
+                                listOf(),
+                                listOf()
+                            ),
                             onDismiss = onDismiss,
                             onSave = { data ->
                                 viewModel.addQuestion(QuestionType.MATCHING, data)
@@ -182,7 +205,12 @@ fun AddQuestion(
 
                     stringResource(id = R.string.association) -> {
                         Association(
-                            questionData = AssociationQuestion(questionText, listOf(), listOf(), listOf()),
+                            questionData = AssociationQuestion(
+                                questionText,
+                                listOf(),
+                                listOf(),
+                                listOf()
+                            ),
                             onDismiss = onDismiss,
                             onSave = { data ->
                                 viewModel.addQuestion(QuestionType.ASSOCIATION, data)

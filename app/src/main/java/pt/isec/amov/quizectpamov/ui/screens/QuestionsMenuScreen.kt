@@ -38,7 +38,6 @@ fun QuestionsMenuScreen() {
     val coroutineScope = rememberCoroutineScope()
     val questions = remember { mutableStateOf<List<QuestionFire>>(emptyList()) }
     var isLoading by remember { mutableStateOf(true) }
-    var isEditing by remember { mutableStateOf(false) }
 
 
     LaunchedEffect(Unit) {
@@ -73,7 +72,7 @@ fun QuestionsMenuScreen() {
             Text(text = stringResource(id = R.string.add_question))
         }
 
-        if (showDialog) {
+        if (editableQuestion == null && showDialog) {
             AddQuestion(
                 viewModel = viewModel,
                 onDismiss = { showDialog = false },
@@ -83,10 +82,8 @@ fun QuestionsMenuScreen() {
                     coroutineScope.launch {
                         loadQuestions(viewModel, questions) { isLoading = false }
                     }
-                    isEditing = false
                 },
-                isEditing = isEditing,
-                editableQuestion = if (isEditing) editableQuestion else null
+                editableQuestion = null
             )
         }
 
@@ -140,8 +137,7 @@ fun QuestionsMenuScreen() {
                         loadQuestions(viewModel, questions) { isLoading = false }
                     }
                 },
-                isEditing = isEditing,
-                editableQuestion = if (isEditing) editableQuestion else null
+                editableQuestion = editableQuestion
             )
         }
     }

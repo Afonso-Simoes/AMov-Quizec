@@ -25,7 +25,6 @@ fun TrueFalse(
     questionData: TrueFalseQuestion,
     onDismiss: () -> Unit,
     onSave: (TrueFalseQuestion) -> Unit,
-    isEditing: Boolean
 ) {
     val selectCorrectAnswerText = stringResource(id = R.string.select_correct_answer)
     val trueText = stringResource(id = R.string.true_text)
@@ -37,9 +36,6 @@ fun TrueFalse(
 
     val mutableData = remember { mutableStateOf(questionData) }
 
-    if (isEditing) {
-        mutableData.value = questionData
-    }
 
     if (hasError.value) {
         Text(
