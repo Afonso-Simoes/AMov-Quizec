@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
@@ -95,8 +96,7 @@ fun MultipleChoiceScreen(
                             .size(50.dp),
                     )
                     Text(
-                        text = "$remainingTime seconds",
-                        fontSize = 18.sp,
+                        text = stringResource(R.string.remaining_time, remainingTime),                        fontSize = 18.sp,
                         modifier = Modifier.padding(bottom = 16.dp)
                     )
                     Text(
@@ -153,8 +153,7 @@ fun MultipleChoiceScreen(
                         .size(50.dp),
                 )
                 Text(
-                    text = "$remainingTime seconds",
-                    fontSize = 18.sp,
+                    text = stringResource(R.string.remaining_time, remainingTime),                    fontSize = 18.sp,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
                 Text(

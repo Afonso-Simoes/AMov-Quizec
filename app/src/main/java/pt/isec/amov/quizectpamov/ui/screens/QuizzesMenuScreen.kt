@@ -351,6 +351,7 @@ fun QuizCard(quiz: Quiz, onQuizClick: QuizViewModel) {
     var correctAnswerText by remember { mutableStateOf("") }
     var optionsText by remember { mutableStateOf("") }
     val context = LocalContext.current
+    val codeLabel = stringResource(id = R.string.quiz_code_label)
 
     Card(
         modifier = Modifier
@@ -363,6 +364,8 @@ fun QuizCard(quiz: Quiz, onQuizClick: QuizViewModel) {
         Row(modifier = Modifier.padding(16.dp)) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(text = quiz.name, style = MaterialTheme.typography.titleLarge)
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(text = "$codeLabel: ${quiz.id}", style = MaterialTheme.typography.bodyLarge)
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(text = quiz.description, style = MaterialTheme.typography.bodyLarge)
 

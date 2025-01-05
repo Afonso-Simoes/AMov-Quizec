@@ -81,8 +81,12 @@
     <string name="select_image">Select Image</string>
     <string name="correct">Correct</string>
     <string name="wrong">Incorrect</string>
+    <string name="your_answer">Your Answer</string>
     <string name="duplicate_question">Duplicate Question</string>
     <string name="placeholder_enter_number">Enter a number</string>
     <string name="question_results">Question Results %1$d</string>
     <string name="total_answers">Total Answers: %1$d</string>
+    <string name="quiz_code_error">Invalid Game Code!</string>
+    <string name="remaining_time">%1$d seconds remaining</string>
+    <string name="quiz_code_label">Game Code</string>
 </resources>

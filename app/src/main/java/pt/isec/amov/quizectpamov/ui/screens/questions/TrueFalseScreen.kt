@@ -80,7 +80,7 @@ fun TrueFalseScreen(
                     .size(50.dp),
             )
             Text(
-                text = "$remainingTime seconds",
+                text = stringResource(R.string.remaining_time, remainingTime),
                 fontSize = 18.sp,
                 modifier = Modifier.padding(bottom = 16.dp)
             )

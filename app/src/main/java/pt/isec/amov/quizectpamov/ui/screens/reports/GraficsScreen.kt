@@ -12,6 +12,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -23,12 +30,19 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.delay
 import pt.isec.amov.quizectpamov.R
 import kotlin.math.cos
 import kotlin.math.sin
 
 @Composable
-fun GraficsScreen(questionId: String, indexQuestion: Int) {
+fun GraficsScreen(
+    questionId: String,
+    indexQuestion: Int,
+    onNext: @Composable () -> Unit,
+    timePerQuestion: Int
+) {
+
     val correctAnswers = 7
     val wrongAnswers = 3
     val totalAnswers = correctAnswers + wrongAnswers
@@ -38,11 +52,27 @@ fun GraficsScreen(questionId: String, indexQuestion: Int) {
     val correctLabel = stringResource(id = R.string.correct)
     val wrongLabel = stringResource(id = R.string.wrong)
     val context = LocalContext.current
+    var remainingTime by rememberSaveable { mutableIntStateOf(timePerQuestion) }
+    var isTimeUp by remember { mutableStateOf(false) }
+    var next by remember { mutableStateOf(false) }
     
     BackHandler {
         Toast.makeText(context, R.string.error_go_back, Toast.LENGTH_SHORT).show()
     }
 
+    LaunchedEffect(Unit) {
+        while (remainingTime > 0) {
+            delay(1000L)
+            remainingTime--
+        }
+        isTimeUp = true
+    }
+
+
+    if (isTimeUp && !next) {
+        next = true
+        onNext()
+    }
 
     Column(
         modifier = Modifier

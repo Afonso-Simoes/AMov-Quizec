@@ -30,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
@@ -48,7 +49,7 @@ fun SingleChoiceScreen(
     var remainingTime by rememberSaveable { mutableIntStateOf(timePerQuestion) }
     var isTimeUp by remember { mutableStateOf(false) }
     var next by remember { mutableStateOf(false) }
-    var selectedOption by remember { mutableStateOf<String?>(null) } // Estado para armazenar a opção selecionada
+    var selectedOption by remember { mutableStateOf<String?>(null) }
 
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
@@ -95,7 +96,7 @@ fun SingleChoiceScreen(
                             .size(50.dp),
                     )
                     Text(
-                        text = "$remainingTime seconds",
+                        text = stringResource(R.string.remaining_time, remainingTime),
                         fontSize = 18.sp,
                         modifier = Modifier.padding(bottom = 16.dp)
                     )
@@ -120,8 +121,8 @@ fun SingleChoiceScreen(
                                 .fillMaxWidth()
                         ) {
                             RadioButton(
-                                selected = selectedOption == option, // Verifica se a opção está selecionada
-                                onClick = { selectedOption = option } // Atualiza o estado ao clicar
+                                selected = selectedOption == option,
+                                onClick = { selectedOption = option }
                             )
                             Text(
                                 text = option,
@@ -148,7 +149,7 @@ fun SingleChoiceScreen(
                         .size(50.dp),
                 )
                 Text(
-                    text = "$remainingTime seconds",
+                    text = stringResource(R.string.remaining_time, remainingTime),
                     fontSize = 18.sp,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
