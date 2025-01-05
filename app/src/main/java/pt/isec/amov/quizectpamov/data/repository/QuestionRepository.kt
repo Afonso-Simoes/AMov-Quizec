@@ -3,43 +3,48 @@ package pt.isec.amov.quizectpamov.data.repository
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import pt.isec.amov.quizectpamov.data.dtos.QuestionDTO
+import pt.isec.amov.quizectpamov.data.model.QuestionFire
 
 class QuestionRepository {
     private val db = FirebaseFirestore.getInstance()
     private val questionCollection = db.collection("questions")
 
-    suspend fun addQuestion(question: QuestionDTO): Boolean {
+    suspend fun getAllQuestions(): List<QuestionFire>? {
         return try {
-            val documentReference = questionCollection.add(question).await()
-            documentReference.id // Retorna o ID gerado
-            true
-        } catch (e: Exception) {
-            e.printStackTrace()
-            false
-        }
-    }
-
-    suspend fun getAllQuestions(): List<QuestionDTO> {
-        return try {
-            questionCollection.get().await().toObjects(QuestionDTO::class.java)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            emptyList()
-        }
-    }
-
-    suspend fun getQuestionById(id: String): QuestionDTO? {
-        return try {
-            questionCollection.document(id).get().await().toObject(QuestionDTO::class.java)
+            val snapshot = questionCollection.get().await()
+            snapshot.documents.mapNotNull { document ->
+                QuestionFire.fromDocument(document)
+            }
         } catch (e: Exception) {
             e.printStackTrace()
             null
         }
     }
 
-    suspend fun updateQuestion(id: String, question: QuestionDTO): Boolean {
+    suspend fun getQuestionById(id: String): QuestionFire? {
         return try {
-            questionCollection.document(id).set(question).await()
+            val document = questionCollection.document(id).get().await()
+            QuestionFire.fromDocument(document)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    suspend fun addQuestion(questionFire: QuestionFire): String? {
+        return try {
+            val documentReference = questionCollection.add(questionFire.toMap()).await()
+            documentReference.id
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    suspend fun updateQuestion(id: String, questionFire: QuestionFire): Boolean {
+        return try {
+            val updates = questionFire.toMap()
+            questionCollection.document(id).update(updates).await()
             true
         } catch (e: Exception) {
             e.printStackTrace()

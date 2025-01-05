@@ -17,25 +17,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import pt.isec.amov.quizectpamov.R
+import pt.isec.amov.quizectpamov.data.model.TrueFalseQuestion
 import pt.isec.amov.quizectpamov.ui.screens.questions.QuestionTextField
 
 @Composable
 fun TrueFalse(
-    questionText: String,
-    onQuestionTextChange: (String) -> Unit,
-    selectedAnswer: String?,
-    onAnswerSelected: (String) -> Unit,
+    questionData: TrueFalseQuestion,
+    /*onQuestionTextChange: (String) -> Unit,*/
+    /*onAnswerSelected: (Boolean) -> Unit,*/
     onDismiss: () -> Unit,
-    onSave: (String, String) -> Unit
+    onSave: (TrueFalseQuestion) -> Unit
 ) {
     val selectCorrectAnswerText = stringResource(id = R.string.select_correct_answer)
     val trueText = stringResource(id = R.string.true_text)
     val falseText = stringResource(id = R.string.false_text)
-    val errorNoAnswerSelected = stringResource(id = R.string.error_no_answer_selected)
     val errorEmptyQuestion = stringResource(id = R.string.error_empty_question)
 
     val hasError = remember { mutableStateOf(false) }
     val errorMessage = remember { mutableStateOf("") }
+
+    val mutableData = remember { mutableStateOf(questionData) }
 
     if (hasError.value) {
         Text(
@@ -47,8 +48,10 @@ fun TrueFalse(
     }
 
     QuestionTextField(
-        questionText = questionText,
-        onQuestionTextChange = onQuestionTextChange
+        questionText = mutableData.value.question,
+        onQuestionTextChange = { text ->
+            mutableData.value = mutableData.value.copy(question = text)
+        },
     )
 
     Spacer(modifier = Modifier.height(16.dp))
@@ -60,9 +63,9 @@ fun TrueFalse(
         modifier = Modifier.fillMaxWidth()
     ) {
         Button(
-            onClick = { onAnswerSelected("True") },
+            onClick = { mutableData.value = mutableData.value.copy(correctAnswer = true) },
             colors = ButtonDefaults.buttonColors(
-                containerColor = if (selectedAnswer == "True") MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
+                containerColor = if (mutableData.value.correctAnswer) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
             )
         ) {
             Text(trueText)
@@ -71,9 +74,9 @@ fun TrueFalse(
         Spacer(modifier = Modifier.width(16.dp))
 
         Button(
-            onClick = { onAnswerSelected("False") },
+            onClick = {  mutableData.value = mutableData.value.copy(correctAnswer = false) },
             colors = ButtonDefaults.buttonColors(
-                containerColor = if (selectedAnswer == "False") MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
+                containerColor = if (!mutableData.value.correctAnswer) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
             )
         ) {
             Text(falseText)
@@ -99,16 +102,13 @@ fun TrueFalse(
 
         Button(
             onClick = {
-                if (questionText.isEmpty()) {
+                if (mutableData.value.question.isEmpty()) {
                     hasError.value = true
                     errorMessage.value = errorEmptyQuestion
-                } else if (selectedAnswer == null) {
-                    hasError.value = true
-                    errorMessage.value = errorNoAnswerSelected
                 } else {
                     hasError.value = false
                     errorMessage.value = ""
-                    onSave(questionText, "True/False: $selectedAnswer")
+                    onSave(mutableData.value)
                     onDismiss()
                 }
 

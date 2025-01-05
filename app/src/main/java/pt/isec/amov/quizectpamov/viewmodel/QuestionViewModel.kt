@@ -1,17 +1,59 @@
 package pt.isec.amov.quizectpamov.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.google.type.DateTime
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
+import okhttp3.internal.wait
 import pt.isec.amov.quizectpamov.data.dtos.QuestionDTO
+import pt.isec.amov.quizectpamov.data.model.BaseQuestion
 import pt.isec.amov.quizectpamov.data.model.Question
+import pt.isec.amov.quizectpamov.data.model.QuestionFire
 import pt.isec.amov.quizectpamov.data.repository.QuestionRepository
+import pt.isec.amov.quizectpamov.ui.screens.SaveState
 import pt.isec.amov.quizectpamov.utils.enums.QuestionType
+import java.time.Instant
+import java.util.Calendar
+import java.util.Date
 
 class QuestionViewModel : ViewModel() {
     private val repository = QuestionRepository()
     private val questions = mutableListOf<Question>()
 
+    private val _saveState = MutableStateFlow<SaveState>(SaveState.Idle)
+    val saveState: StateFlow<SaveState> get() = _saveState
 
-    init {
+    suspend fun getAllQuestions(): List<QuestionFire>? {
+        return repository.getAllQuestions()
+    }
+
+    fun addQuestion(questionType: QuestionType, baseQuestion: BaseQuestion) {
+        viewModelScope.launch {
+            _saveState.value = SaveState.Loading
+            val questionFire = QuestionFire(
+                questionID = IDGenerator.generate(),
+                created_at = System.currentTimeMillis(),
+                created_by = "b1nM6Ght4FfPSTCKC4dNYXdLmYi2",
+                type = questionType,
+                data = baseQuestion,
+            )
+
+            val result = repository.addQuestion(questionFire)
+            if (result != null) {
+                _saveState.value = SaveState.Success(result)
+            } else {
+                _saveState.value = SaveState.Error("Falhou ao guardar pergunta")
+            }
+        }
+    }
+
+    suspend fun deleteQuestion(id: String): Boolean {
+        return repository.deleteQuestion(id)
+    }
+
+    /*init {
         val questions1 = listOf(
             Question(
                 id = "1",
@@ -36,7 +78,7 @@ class QuestionViewModel : ViewModel() {
             )
         )
         questions.addAll(questions1)
-    }
+    }*/
 
     private fun Question.toDTO(): QuestionDTO {
         return QuestionDTO(
@@ -63,14 +105,5 @@ class QuestionViewModel : ViewModel() {
 
     fun getQuestionById(id: String): Question? {
         return questions.find { it.id == id }
-    }
-
-    fun addQuestion(question: Question) {
-    }
-
-    fun updateQuestion(id: String, question: Question) {
-    }
-
-    fun deleteQuestion(id: String) {
     }
 }

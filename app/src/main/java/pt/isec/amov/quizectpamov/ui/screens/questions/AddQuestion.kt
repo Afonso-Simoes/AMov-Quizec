@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -16,6 +17,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,6 +28,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import pt.isec.amov.quizectpamov.R
+import pt.isec.amov.quizectpamov.data.model.TrueFalseQuestion
 import pt.isec.amov.quizectpamov.ui.components.Association
 import pt.isec.amov.quizectpamov.ui.components.FillInTheBlank
 import pt.isec.amov.quizectpamov.ui.components.Matching
@@ -34,9 +37,13 @@ import pt.isec.amov.quizectpamov.ui.components.MultipleChoiceSingleAnswer
 import pt.isec.amov.quizectpamov.ui.components.Ordering
 import pt.isec.amov.quizectpamov.ui.components.TrueFalse
 import pt.isec.amov.quizectpamov.ui.components.WordBasedResponse
+import pt.isec.amov.quizectpamov.ui.screens.SaveState
+import pt.isec.amov.quizectpamov.utils.enums.QuestionType
+import pt.isec.amov.quizectpamov.viewmodel.QuestionViewModel
 
 @Composable
 fun AddQuestion(
+    viewModel: QuestionViewModel,
     onDismiss: () -> Unit,
     currentQuestion: String,
     currentType: String
@@ -45,7 +52,9 @@ fun AddQuestion(
     var questionType by remember { mutableStateOf(currentType) }
     var expanded by remember { mutableStateOf(false) }
 
-    var trueFalseAnswer by remember { mutableStateOf<String?>(null) }
+    val saveState by viewModel.saveState.collectAsState()
+
+    /* var trueFalseAnswer by remember { mutableStateOf<bool?>(null) }*/
 
     val types = listOf(
         stringResource(id = R.string.true_false),
@@ -62,9 +71,15 @@ fun AddQuestion(
         modifier = Modifier
             .fillMaxWidth()
             .verticalScroll(rememberScrollState())
-            .padding(horizontal = if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE) 100.dp else 16.dp, vertical = 16.dp),        horizontalAlignment = Alignment.CenterHorizontally
+            .padding(
+                horizontal = if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE) 100.dp else 16.dp,
+                vertical = 16.dp
+            ), horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(stringResource(id = R.string.add_edit_question), style = MaterialTheme.typography.titleLarge)
+        Text(
+            stringResource(id = R.string.add_edit_question),
+            style = MaterialTheme.typography.titleLarge
+        )
 
         QuestionTypeDropdown(
             types = types,
@@ -76,97 +91,121 @@ fun AddQuestion(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        when (questionType) {
-            stringResource(id = R.string.true_false) -> {
-                TrueFalse(
-                    questionText = questionText,
-                    onQuestionTextChange = { questionText = it },
-                    selectedAnswer = trueFalseAnswer,
-                    onAnswerSelected = { answer -> trueFalseAnswer = answer },
-                    onDismiss = onDismiss,
-                    onSave = { questionText, answer ->
-                        //TODO: Implementar lógica para salvar a pergunta
+
+        when (saveState) {
+            is SaveState.Idle -> {
+                when (questionType) {
+                    stringResource(id = R.string.true_false) -> {
+                        TrueFalse(
+                            questionData = TrueFalseQuestion(questionText, false),
+                            /*onQuestionTextChange = { questionText = it },*/
+                            /*onAnswerSelected = { answer -> trueFalseAnswer = answer },*/
+                            onDismiss = onDismiss,
+                            onSave = { data ->
+                                viewModel.addQuestion(QuestionType.TRUE_FALSE, data);
+                            }
+                        )
                     }
-                )
+
+                    stringResource(id = R.string.multiple_choice_single_answer) -> {
+                        MultipleChoiceSingleAnswer(
+                            questionText = questionText,
+                            onQuestionTextChange = { questionText = it },
+                            onDismiss = onDismiss,
+                            onSave = { questionText, answers, correctAnswerIndex ->
+                                //TODO: Implementar lógica para salvar a pergunta
+                            }
+                        )
+                    }
+
+                    stringResource(id = R.string.multiple_choice_multiple_answers) -> {
+                        MultipleChoiceMultipleAnswers(
+                            questionText = questionText,
+                            onQuestionTextChange = { questionText = it },
+                            onDismiss = onDismiss,
+                            onSave = { questionText, answers, correctAnswerIndices ->
+                                //TODO: Implementar lógica para salvar a pergunta
+                            }
+                        )
+                    }
+
+                    stringResource(id = R.string.matching) -> {
+                        Matching(
+                            questionText = questionText,
+                            onQuestionTextChange = { newText -> questionText = newText },
+                            onDismiss = onDismiss,
+                            onSave = { questionText, pairs ->
+                                //TODO: Implementar lógica para salvar a pergunta
+                            }
+                        )
+                    }
+
+                    stringResource(id = R.string.ordering) -> {
+                        Ordering(
+                            questionText = questionText,
+                            onQuestionTextChange = { questionText = it },
+                            onDismiss = onDismiss,
+                            onSave = { questionText, orderedList ->
+                                //TODO: Implementar lógica para salvar a pergunta
+                            }
+                        )
+                    }
+
+                    stringResource(id = R.string.fill_in_the_blank) -> {
+                        FillInTheBlank(
+                            questionText = questionText,
+                            onQuestionTextChange = { questionText = it },
+                            onDismiss = onDismiss,
+                            onSave = { questionText, answers ->
+                                //TODO: Implementar lógica para salvar a pergunta
+                            }
+                        )
+                    }
+
+                    stringResource(id = R.string.association) -> {
+                        Association(
+                            questionText = questionText,
+                            onQuestionTextChange = { newText -> questionText = newText },
+                            onDismiss = onDismiss,
+                            onSave = { questionText, pairs ->
+                                //TODO: Implementar lógica para salvar a pergunta
+                            }
+                        )
+                    }
+
+                    stringResource(id = R.string.word_based_response) -> {
+                        WordBasedResponse(
+                            questionText = questionText,
+                            initialAnswerText = "",
+                            onQuestionTextChange = { questionText = it },
+                            onAnswerTextChange = { },
+                            onDismiss = onDismiss,
+                            onSave = { questionText, initialAnswerText, answers ->
+                                //TODO: Implementar lógica para salvar a pergunta
+                            }
+                        )
+                    }
+                }
             }
-            stringResource(id = R.string.multiple_choice_single_answer) -> {
-                MultipleChoiceSingleAnswer(
-                    questionText = questionText,
-                    onQuestionTextChange = { questionText = it },
-                    onDismiss = onDismiss,
-                    onSave = { questionText, answers, correctAnswerIndex ->
-                        //TODO: Implementar lógica para salvar a pergunta
-                    }
-                )
+
+            is SaveState.Loading -> {
+                CircularProgressIndicator()
             }
-            stringResource(id = R.string.multiple_choice_multiple_answers) -> {
-                MultipleChoiceMultipleAnswers(
-                    questionText = questionText,
-                    onQuestionTextChange = { questionText = it },
-                    onDismiss = onDismiss,
-                    onSave = { questionText, answers, correctAnswerIndices ->
-                        //TODO: Implementar lógica para salvar a pergunta
-                    }
-                )
+
+            is SaveState.Success -> {
+                val documentId = (saveState as SaveState.Success).documentId
+                Text("Question saved successfully! ID: $documentId")
             }
-            stringResource(id = R.string.matching) -> {
-                Matching(
-                    questionText = questionText,
-                    onQuestionTextChange = { newText -> questionText = newText },
-                    onDismiss = onDismiss,
-                    onSave = { questionText, pairs ->
-                        //TODO: Implementar lógica para salvar a pergunta
-                    }
-                )
-            }
-            stringResource(id = R.string.ordering) -> {
-                Ordering(
-                    questionText = questionText,
-                    onQuestionTextChange = { questionText = it },
-                    onDismiss = onDismiss,
-                    onSave = { questionText, orderedList ->
-                        //TODO: Implementar lógica para salvar a pergunta
-                    }
-                )
-            }
-            stringResource(id = R.string.fill_in_the_blank) -> {
-                FillInTheBlank(
-                    questionText = questionText,
-                    onQuestionTextChange = { questionText = it },
-                    onDismiss = onDismiss,
-                    onSave = { questionText, answers ->
-                        //TODO: Implementar lógica para salvar a pergunta
-                    }
-                )
-            }
-            stringResource(id = R.string.association) -> {
-                Association(
-                    questionText = questionText,
-                    onQuestionTextChange = { newText -> questionText = newText },
-                    onDismiss = onDismiss,
-                    onSave = { questionText, pairs ->
-                        //TODO: Implementar lógica para salvar a pergunta
-                    }
-                )
-            }
-            stringResource(id = R.string.word_based_response) -> {
-                WordBasedResponse(
-                    questionText = questionText,
-                    initialAnswerText = "",
-                    onQuestionTextChange = { questionText = it },
-                    onAnswerTextChange = {  },
-                    onDismiss = onDismiss,
-                    onSave = { questionText, initialAnswerText, answers ->
-                        //TODO: Implementar lógica para salvar a pergunta
-                    }
-                )
+
+            is SaveState.Error -> {
+                val message = (saveState as SaveState.Error).message
+                Text("Error: $message")
             }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
     }
 }
-
 
 
 @OptIn(ExperimentalMaterial3Api::class)
