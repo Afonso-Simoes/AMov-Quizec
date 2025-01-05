@@ -12,7 +12,8 @@ class QuestionRepository {
         return try {
             val snapshot = questionCollection.get().await()
             snapshot.documents.mapNotNull { document ->
-                QuestionFire.fromDocument(document)
+                if (document.data == null) return null;
+                QuestionFire.fromJson(document.id, document.data as Map<String, Object>)
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -23,7 +24,8 @@ class QuestionRepository {
     suspend fun getQuestionById(id: String): QuestionFire? {
         return try {
             val document = questionCollection.document(id).get().await()
-            QuestionFire.fromDocument(document)
+            if (document.data == null) return null;
+            QuestionFire.fromJson(document.id, document.data as Map<String, Object>)
         } catch (e: Exception) {
             e.printStackTrace()
             null

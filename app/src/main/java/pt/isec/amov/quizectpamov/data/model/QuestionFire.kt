@@ -22,10 +22,8 @@ data class QuestionFire(
     }
 
     companion object {
-        fun fromDocument(document: DocumentSnapshot): QuestionFire? {
-            val data = document.data ?: return null
-
-            val id = document.id
+        fun fromJson(id: String, data: Map<String, Object>): QuestionFire? {
+            val id = id
             val questionID = data["questionID"] as? String ?: return null
             val createdAt = data["created_at"] as? Long ?: return null
             val createdBy = data["created_by"] as? String ?: return null
