@@ -2,7 +2,6 @@ package pt.isec.amov.quizectpamov.data.repository
 
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
-import pt.isec.amov.quizectpamov.data.dtos.QuestionDTO
 import pt.isec.amov.quizectpamov.data.model.QuestionFire
 
 class QuestionRepository {
@@ -41,7 +40,7 @@ class QuestionRepository {
         }
     }
 
-    suspend fun updateQuestion(id: String, questionFire: QuestionFire): Boolean {
+    suspend fun updateQuestion(id: String, questionFire: Map<String, Any?>): Boolean {
         return try {
             val updates = questionFire.toMap()
             questionCollection.document(id).update(updates).await()

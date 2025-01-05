@@ -23,10 +23,9 @@ import pt.isec.amov.quizectpamov.ui.screens.questions.QuestionTextField
 @Composable
 fun TrueFalse(
     questionData: TrueFalseQuestion,
-    /*onQuestionTextChange: (String) -> Unit,*/
-    /*onAnswerSelected: (Boolean) -> Unit,*/
     onDismiss: () -> Unit,
-    onSave: (TrueFalseQuestion) -> Unit
+    onSave: (TrueFalseQuestion) -> Unit,
+    isEditing: Boolean
 ) {
     val selectCorrectAnswerText = stringResource(id = R.string.select_correct_answer)
     val trueText = stringResource(id = R.string.true_text)
@@ -37,6 +36,10 @@ fun TrueFalse(
     val errorMessage = remember { mutableStateOf("") }
 
     val mutableData = remember { mutableStateOf(questionData) }
+
+    if (isEditing) {
+        mutableData.value = questionData
+    }
 
     if (hasError.value) {
         Text(
@@ -74,7 +77,7 @@ fun TrueFalse(
         Spacer(modifier = Modifier.width(16.dp))
 
         Button(
-            onClick = {  mutableData.value = mutableData.value.copy(correctAnswer = false) },
+            onClick = { mutableData.value = mutableData.value.copy(correctAnswer = false) },
             colors = ButtonDefaults.buttonColors(
                 containerColor = if (!mutableData.value.correctAnswer) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
             )
@@ -84,8 +87,6 @@ fun TrueFalse(
     }
 
     Spacer(modifier = Modifier.height(16.dp))
-
-
 
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -111,7 +112,6 @@ fun TrueFalse(
                     onSave(mutableData.value)
                     onDismiss()
                 }
-
             },
             modifier = Modifier.weight(1f)
         ) {

@@ -18,7 +18,7 @@
     <string name="true_false">Verdadeiro/Falso</string>
     <string name="multiple_choice_single_answer">Múltipla Escolha (Resposta Única)</string>
     <string name="multiple_choice_multiple_answers">Múltipla Escolha (Respostas Múltiplas)</string>
-    <string name="add_edit_question">Adicionar Pergunta</string>
+    <string name="add_edit_question">Adicionar/Editar Pergunta</string>
     <string name="select_correct_answer">Selecione a resposta correta</string>
     <string name="cancel">Cancelar</string>
     <string name="save">Salvar</string>
@@ -89,4 +89,5 @@
     <string name="your_answer">Resposta</string>
     <string name="remaining_time">%1$d segundos restantes</string>
     <string name="quiz_code_label">Código do Jogo</string>
+    <string name="no_questions_available">Não há perguntas disponíveis</string>
 </resources>

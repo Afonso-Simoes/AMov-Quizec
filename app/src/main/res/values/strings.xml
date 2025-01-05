@@ -18,7 +18,7 @@
     <string name="true_false">True/False</string>
     <string name="multiple_choice_single_answer">Multiple Choice (Single Answer)</string>
     <string name="multiple_choice_multiple_answers">Multiple Choice (Multiple Answers)</string>
-    <string name="add_edit_question">Add Question</string>
+    <string name="add_edit_question">Add/Edit Question</string>
     <string name="select_correct_answer">Select the correct answer</string>
     <string name="cancel">Cancel</string>
     <string name="save">Save</string>
@@ -89,4 +89,5 @@
     <string name="quiz_code_error">Invalid Game Code!</string>
     <string name="remaining_time">%1$d seconds remaining</string>
     <string name="quiz_code_label">Game Code</string>
+    <string name="no_questions_available">No questions available</string>
 </resources>

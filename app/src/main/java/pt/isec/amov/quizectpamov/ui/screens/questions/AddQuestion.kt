@@ -34,6 +34,7 @@ import pt.isec.amov.quizectpamov.data.model.MatchingQuestion
 import pt.isec.amov.quizectpamov.data.model.MultipleChoiceMultipleAnswerQuestion
 import pt.isec.amov.quizectpamov.data.model.MultipleChoiceSingleAnswerQuestion
 import pt.isec.amov.quizectpamov.data.model.OrderingQuestion
+import pt.isec.amov.quizectpamov.data.model.QuestionFire
 import pt.isec.amov.quizectpamov.data.model.TrueFalseQuestion
 import pt.isec.amov.quizectpamov.data.model.WordBasedQuestion
 import pt.isec.amov.quizectpamov.ui.components.Association
@@ -53,15 +54,16 @@ fun AddQuestion(
     viewModel: QuestionViewModel,
     onDismiss: () -> Unit,
     currentQuestion: String,
-    currentType: String
+    currentType: String,
+    onAddQuestion: () -> Unit,
+    isEditing: Boolean,
+    editableQuestion: QuestionFire?
 ) {
-    var questionText by remember { mutableStateOf(currentQuestion) }
+    val questionText by remember { mutableStateOf(currentQuestion) }
     var questionType by remember { mutableStateOf(currentType) }
     var expanded by remember { mutableStateOf(false) }
 
     val saveState by viewModel.saveState.collectAsState()
-
-    /* var trueFalseAnswer by remember { mutableStateOf<bool?>(null) }*/
 
     val types = listOf(
         stringResource(id = R.string.true_false),
@@ -98,16 +100,22 @@ fun AddQuestion(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-
         when (saveState) {
             is SaveState.Idle -> {
                 when (questionType) {
                     stringResource(id = R.string.true_false) -> {
                         TrueFalse(
-                            questionData = TrueFalseQuestion(questionText, false),
+                            questionData = if (isEditing) {
+                                TrueFalseQuestion(editableQuestion?.data?.question ?: "", (editableQuestion?.data as? TrueFalseQuestion)?.correctAnswer ?: false)
+                            } else {
+                                TrueFalseQuestion(questionText, false)
+                            },
+                            isEditing = isEditing,
                             onDismiss = onDismiss,
                             onSave = { data ->
-                                viewModel.addQuestion(QuestionType.TRUE_FALSE, data);
+                                viewModel.addQuestion(QuestionType.TRUE_FALSE, data)
+                                onAddQuestion()
+                                viewModel.resetSaveState()
                             }
                         )
                     }
@@ -117,7 +125,9 @@ fun AddQuestion(
                             questionData = MultipleChoiceSingleAnswerQuestion(questionText, listOf(), 0),
                             onDismiss = onDismiss,
                             onSave = { data ->
-                                viewModel.addQuestion(QuestionType.SINGLE_CHOICE, data);
+                                viewModel.addQuestion(QuestionType.SINGLE_CHOICE, data)
+                                onAddQuestion()
+                                viewModel.resetSaveState()
                             }
                         )
                     }
@@ -127,7 +137,9 @@ fun AddQuestion(
                             questionData = MultipleChoiceMultipleAnswerQuestion(questionText, listOf(), listOf()),
                             onDismiss = onDismiss,
                             onSave = { data ->
-                                viewModel.addQuestion(QuestionType.MULTIPLE_CHOICE, data);
+                                viewModel.addQuestion(QuestionType.MULTIPLE_CHOICE, data)
+                                onAddQuestion()
+                                viewModel.resetSaveState()
                             }
                         )
                     }
@@ -137,7 +149,9 @@ fun AddQuestion(
                             questionData = MatchingQuestion(questionText, listOf(), listOf(), listOf()),
                             onDismiss = onDismiss,
                             onSave = { data ->
-                                viewModel.addQuestion(QuestionType.MATCHING, data);
+                                viewModel.addQuestion(QuestionType.MATCHING, data)
+                                onAddQuestion()
+                                viewModel.resetSaveState()
                             }
                         )
                     }
@@ -147,7 +161,9 @@ fun AddQuestion(
                             questionData = OrderingQuestion(questionText, listOf(), listOf()),
                             onDismiss = onDismiss,
                             onSave = { data ->
-                                viewModel.addQuestion(QuestionType.ORDERING, data);
+                                viewModel.addQuestion(QuestionType.ORDERING, data)
+                                onAddQuestion()
+                                viewModel.resetSaveState()
                             }
                         )
                     }
@@ -157,7 +173,9 @@ fun AddQuestion(
                             questionData = FillInTheBlankQuestion(questionText, listOf()),
                             onDismiss = onDismiss,
                             onSave = { data ->
-                                viewModel.addQuestion(QuestionType.FILL_IN_THE_BLANK, data);
+                                viewModel.addQuestion(QuestionType.FILL_IN_THE_BLANK, data)
+                                onAddQuestion()
+                                viewModel.resetSaveState()
                             }
                         )
                     }
@@ -167,7 +185,9 @@ fun AddQuestion(
                             questionData = AssociationQuestion(questionText, listOf(), listOf(), listOf()),
                             onDismiss = onDismiss,
                             onSave = { data ->
-                                viewModel.addQuestion(QuestionType.ASSOCIATION, data);
+                                viewModel.addQuestion(QuestionType.ASSOCIATION, data)
+                                onAddQuestion()
+                                viewModel.resetSaveState()
                             }
                         )
                     }
@@ -177,7 +197,9 @@ fun AddQuestion(
                             questionData = WordBasedQuestion(questionText, "", listOf()),
                             onDismiss = onDismiss,
                             onSave = { data ->
-                                viewModel.addQuestion(QuestionType.WORD_BASED, data);
+                                viewModel.addQuestion(QuestionType.WORD_BASED, data)
+                                onAddQuestion()
+                                viewModel.resetSaveState()
                             }
                         )
                     }
@@ -190,12 +212,14 @@ fun AddQuestion(
 
             is SaveState.Success -> {
                 val documentId = (saveState as SaveState.Success).documentId
-                Text("Question saved successfully! ID: $documentId")
+                onAddQuestion()
+                viewModel.resetSaveState()
             }
 
             is SaveState.Error -> {
                 val message = (saveState as SaveState.Error).message
                 Text("Error: $message")
+                viewModel.resetSaveState()
             }
         }
 

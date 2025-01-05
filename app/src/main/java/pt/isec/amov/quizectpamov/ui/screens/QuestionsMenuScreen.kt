@@ -1,5 +1,6 @@
 package pt.isec.amov.quizectpamov.ui.screens
 
+import android.content.Context
 import android.content.res.Configuration
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -17,8 +18,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import okhttp3.internal.wait
 import pt.isec.amov.quizectpamov.R
 import pt.isec.amov.quizectpamov.data.model.QuestionFire
 import pt.isec.amov.quizectpamov.ui.screens.questions.AddQuestion
@@ -28,22 +29,21 @@ import pt.isec.amov.quizectpamov.viewmodel.QuestionViewModel
 @Composable
 fun QuestionsMenuScreen() {
     var showDialog by remember { mutableStateOf(false) }
+    var editableQuestion by remember { mutableStateOf<QuestionFire?>(null) }
     var questionText by remember { mutableStateOf("") }
     val initialQuestionType = stringResource(id = R.string.true_false)
     var selectedQuestionType by remember { mutableStateOf(initialQuestionType) }
     val viewModel: QuestionViewModel = viewModel()
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
-
     val questions = remember { mutableStateOf<List<QuestionFire>>(emptyList()) }
+    var isLoading by remember { mutableStateOf(true) }
+    var isEditing by remember { mutableStateOf(false) }
+
 
     LaunchedEffect(Unit) {
-        // Call the suspend function getAllQuestions from the ViewModel
-        val fetchedQuestions = viewModel.getAllQuestions()
-        questions.value = fetchedQuestions ?: emptyList()
+        loadQuestions(viewModel, questions) { isLoading = false }
     }
-
-    /*val questions = viewModel.getQuestions()*/
 
     Column(
         modifier = Modifier
@@ -79,182 +79,144 @@ fun QuestionsMenuScreen() {
                 onDismiss = { showDialog = false },
                 currentQuestion = questionText,
                 currentType = selectedQuestionType,
+                onAddQuestion = {
+                    coroutineScope.launch {
+                        loadQuestions(viewModel, questions) { isLoading = false }
+                    }
+                    isEditing = false
+                },
+                isEditing = isEditing,
+                editableQuestion = if (isEditing) editableQuestion else null
             )
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items(questions.value) { question ->
-                Card(
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .fillMaxWidth()
-                        .clickable {
-                            questionText = question.questionID
-                            selectedQuestionType = question.type.getLocalizedName(context)
-                            showDialog = true
+        if (isLoading) {
+            CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+        } else {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(questions.value) { question ->
+                    QuestionCard(
+                        question = question,
+                        context = context,
+                        coroutineScope = coroutineScope,
+                        onDelete = {
+                            coroutineScope.launch {
+                                viewModel.deleteQuestion(question.id ?: "")
+                                questions.value =
+                                    questions.value.filterNot { it.id == question.id }
+                            }
                         },
-                ) {
-                    Row(modifier = Modifier.padding(16.dp)) {
-                        Column(
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(end = 8.dp)
-                        ) {
-                            Text(
-                                text = "question.questionText",
-                                style = MaterialTheme.typography.bodyLarge
-                            )
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Text(
-                                text = stringResource(
-                                    id = R.string.question_type,
-                                    question.type.getLocalizedName(context)
-                                ),
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-                            Spacer(modifier = Modifier.height(8.dp))
-                            /*  Text(
-                                  text = stringResource(
-                                      id = R.string.correct_answer,
-                                      question.type?.joinToString(", ") ?: ""
-                                  ),
-                                  style = MaterialTheme.typography.bodyMedium
-                              )*/
-                            Spacer(modifier = Modifier.height(8.dp))
-                            /*Text(
-                                text = stringResource(
-                                    id = R.string.answers,
-                                    question.options?.joinToString(", ") ?: ""
-                                ),
-                                style = MaterialTheme.typography.bodyMedium
-                            )*/
-                        }
-
-                        Column(
-                            modifier = Modifier
-                                .align(Alignment.Top)
-                                .padding(4.dp)
-                        ) {
-                            IconButton(
-                                onClick = {
-                                    coroutineScope.launch {
-                                       viewModel.deleteQuestion(question.id as String)
-                                        questions.value =
-                                            questions.value.filterNot { it.id == question.id }
-                                    }
-                                },
-                                modifier = Modifier.size(24.dp)
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Delete,
-                                    contentDescription = "Delete"
-                                )
+                        onDuplicate = {
+                            coroutineScope.launch {
+                                viewModel.duplicateQuestion(question)
+                                questions.value = viewModel.getAllQuestions() ?: emptyList()
                             }
-                            Spacer(modifier = Modifier.height(8.dp))
-                            IconButton(
-                                onClick = {
-                                    // TODO: Implement duplicate question
-                                },
-                                modifier = Modifier.size(24.dp)
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.ContentCopy,
-                                    contentDescription = "Duplicate"
-                                )
-                            }
+                        },
+                        onClick = {
+                            editableQuestion = question
+                            showDialog = true
                         }
-                    }
+                    )
                 }
             }
         }
-        /*
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    items(questions) { question ->
-                        Card(
-                            modifier = Modifier
-                                .padding(8.dp)
-                                .fillMaxWidth()
-                                .clickable {
-                                    questionText = question.questionText
-                                    selectedQuestionType = question.questionType.getLocalizedName(context = context)
-                                    showDialog = true
-                                },
-                        ) {
-                            Row(modifier = Modifier.padding(16.dp)) {
-                                Column(
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .padding(end = 8.dp)
-                                ) {
-                                    Text(
-                                        text = question.questionText,
-                                        style = MaterialTheme.typography.bodyLarge
-                                    )
-                                    Spacer(modifier = Modifier.height(8.dp))
-                                    Text(
-                                        text = stringResource(id = R.string.question_type, question.questionType.getLocalizedName(context)),
-                                        style = MaterialTheme.typography.bodyMedium
-                                    )
-                                    Spacer(modifier = Modifier.height(8.dp))
-                                    Text(
-                                        text = stringResource(id = R.string.correct_answer, question.correctAnswer?.joinToString(", ") ?: ""),
-                                        style = MaterialTheme.typography.bodyMedium
-                                    )
-                                    Spacer(modifier = Modifier.height(8.dp))
-                                    Text(
-                                        text = stringResource(id = R.string.answers, question.options?.joinToString(", ") ?: ""),
-                                        style = MaterialTheme.typography.bodyMedium
-                                    )
-                                }
 
-                                Column(
-                                    modifier = Modifier
-                                        .align(Alignment.Top)
-                                        .padding(4.dp)
-                                ) {
-                                    IconButton(
-                                        onClick = {
-                                            // TODO: Implement delete question
-                                        },
-                                        modifier = Modifier
-                                            .size(24.dp)
-                                    ) {
-                                        Icon(
-                                            imageVector = Icons.Default.Delete,
-                                            contentDescription = "Delete",
-                                        )
-                                    }
-                                    Spacer(modifier = Modifier.height(8.dp))
-                                    IconButton(
-                                        onClick = {
-                                            // TODO: Implement duplicate question
-                                        },
-                                        modifier = Modifier
-                                            .size(24.dp)
-                                    ) {
-                                        Icon(
-                                            imageVector = Icons.Default.ContentCopy,
-                                            contentDescription = "Duplicate",
-                                        )
-                                    }
-                                }
-                            }
-                        }
+        if (editableQuestion != null && showDialog) {
+            AddQuestion(
+                viewModel = viewModel,
+                onDismiss = {
+                    showDialog = false
+                    editableQuestion = null
+                },
+                currentQuestion = editableQuestion?.data?.question.orEmpty(),
+                currentType = editableQuestion?.type?.getLocalizedName(context).orEmpty(),
+                onAddQuestion = {
+                    coroutineScope.launch {
+                        loadQuestions(viewModel, questions) { isLoading = false }
                     }
-                }*/
+                },
+                isEditing = isEditing,
+                editableQuestion = if (isEditing) editableQuestion else null
+            )
+        }
+    }
+}
 
+@Composable
+fun QuestionCard(
+    question: QuestionFire,
+    context: Context,
+    coroutineScope: CoroutineScope,
+    onDelete: () -> Unit,
+    onDuplicate: () -> Unit,
+    onClick: () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .padding(8.dp)
+            .fillMaxWidth()
+            .clickable { onClick() }
+    ) {
+        Row(modifier = Modifier.padding(16.dp)) {
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(end = 8.dp)
+            ) {
+                Text(
+                    text = question.data.question,
+                    style = MaterialTheme.typography.bodyLarge
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = stringResource(
+                        id = R.string.question_type,
+                        question.type.getLocalizedName(context)
+                    ),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
+
+            Column(
+                modifier = Modifier
+                    .align(Alignment.Top)
+                    .padding(4.dp)
+            ) {
+                IconButton(
+                    onClick = onDelete,
+                    modifier = Modifier.size(24.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "Delete"
+                    )
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                IconButton(
+                    onClick = onDuplicate,
+                    modifier = Modifier.size(24.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.ContentCopy,
+                        contentDescription = "Duplicate"
+                    )
+                }
+            }
+        }
     }
 }
 
 
-
-
+suspend fun loadQuestions(
+    viewModel: QuestionViewModel,
+    questions: MutableState<List<QuestionFire>>,
+    onFinished: () -> Unit
+) {
+    questions.value = viewModel.getAllQuestions() ?: emptyList()
+    onFinished()
+}
